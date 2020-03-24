@@ -12,13 +12,20 @@
             <img src="logo.png" alt="logo">
         </div>
         <div class="header-title">
-            <h2>SabaiCraft Treasures</h2>
+            <div class="search-container">
+        <div class="search-wrapper">
+            <input type="text" class="search-box" placeholder="Search...">
+            <button class="search-button">Search</button>
+        </div>
+    </div>
         </div>
         <div class="header-right">
             <ul class="header-options">  
                 <li><a href="#home"><b>Home</b></a></li>
+                <li><a href="#home"><b>About</b></a></li>                
                 <li><a href="orders.html"><b>Orders</b></a></li>
-                <li><a href="cart.html" class="cart-button"><b>Cart</b></a></li>
+                <li><a href="orders.html"><b>Help</b></a></li>
+                <li><a href="cart.html" class="cart-button"><b><img src="Images/cart.png" alt="logo"></b></a></li>
             </ul>
         </div>
         <section class="accounts">
@@ -27,8 +34,8 @@
                 <div class="popup-content">
                     <span class="close" onclick="closePopup()">&times;</span>
                     <p><b>Name:</b> Tanya Singh</p>
-                    <p><b>Email</b>: tanya@gmail.com</p>
-                    <p><b>Phone number</b>: 9858585858</p>
+                    <p><b>Email</b>: tanyasingh@gmail.com</p>
+                    <p><b>Phone number</b>: +91 8174018299</p>
                     <br>
                     <button class="logout-button" onclick="logout()">Close</button>
                 </div>
@@ -36,94 +43,86 @@
         </section>
     </header>
 
-    <div class="search-container">
-        <div class="search-wrapper">
-            <input type="text" class="search-box" placeholder="Search...">
-            <button class="search-button">Search</button>
-        </div>
-    </div>
-
-    <h3 class="tag-line">Crafting Treasures, Connecting Hearts.</h3>
-
-    <section id="home" class="banner-container">
+    <br> </br>
+ <br></br>
+ <img src="Images/sabai mascot.png">
+    <h2 class="tag-line">Crafting Treasures, Connecting Hearts.</h2>
+    <h4 class="tag-line">SabaiCraft Treasures</h4>
+   <br></br>
+   
+ <section id="home" class="banner-container">
         <div class="banner" id="banner1">
-            <p>Get <strong>FLAT 20%</strong> Discount<br>On all categories</p>
+            <p>Get <strong>FLAT 30%</strong> Discount<br> On this Product</p>
             <br>
-            <button class="banner-button">Shop Now</button>
+            <button class="banner-button">See Product</button>
         </div>
         <div class="banner" id="banner2">
-            <p>Shop with minimum value of <b>2000</b> <br> Get <strong>FLAT 200</strong> coupon FREE!</p>
+            <p>Shop with minimum value of <b>2000</b> <br> Get <strong>FLAT 300</strong> coupon FREE!</p>
             <br>
             <button class="banner-button">Shop Now</button>
         </div>
     </section>
-
+    <br></br>
+     
     <section class="featured-products">
         <h2>Featured Products</h2>
+        <p>Hurry up, grab these featured products fast, limited stocks left!</p>
+        <br>
         <div class="product">
-            <img src="sample.png" alt="Product 1">
-            <h3>Product Name 1</h3>
+            <img src="Images/p1.jpg"><br>
+            <h3>Sabai Handle Basket</h3>
             <p>₹1000</p>
-            <a href="#" class="buy-button">Add to Cart</a>
+            <button class="buy-button" onclick="addToCart(this)">Add to Cart</button>
         </div>
         <div class="product">
-            <img src="sample.png" alt="Product 2">
-            <h3>Product Name 2</h3>
+            <img src="Images/p2.jpg"><br>
+            <h3>Sabai Cap Basket</h3>
             <p>₹1200</p>
-            <a href="#" class="buy-button">Add to Cart</a>
+            <button class="buy-button" onclick="addToCart(this)">Add to Cart</button>
         </div>
         <div class="product">
-            <img src="sample.png" alt="Product 3">
-            <h3>Product Name 3</h3>
+            <img src="Images/p2.jpg"><br>
+            <h3>Sabai Basket</h3>
             <p>₹800</p>
-            <a href="#" class="buy-button">Add to Cart</a>
+            <button class="buy-button" onclick="addToCart(this)">Add to Cart</button>
         </div>
     </section>
-    
+
+    <br></br>
+    <br></br>
+
     <div class="horizontal-line"></div>
 
     <section class="categories">
         <h2>Categories</h2>
         <div class="category-container">
             <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
+                <img src="Images/bag.png" alt="Category">
+                <p>Baskets</p>
             </div>
             <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
+                <img src="Images/basket.png" alt="Category">
+                <p>Bags</p>
             </div>
             <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
+                <img src="Images/coaster.png"alt="Category">
+                <p>Coasters</p>
             </div>
             <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
+                <img src="Images/hat.png" alt="Category">
+                <p>Hats</p>
             </div>
             <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
+                <img src="Images/toy.png" alt="Category">
+                <p>Toys</p>
             </div>
             <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
+                <img src="Images/mat.png" alt="Category">
+                <p>Mats</p>
             </div>
             <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
-            </div>
-            <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
-            </div>
-            <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
-            </div>
-            <div class="category">
-                <img src="categ.png" alt="Category">
-                <p>Category</p>
+                <img src="Images/fashion.png" alt="Category">
+                <p>Garments</p>
             </div>
         </div>
     </section>
@@ -134,14 +133,42 @@
         <h2>Popular Products</h2>
         <div class="product-row">
             <div class="product">
-                <img src="sample.png" alt="Product 1">
-                <h3>Product Name 1</h3>
+                <img src="Images/p1.webp" height="300" width="300" alt="Product 1">
+                <h3>Sabai Cap Basket</h3>
                 <p>₹1000</p>
                 <a href="#" class="buy-button">Add to Cart</a>
             </div>
             <div class="product">
-                <img src="sample.png" alt="Product 2">
-                <h3>Product Name 2</h3>
+                <img src="Images/p6.webp" height="300" width="300" alt="Product 2">
+                <h3>Sabai Kitchen Casrole</h3>
+                <p>₹1200</p>
+                <a href="#" class="buy-button">Add to Cart</a>
+            </div>
+            <div class="product">
+                <img src="Images/p6.webp" height="300" width="300" alt="Product 2">
+                <h3>Sabai Kitchen Casrole</h3>
+                <p>₹1200</p>
+                <a href="#" class="buy-button">Add to Cart</a>
+            </div>
+            
+        </div>
+        <div class="horizontal-line-thin"></div>
+        <div class="product-row">
+            <div class="product">
+                <img src="Images/p2.webp" alt="Product 3">
+                <h3>Big Fruit Basket</h3>
+                <p>₹1000</p>
+                <a href="#" class="buy-button">Add to Cart</a>
+            </div>
+            <div class="product">
+                <img src="Images/p3.webp" alt="Product 4">
+                <h3>Small Fruit Basket</h3>
+                <p>₹1200</p>
+                <a href="#" class="buy-button">Add to Cart</a>
+            </div>
+            <div class="product">
+                <img src="Images/p6.webp" alt="Product 2">
+                <h3>Sabai Kitchen Casrole</h3>
                 <p>₹1200</p>
                 <a href="#" class="buy-button">Add to Cart</a>
             </div>
@@ -149,14 +176,20 @@
         <div class="horizontal-line-thin"></div>
         <div class="product-row">
             <div class="product">
-                <img src="sample.png" alt="Product 3">
-                <h3>Product Name 3</h3>
+                <img src="Images/p4.webp" alt="Product 5">
+                <h3>Beige Sabai Basket</h3>
                 <p>₹1000</p>
                 <a href="#" class="buy-button">Add to Cart</a>
             </div>
             <div class="product">
-                <img src="sample.png" alt="Product 4">
-                <h3>Product Name 4</h3>
+                <img src="Images/p5.webp" alt="Product 6">
+                <h3>Green Sabai Basket</h3>
+                <p>₹1200</p>
+                <a href="#" class="buy-button">Add to Cart</a>
+            </div>
+            <div class="product">
+                <img src="Images/p6.webp" alt="Product 2">
+                <h3>Sabai Kitchen Casrole</h3>
                 <p>₹1200</p>
                 <a href="#" class="buy-button">Add to Cart</a>
             </div>
@@ -164,29 +197,20 @@
         <div class="horizontal-line-thin"></div>
         <div class="product-row">
             <div class="product">
-                <img src="sample.png" alt="Product 5">
-                <h3>Product Name 5</h3>
+                <img src="Images/p8.webp" alt="Product 7">
+                <h3>Brown Sabai Kitchen Mat</h3>
                 <p>₹1000</p>
                 <a href="#" class="buy-button">Add to Cart</a>
             </div>
             <div class="product">
-                <img src="sample.png" alt="Product 6">
-                <h3>Product Name 6</h3>
+                <img src="Images/p7.webp" alt="Product 8">
+                <h3>Beige Sabai Kitchen Mat</h3>
                 <p>₹1200</p>
                 <a href="#" class="buy-button">Add to Cart</a>
             </div>
-        </div>
-        <div class="horizontal-line-thin"></div>
-        <div class="product-row">
             <div class="product">
-                <img src="sample.png" alt="Product 7">
-                <h3>Product Name 7</h3>
-                <p>₹1000</p>
-                <a href="#" class="buy-button">Add to Cart</a>
-            </div>
-            <div class="product">
-                <img src="sample.png" alt="Product 8">
-                <h3>Product Name 8</h3>
+                <img src="Images/p6.webp" alt="Product 2">
+                <h3>Sabai Kitchen Casrole</h3>
                 <p>₹1200</p>
                 <a href="#" class="buy-button">Add to Cart</a>
             </div>
@@ -197,6 +221,7 @@
 
     <section class="subscribe">
         <h2>Subscribe to Newsletter</h2>
+        <p>Sign Up for our Newsletter and be part of a vibrant network celebrating Sabai Grass Artistry. Discover, Connect and Craft.</p><Br></br>
         <form action="#" class="subscribe-form">
             <input type="email" placeholder="Enter email" required>
             <button type="submit">Subscribe</button>
@@ -209,23 +234,30 @@
         <h2>Reviews</h2>
         <div class="review-container">
             <div class="review-box">
-                <img src="account.png" alt="User Image" class="user-image">
+                
                 <div class="user-info">
-                    <h3>Tanya Singh</h3>
+                    <h3>Tanya</h3>
                     <p>Excellent product! I'm very happy with my purchase.</p>
                 </div>
             </div>
             <div class="review-box">
-                <img src="account.png" alt="User Image" class="user-image">
+               
                 <div class="user-info">
-                    <h3>Sahana</h3>
+                    <h3>Ramashre</h3>
                     <p>Great quality and fast shipping. Highly recommend!</p>
                 </div>
             </div>
             <div class="review-box">
-                <img src="account.png" alt="User Image" class="user-image">
+               
                 <div class="user-info">
-                    <h3>Hemanth Roy</h3>
+                    <h3>Anuradha</h3>
+                    <p>I liked it, they were exactly how they were promised.</p>
+                </div>
+            </div>
+            <div class="review-box">
+                
+                <div class="user-info">
+                    <h3>Tanishq</h3>
                     <p>Amazing customer service. Will buy again!</p>
                 </div>
             </div>
@@ -234,42 +266,42 @@
 
     <footer class="footer">
         <div class="footer-section">
-            <h2>Popular</h2>
+            <h2>Main Menu</h2>
             <ul>
-                <li>House</li>
-                <li>Kitchens</li>
-                <li>Decors</li>
-                <li>Rooms</li>
-                <li>Handmades</li>
+                <li>Home</li>
+                <li>About Us</li>
+                <li>Shop</li>
+                <li>Help</li>
+                
             </ul>
         </div>
         <div class="footer-section">
-            <h2>Products</h2>
+            <h2>Discover</h2>
             <ul>
-                <li>Basket</li>
-                <li>Container</li>
-                <li>Stuffs</li>
-                <li>Matress</li>
-                <li>Grass Decors</li>
+                <li>The Team</li>
+                <li>Our History</li>
+                <li>Brand Motto</li>
+                <li>Our Artisans</li>
+                
             </ul>
         </div>
         <div class="footer-section">
             <h2>Company</h2>
             <ul>
-                <li>About us</li>
-                <li>Secure Payment</li>
-                <li>Legal Notice</li>
-                <li>Policies</li>
+                <li>SabaiCraft Treasures</li>
+                <li>Press</li>
+                <li>Careers</li>
+              
                 <li>Terms and conditions</li>
             </ul>
         </div>
         <div class="footer-section">
             <h2>Contact Us</h2>
             <ul>
-                <li>SabaiCraft Treasures Office</li>
-                <li>Street 135</li>
-                <li>Salt Lake City, Kolkata</li>
-                <li>West Bengal - 700002</li>
+              
+                <li>Twitter</li>
+                <li>Instagram</li>
+                <li>Facebook</li>
                 <li>contact@sabaicraft.com</li>
             </ul>
         </div>
