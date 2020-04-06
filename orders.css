@@ -1,24 +1,24 @@
 header {
-    background-color: #9100d4;
-    color: #fff;
+    background-color: #283618;
+    color: #FEFAE0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 5px 40px;
 }
 
 header h1 {
-    margin: 10;
+    margin: 60;
     font-weight:bold;
-    font-family: cursive;
+    font-family: poppins;
 }
 
 .return-button {
-    background-color: #fff;
-    color: #9100d4;
+    background-color: #FEFAE0;
+    color: #283618;
     border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
+    padding: 8px 16px;
+    border-radius: 15px;
     text-decoration: none;
     font-weight: bold;
     cursor: pointer;
