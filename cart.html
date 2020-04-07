@@ -6,7 +6,7 @@
     <title>Shopping Cart</title>
     <link rel="stylesheet" href="cart.css">
 </head>
-<body>
+<body style="text-align: center;">
     <header>
         <h1>Shopping Cart</h1>
         <a href="index.html" class="return-button">Return to home</a>
@@ -14,10 +14,10 @@
 
     <section class="page" id="page-1">
         <section class="product">
-            <img src="sample.png" alt="Sample Product">
+            <img src="Images/p1.jpg" alt="Sample Product">
             <div class="details">
-                <p><b>Product Name</b></p>
-                <p>Details about product</p>
+                <p><b>Sabai Handle Basket</b></p>
+                <p>With an attached handle</p>
                 <p><b><font color="Green">₹800.00</font></b></p>
             </div>
             <div class="quantity">
@@ -33,10 +33,10 @@
         <div class="horizontal-line"></div>
     
         <section class="product">
-            <img src="sample.png" alt="Sample Product">
+            <img src="Images/p2.jpg" alt="Sample Product">
             <div class="details">
-                <p><b>Product Name</b></p>
-                <p>Details about product</p>
+                <p><b>Sabai Cap Basket</b></p>
+                <p>With a removable lid cap</p>
                 <p><b><font color="Green">₹1200.00</font></b></p>
             </div>
             <div class="quantity">
@@ -117,6 +117,9 @@
             <div class="horizontal-line"></div>
             <br><br>
             <div id="card-details" class="form-group" style="display:none;">
+                <p style="text-align: center;">
+                    <img src="Images/vmr.jpg" height="100px" width="400px" alt="COD">
+                </p>
                 <label for="card-number">Card Number:</label>
                 <input type="text" id="card-number" name="card-number" placeholder="XXXX XXXX XXXX XXXX" required>
                 
@@ -128,6 +131,9 @@
             </div>
             
             <div id="netbanking-details" class="form-group" style="display:none;">
+                <p style="text-align: center;">
+                    <img src="Images/netbank.png" height="150px" width="300px" alt="COD">
+                </p>
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" placeholder="NetBanking username" required>
                 
@@ -136,17 +142,25 @@
             </div>
             
             <div id="upi-details" class="form-group" style="display:none;">
+                <p style="text-align: center;">
+                    <img src="Images/upi.png" height="200px" width="200px" alt="COD">
+                </p>
                 <label for="upi-id">UPI ID:</label>
                 <input type="text" id="upi-id" name="upi-id" placeholder="8888888888@abc" required>
             </div>
             
             <div id="paypal-details" class="form-group" style="display:none;">
+                <p style="text-align: center;">
+                    <img src="Images/paypal.png" height="200px" width="200px" alt="COD">
+                </p>
                 <label for="paypal-id">PayPal ID:</label>
                 <input type="text" id="paypal-id" name="paypal-id" placeholder="Paypal username" required>
             </div>
             
             <div id="cash-details" class="form-group" style="display:none;">
-                <p>Pay at doorstep</p>
+                <p style="text-align: center;">Pay at doorstep <br>
+                    <img src="Images/cod.png" height="200px" width="200px" alt="COD">
+                </p>
             </div>
             <br><br>
             <button class="prev-button" onclick="prevPage('page-3', 'page-2')">Previous</button>
@@ -155,11 +169,26 @@
     </section>
 
     <section class="page" id="page-4" style="display:none;">
-        <h2>Page 4</h2>
-        <p>Order Confirmed!</p>
+        <h1>Order Confirmed</h1>
+        <p>Your order will be delivered within the next 5 days</p>
+        <img src="Images/order.gif" height="250px" width="250px" alt="order">
         <div id="confirmation-details"></div>
-        <a href="index.html" class="home-button">Home</a>
+        <br>
+        <a href="index.html" class="home-button">Continue Shopping</a>
+        <br><br><br>
+        <div class="horizontal-line"></div>
+        <br>
+        <h2> Shipping Address:</h2>
+        <p style="line-height: 1.75;"> 
+            <b>Tanya Singh</b> <br>
+            Flat no. 12, Sector 09 <br>
+            Salt Lake City, Kolkata <br>
+            West Bengal - 985002 <br>
+            <b>Ph no: </b> 9864894645
+        </p>
     </section>
+
+    
 
     <script src="cart.js"></script>
 </body>
