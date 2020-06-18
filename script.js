@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // New code for product image click redirect
     const productImages = document.querySelectorAll('.product img');
 
     productImages.forEach(image => {
