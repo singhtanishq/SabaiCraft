@@ -9,12 +9,12 @@
 <body>
     <header class="header">
         <div class="header-left">
-            <img src="Images/logo.png" alt="logo">
+            <img src="logo.png" alt="logo">
         </div>
         <div class="header-title">
             <div class="search-container">
         <div class="search-wrapper">
-            <input type="text" class="search-box" placeholder="Search...">
+            <input type="text" class="search-box" placeholder="SabaiCraft Treasures">
             <button class="search-button">Search</button>
         </div>
     </div>
@@ -22,10 +22,10 @@
         <div class="header-right">
             <ul class="header-options">  
                 <li><a href="#home"><b>Home</b></a></li>
-                <li><a href="#home"><b>About</b></a></li>                
+                <li><a href="#about"><b>About</b></a></li>   
+                <li><a href="#category"><b>Category</b></a></li>             
                 <li><a href="orders.html"><b>Orders</b></a></li>
-                <li><a href="orders.html"><b>Help</b></a></li>
-                <li><a href="cart.html" class="cart-button"><b><img src="Images/cart.png" alt="logo"></b></a></li>
+                <li><a href="cart.html" class="cart-button"><b><img src="Images/cart.png" height="60px" width="60px" style="margin-top: -25px;" alt="logo"></b></a></li>
             </ul>
         </div>
         <section class="accounts">
@@ -35,7 +35,7 @@
                     <span class="close" onclick="closePopup()">&times;</span>
                     <p><b>Name:</b> Tanishq Singh</p>
                     <p><b>Email</b>: tanishqsingh@outlook.in </p>
-                    <p><b>Phone number</b>: +91 88811 55518</p>
+                    <p><b>Phone number</b>: +91 8881155518 </p>
                     <br>
                     <button class="logout-button" onclick="logout()">Close</button>
                 </div>
@@ -74,7 +74,7 @@
             <p>₹1000</p>
             <button class="buy-button" onclick="addToCart(this)">Add to Cart</button>
         </div>
-        <div class="product">
+        <div class="product-center">
             <img src="Images/p2.jpg"><br>
             <h3>Sabai Cap Basket</h3>
             <p>₹1200</p>
@@ -93,7 +93,8 @@
 
     <div class="horizontal-line"></div>
 
-    <section class="categories">
+    <section id="category" class="categories">
+        <br>
         <h2>Categories</h2>
         <div class="category-container">
             <div class="category">
@@ -240,7 +241,7 @@
             </div>
         </div>
     </section>
-
+    <br>
     <div class="horizontal-line"></div>
 
     <section class="subscribe">
@@ -251,7 +252,7 @@
             <button type="submit">Subscribe</button>
         </form>
     </section>   
-    
+    <br><br>
     <div class="horizontal-line"></div>
 
     <section class="reviews">
@@ -286,6 +287,28 @@
                 </div>
             </div>
         </div>
+    </section>
+    <div class="horizontal-line"></div>
+    <section id="about" class="about-section">
+        <br>
+        <h2>About Us</h2>
+        <div class="about-logo">
+            <img src="logo.png" height="350px" width="350px" alt="logo">
+        </div>
+        <p> In the heart of a bustling city, where the rhythm of life pulsates through crowded streets and towering buildings, there exists a hidden oasis—a tranquil park that offers respite from the urban chaos. As dawn breaks and the first rays of sunlight gently kiss the dew-drenched grass, the park awakens to a symphony of chirping birds and rustling leaves.
+
+            The air is crisp and invigorating, carrying with it the scent of blooming flowers that line the winding pathways. Tall, ancient trees stand as guardians of this natural haven, their branches providing a canopy that dances with the breeze. The park is a sanctuary for those seeking solace, a haven for joggers, couples strolling hand in hand, and solitary thinkers finding inspiration on secluded benches.
+            
+            As the day progresses, the park transforms into a kaleidoscope of activities. Children's laughter echoes across the playground, where swings sway in a rhythmic melody. Dogs of all shapes and sizes play fetch, their tails wagging with unbridled joy. Yoga enthusiasts gather in a quiet corner, finding balance amidst the chaos of modern life.
+            
+            In the heart of the park stands a serene pond, its surface reflecting the azure sky above. A family of ducks glides across the water, leaving gentle ripples in their wake. Nearby, a gazebo provides a picturesque setting for impromptu performances, where musicians share their talent with an appreciative audience.
+            
+            As the sun reaches its zenith, the park becomes a melting pot of diverse cultures and backgrounds. Picnickers spread blankets under the shade of ancient trees, sharing meals that represent a mosaic of culinary traditions. The aroma of sizzling barbecue mingles with the melodies of acoustic guitars, creating an atmosphere of camaraderie and shared enjoyment.
+            
+            Nature and technology coexist harmoniously in this oasis. Fitness enthusiasts track their steps on smartwatches, capturing the beauty around them with smartphones. Yet, there is a collective understanding to preserve the serenity of the park—no blaring music, no disruptive behavior, just a harmonious blend of urban life and natural beauty.
+        </p>
+        <br>
+        <br>
     </section>
 
     <footer class="footer">
@@ -331,8 +354,7 @@
         </div>
         <br>
     </footer>
-    
-    <div class="horizontal-line"></div>
+
     <div class="copyright"> &copy; SabaiCraft Treasures. All Rights Reserved.</div>
 
     <script src="script.js"></script>
