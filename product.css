@@ -327,6 +327,12 @@ main {
     
 }
 
+.product img:hover {
+    transform: scale(1.08);
+    transition: transform 0.5s ease-in-out;
+    cursor: pointer;
+}
+
 .product h3 {
     font-size: 18px;
     margin: 10px 0;
