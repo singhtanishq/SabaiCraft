@@ -10,11 +10,18 @@
     <header>
         <h1>Shopping Cart</h1>
         <a href="index.html" class="return-button">Return to home</a>
-    </header>    
+    </header>       
 
     <section class="page" id="page-1">
+        <div class="progress-tracker" style="margin-bottom: 50px;margin-top: 25px;">
+            <div class="step-active" id="step1">Shopping Cart</div>
+            <div class="step" id="step2">Shipping Details</div>
+            <div class="step" id="step3">Payment Page</div>
+            <div class="step" id="step4">Order Confirmation</div>
+        </div>
         <section class="product">
-            <img src="Images/p1.jpg" alt="Sample Product">
+            
+            <img src="Images/p1.jpg" height="150px" width="250px" alt="Sample Product">
             <div class="details">
                 <p><b>Sabai Handle Basket</b></p>
                 <p>With an attached handle</p>
@@ -33,7 +40,7 @@
         <div class="horizontal-line"></div>
     
         <section class="product">
-            <img src="Images/p2.jpg" alt="Sample Product">
+            <img src="Images/p2.jpg" height="150px" width="250px" alt="Sample Product">
             <div class="details">
                 <p><b>Sabai Cap Basket</b></p>
                 <p>With a removable lid cap</p>
@@ -51,20 +58,26 @@
         
         <div class="horizontal-line"></div>
         <br><br>
-        <h2>Summary</h2>
+        <h2 style="margin-top: -15px;">Summary</h2>
         <p>Total Amount: ₹<span id="total-amount"></span></p>
         <br>
         <button class="review-button" onclick="nextPage('page-1', 'page-2')">Review and Proceed</button>
     </section>
+    <br></br>
 
     <section class="page" id="page-2" style="display:none;">
-        <h2>Shipping Details</h2>
-        <div class="horizontal-line"></div>
-        <br><br>
+        <div class="progress-tracker" style="margin-top: -12px;">
+            <div class="step-active" id="step1">Shopping Cart</div>
+            <div class="step-active" id="step2">Shipping Details</div>
+            <div class="step" id="step3">Payment Page</div>
+            <div class="step" id="step4">Order Confirmation</div>
+        </div>
+
+        <br></br>
         <form id="address-form">
             <div class="form-group">
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" placeholder="e.g. Tanishq Singh" required>
+                <input type="text" id="name" name="name" placeholder="e.g. Tanya Singh" required>
             </div>
             
             <div class="form-group">
@@ -79,26 +92,32 @@
     
             <div class="form-group">
                 <label for="city">City:</label>
-                <input type="text" id="city" name="city" placeholder="e.g. Varanasi" required>
+                <input type="text" id="city" name="city" placeholder="e.g. Kolkata" required>
             </div>
     
             <div class="form-group">
                 <label for="state">State:</label>
-                <input type="text" id="state" name="state" placeholder="e.g. Uttar Pradesh" required>
+                <input type="text" id="state" name="state" placeholder="e.g. West Bengal" required>
             </div>
     
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom: -15px;">
                 <label for="zip">ZIP Code:</label>
                 <input type="text" id="zip" name="zip" placeholder="e.g. 123456" required>
             </div>
-            <br><br>
+            <br></br>
             <button class="prev-button" onclick="prevPage('page-2', 'page-1')">Previous</button>
             <button class="next-button" onclick="nextPage('page-2', 'page-3')">Next</button>
         </form>
     </section>
-
+<br></br>
     <section class="page" id="page-3" style="display:none;">
-        <h2>Payment</h2>
+        <div class="progress-tracker" style="margin-top: -49px;">
+            <div class="step-active" id="step1">Shopping Cart</div>
+            <div class="step-active" id="step2">Shipping Details</div>
+            <div class="step-active" id="step3">Payment Page</div>
+            <div class="step" id="step4">Order Confirmation</div>
+        </div>
+
         <div class="horizontal-line"></div>
         <br><br>
         <form id="payment-form">
@@ -135,7 +154,7 @@
                     <img src="Images/netbank.png" height="150px" width="300px" alt="COD">
                 </p>
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="NetBanking Username" required>
+                <input type="text" id="username" name="username" placeholder="NetBanking username" required>
                 
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" placeholder="********" required>
@@ -146,7 +165,7 @@
                     <img src="Images/upi.png" height="200px" width="200px" alt="COD">
                 </p>
                 <label for="upi-id">UPI ID:</label>
-                <input type="text" id="upi-id" name="upi-id" placeholder="9856898568@paytm" required>
+                <input type="text" id="upi-id" name="upi-id" placeholder="8888888888@abc" required>
             </div>
             
             <div id="paypal-details" class="form-group" style="display:none;">
@@ -154,7 +173,7 @@
                     <img src="Images/paypal.png" height="200px" width="200px" alt="COD">
                 </p>
                 <label for="paypal-id">PayPal ID:</label>
-                <input type="text" id="paypal-id" name="paypal-id" placeholder="Paypal Username" required>
+                <input type="text" id="paypal-id" name="paypal-id" placeholder="Paypal username" required>
             </div>
             
             <div id="cash-details" class="form-group" style="display:none;">
@@ -167,11 +186,12 @@
             <button class="next-button" onclick="nextPage('page-3', 'page-4')">Confirm and Place Order</button>
         </form>
     </section>
-
+    <br></br>
     <section class="page" id="page-4" style="display:none;">
-        <h1>Order Confirmed</h1>
+
+        <h1 style="font-size: xx-large;margin-top: -70px;">Order Confirmed <img src="Images/order.gif" height="25px" width="25px" alt="order"> </h1>
         <p>Your order will be delivered within the next 5 days</p>
-        <img src="Images/order.gif" height="250px" width="250px" alt="order">
+        <img src="Images/orders.gif" height="250px" width="250px" alt="order">
         <div id="confirmation-details"></div>
         <br>
         <a href="index.html" class="home-button">Continue Shopping</a>
@@ -180,14 +200,14 @@
         <br>
         <h2> Shipping Address:</h2>
         <p style="line-height: 1.75;"> 
-            <b>Tanishq Singh</b> <br>
+            <b>Tanya Singh</b> <br>
             Flat no. 12, Sector 09 <br>
-            Central Mall RD, Varanasi <br>
-            Uttar Pradesh - 221002 <br>
-            <b>Ph no: </b> +91 8881155518
+            Salt Lake City, Kolkata <br>
+            West Bengal - 985002 <br>
+            <b>Ph no: </b> 9864894645
         </p>
     </section>
-
+    <br></br>
     
 
     <script src="cart.js"></script>
