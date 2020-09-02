@@ -4,11 +4,11 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 40px;
+    padding: 5px 73px;
 }
 
 header h1 {
-    margin: 60;
+    margin: 50;
     font-weight:bold;
     font-family: poppins;
 }
@@ -17,33 +17,33 @@ header h1 {
     background-color: #FEFAE0;
     color: #283618;
     border: none;
-    padding: 8px 16px;
-    border-radius: 15px;
+    padding: 5px 15px;
+    border-radius: 10px;
     text-decoration: none;
     font-weight: bold;
     cursor: pointer;
 }
 
 .search-bar {
-    margin: 20px 20px;
+    margin: 40px 70px;
 }
 
 .search-bar input {
     width: 100%;
-    padding: 15px;
-    border: 1.5px solid #ccc;
+    padding: 10px;
+    border: 1px solid #ccc;
     border-radius: 10px;
     box-sizing: border-box;
 }
 
 .order-details {
-    margin-top: 40px;
+    margin-top: 5px;
 }
 
 .order {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .order img {
