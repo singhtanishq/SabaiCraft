@@ -9,15 +9,15 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 40px;
+    padding: 30px 73px;
 }
 
 .nav-button {
     background-color: #FEFAE0;
     color: #283618;
     border: none;
-    padding: 8px 16px;
-    border-radius: 15px;
+    padding: 11px 32px;
+    border-radius: 10px;
     text-decoration: none;
     font-weight: bold;
     cursor: pointer;
@@ -239,6 +239,8 @@ main {
 
 .product-about {
     width: 50vw;
+    text-align: left;
+    text-align: justify;
 }
 
 .reviews {
@@ -255,7 +257,7 @@ main {
 .review-box {
     flex: 0 0 98%;
     padding: 20px;
-    background-color: #d1ffd3;
+    background-color: #FEFAE0;
     border-radius: 15px;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.5s;
