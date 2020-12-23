@@ -8,7 +8,7 @@ while true; do
     if [ -n "$(git status --porcelain)" ]; then
         echo "Changes detected. Waiting for changes to settle..."
 
-        sleep 10
+        sleep 5
 
         if [ -n "$(git status --porcelain)" ]; then
             git add .
