@@ -12,7 +12,7 @@ while true; do
 
         if [ -n "$(git status --porcelain)" ]; then
             git add .
-            git commit -m "update"
+            git commit -m "push minor update"
             git push
             echo "✅ Changes committed and pushed."
         fi
