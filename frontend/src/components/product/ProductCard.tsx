@@ -181,5 +181,3 @@ export function ProductCard({
     </motion.article>
   );
 }
-
-import { useState } from 'react';
