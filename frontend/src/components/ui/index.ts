@@ -45,3 +45,5 @@ export {
   AccessDenied,
 } from './ErrorState';
 export type { ErrorStateProps } from './ErrorState';
+
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './Tabs';
