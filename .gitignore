@@ -104,6 +104,4 @@ env/
 
 # =========================
 
-# Uncomment this ONLY if you don't want the script itself on GitHub:
-
 auto-push.sh
