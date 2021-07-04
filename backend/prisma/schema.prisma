@@ -1,0 +1,312 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  COD
+}
+
+enum PaymentMethod {
+  CARD
+  UPI
+  NETBANKING
+  WALLET
+  COD
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String
+  phone         String?
+  avatar        String?
+  role          UserRole  @default(CUSTOMER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  cart          Cart?
+  orders        Order[]
+  wishlist      WishlistItem[]
+  addresses     Address[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("sessions")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  parentId    String?
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id              String           @id @default(cuid())
+  name            String
+  slug            String           @unique
+  description     String
+  shortDescription String?
+  categoryId      String
+  category        Category         @relation(fields: [categoryId], references: [id])
+  images          ProductImage[]
+  variants        ProductVariant[]
+  basePrice       Int              // in paise
+  compareAtPrice  Int?
+  rating          Float            @default(0)
+  reviewCount     Int              @default(0)
+  isActive        Boolean          @default(true)
+  isFeatured      Boolean          @default(false)
+  tags            String[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  cartItems       CartItem[]
+  wishlistItems   WishlistItem[]
+  orderItems      OrderItem[]
+  reviews         Review[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String
+  position  Int      @default(0)
+
+  @@map("product_images")
+}
+
+model ProductVariant {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name          String
+  sku           String   @unique
+  price         Int      // in paise
+  compareAtPrice Int?
+  inventory     Int      @default(0)
+  image         String?
+  attributes    Json     // e.g., { color: "Beige", size: "Medium" }
+
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+  orderItems    OrderItem[]
+
+  @@map("product_variants")
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String?
+  sessionId String?    @unique
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String           @id @default(cuid())
+  cartId    String
+  cart      Cart             @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product          @relation(fields: [productId], references: [id])
+  variantId String
+  variant   ProductVariant   @relation(fields: [variantId], references: [id])
+  quantity  Int              @default(1)
+
+  @@unique([cartId, productId, variantId])
+  @@map("cart_items")
+}
+
+model WishlistItem {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product          @relation(fields: [productId], references: [id])
+  variantId String?
+  variant   ProductVariant?  @relation(fields: [variantId], references: [id])
+  createdAt DateTime         @default(now())
+
+  @@unique([userId, productId, variantId])
+  @@map("wishlist_items")
+}
+
+model Address {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  phone         String
+  addressLine1  String
+  addressLine2  String?
+  city          String
+  state         String
+  postalCode    String
+  country       String   @default("India")
+  isDefault     Boolean  @default(false)
+  type          String   @default("shipping") // shipping, billing
+
+  orders        Order[]  @relation("OrderShippingAddress")
+  billingOrders Order[]  @relation("OrderBillingAddress")
+
+  @@map("addresses")
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  orderNumber     String        @unique
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+  paymentMethod   PaymentMethod
+  items           OrderItem[]
+  subtotal        Int           // in paise
+  discount        Int           @default(0)
+  shipping        Int           @default(0)
+  tax             Int           @default(0)
+  total           Int           // in paise
+  shippingAddressId String
+  shippingAddress Address       @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddressId String?
+  billingAddress  Address?      @relation("OrderBillingAddress", fields: [billingAddressId], references: [id])
+  notes           String?
+  trackingNumber  String?
+  trackingUrl     String?
+  placedAt        DateTime      @default(now())
+  confirmedAt     DateTime?
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  cancelledAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id                   String   @id @default(cuid())
+  orderId              String
+  order                Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId            String
+  productName          String
+  productSlug          String
+  variantId            String
+  variantName          String
+  variantAttributes    Json
+  quantity             Int
+  price                Int      // in paise at time of purchase
+  total                Int      // price * quantity
+  image                String?
+
+  @@map("order_items")
+}
+
+model Review {
+  id                String   @id @default(cuid())
+  productId         String
+  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId            String
+  userName          String
+  userAvatar        String?
+  rating            Int
+  title             String
+  content           String
+  images            String[]
+  isVerifiedPurchase Boolean @default(false)
+  isApproved        Boolean  @default(true)
+  helpfulCount      Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("reviews")
+}
+
+model Coupon {
+  id                String   @id @default(cuid())
+  code              String   @unique
+  description       String
+  type              String   // percentage, fixed
+  value             Int      // percentage (0-100) or fixed amount in paise
+  minOrderAmount    Int?
+  maxDiscount       Int?
+  usageLimit        Int?
+  usedCount         Int      @default(0)
+  userLimit         Int?
+  validFrom         DateTime
+  validUntil        DateTime
+  isActive          Boolean  @default(true)
+  applicableCategories String[] // category IDs
+  applicableProducts String[] // product IDs
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("coupons")
+}
+
+model AdminAuditLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  action    String
+  entity    String
+  entityId  String
+  oldData   Json?
+  newData   Json?
+  createdAt DateTime @default(now())
+
+  @@map("admin_audit_logs")
+}
