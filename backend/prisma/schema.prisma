@@ -119,6 +119,7 @@ model Cart {
   id        String     @id @default(cuid())
   userId    String?    @unique
   sessionId String?    @unique
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     CartItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -221,6 +222,8 @@ model OrderItem {
   price               Int      // in paise at time of purchase
   total               Int      // price * quantity
   image               String?
+  product             Product  @relation(fields: [productId], references: [id])
+  variant             ProductVariant @relation(fields: [variantId], references: [id])
 
   @@map("order_items")
 }
