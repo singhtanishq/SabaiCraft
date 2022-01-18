@@ -2,11 +2,11 @@ import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Package, Truck, CheckCircle, Clock, X, Eye, RotateCcw, MapPin, Phone, Mail, ChevronRight, Shield } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
-import { Button } from '../ui/Button';
-import { Card } from '../ui/Card';
-import { Badge } from '../ui/Badge';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/Tabs';
-import { cn, formatPrice } from '../../utils/format';
+import { Button } from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card';
+import { Badge } from '../../components/ui/Badge';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/Tabs';
+import { cn, formatPrice } from '../../../utils/format';
 import type { Order, OrderItem } from '../../types';
 
 const mockOrder: Order = {

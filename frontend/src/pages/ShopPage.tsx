@@ -4,12 +4,12 @@ import { ShoppingBag, ArrowRight, Search, Filter, ChevronDown, Grid, List } from
 import { useState, useMemo } from 'react';
 import { products, categories, searchProducts, getProductsByCategory } from '../../data/products';
 import { ProductCard } from '../product/ProductCard';
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
-import { Badge } from '../ui/Badge';
-import { SkeletonProductGrid } from '../ui/Skeleton';
-import { EmptyState, EmptySearch } from '../ui/EmptyState';
-import { cn, formatPrice } from '../../utils/format';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Badge } from '../../components/ui/Badge';
+import { SkeletonProductGrid } from '../../components/ui/Skeleton';
+import { EmptyState, EmptySearch } from '../../components/ui/EmptyState';
+import { cn, formatPrice } from '../../../utils/format';
 import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 import type { Product } from '../../types';

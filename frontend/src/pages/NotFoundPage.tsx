@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home, Search, ArrowRight, Sparkles } from 'lucide-react';
-import { Button } from '../ui/Button';
-import { cn } from '../../utils/cn';
+import { Button } from '../../components/ui/Button';
+import { cn } from '../../../utils/cn';
 
 export function NotFoundPage() {
   return (
