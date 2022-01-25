@@ -1,9 +1,9 @@
-import { Hero } from './Hero';
-import { FeaturedProducts } from './FeaturedProducts';
-import { Categories } from './Categories';
-import { StorySection } from './StorySection';
-import { Testimonials } from './Testimonials';
-import { Newsletter } from './Newsletter';
+import { Hero } from '../components/home/Hero';
+import { FeaturedProducts } from '../components/home/FeaturedProducts';
+import { Categories } from '../components/home/Categories';
+import { StorySection } from '../components/home/StorySection';
+import { Testimonials } from '../components/home/Testimonials';
+import { Newsletter } from '../components/home/Newsletter';
 import { getFeaturedProducts } from '../../data/products';
 
 export function HomePage() {
