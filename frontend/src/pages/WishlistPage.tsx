@@ -4,10 +4,10 @@ import { Heart, ShoppingBag, X, Star, ChevronRight } from 'lucide-react';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { useCartStore } from '../../store/cartStore';
 import { ProductCard } from '../product/ProductCard';
-import { Button } from '../../components/ui/Button';
-import { Card } from '../../components/ui/Card';
-import { EmptyState, EmptyWishlist } from '../../components/ui/EmptyState';
-import { cn, formatPrice } from '../../../utils/format';
+import { Button } from '@components/ui/Button';
+import { Card } from '@components/ui/Card';
+import { EmptyState, EmptyWishlist } from '@components/ui/EmptyState';
+import { cn, formatPrice } from '@utils/format';
 
 export function WishlistPage() {
   const { items, removeItem, toggleItem, isInWishlist } = useWishlistStore();
