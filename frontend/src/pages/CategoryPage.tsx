@@ -10,8 +10,8 @@ import { Badge } from '@components/ui/Badge';
 import { SkeletonProductGrid } from '@components/ui/Skeleton';
 import { EmptyState, EmptySearch } from '@components/ui/EmptyState';
 import { cn, formatPrice } from '@utils/format';
-import { useCartStore } from '../../store/cartStore';
-import { useWishlistStore } from '../../store/wishlistStore';
+import { useCartStore } from '@store/cartStore';
+import { useWishlistStore } from '@store/wishlistStore';
 import type { Product } from '../../types';
 
 export function CategoryPage() {

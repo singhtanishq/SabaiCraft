@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, X, Star, ChevronRight } from 'lucide-react';
-import { useWishlistStore } from '../../store/wishlistStore';
-import { useCartStore } from '../../store/cartStore';
+import { useWishlistStore } from '@store/wishlistStore';
+import { useCartStore } from '@store/cartStore';
 import { ProductCard } from '@components/product/ProductCard';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';

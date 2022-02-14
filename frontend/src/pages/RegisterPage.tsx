@@ -5,7 +5,7 @@ import { Eye, EyeOff, Mail, Lock, User, UserPlus, Shield } from 'lucide-react';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from '@store/authStore';
 import { useToastHelpers } from '@components/ui/Toast';
 import { cn } from '@utils/cn';
 

@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Package, Truck, CheckCircle, Clock, X, Eye, RotateCcw, MapPin, Phone, Mail, ChevronRight, Shield } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from '@store/authStore';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { Badge } from '@components/ui/Badge';
