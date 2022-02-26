@@ -9,7 +9,8 @@ import { Input } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
 import { RadioGroup, RadioGroupItem } from '@components/ui/RadioGroup';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
-import { cn, formatPrice } from '@utils/format';
+import { formatPrice } from '@utils/format'
+import { cn } from '@utils/cn';
 import { useToastHelpers } from '@components/ui/Toast';
 
 const steps = [

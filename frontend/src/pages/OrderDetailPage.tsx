@@ -6,7 +6,8 @@ import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { Badge } from '@components/ui/Badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
-import { cn, formatPrice } from '@utils/format';
+import { formatPrice } from '@utils/format'
+import { cn } from '@utils/cn';
 import type { Order, OrderItem } from '../../types';
 
 const mockOrder: Order = {

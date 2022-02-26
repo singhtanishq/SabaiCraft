@@ -11,7 +11,8 @@ import { Modal } from '@components/ui/Modal';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
 import { SkeletonProductCard } from '@components/ui/Skeleton';
 import { EmptyState } from '@components/ui/EmptyState';
-import { cn, formatPrice, calculateDiscountPercent } from '@utils/format';
+import { formatPrice, calculateDiscountPercent } from '@utils/format'
+import { cn } from '@utils/cn';
 import { useCartStore } from '@store/cartStore';
 import { useWishlistStore } from '@store/wishlistStore';
 import type { Product, ProductVariant } from '../../types';
