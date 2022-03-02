@@ -13,6 +13,7 @@ import {
   RotateCcw,
   Headphones,
   Leaf,
+  X,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
