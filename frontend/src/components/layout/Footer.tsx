@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Facebook,
-  Instagram,
   Youtube,
+  X,
   Mail,
   MapPin,
   Phone,
@@ -12,18 +12,9 @@ import {
   RotateCcw,
   Headphones,
   Leaf,
-  X,
-  Twitter,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
-
-// Use available icons or create custom components for social media
-const SocialIcons = {
-  facebook: Facebook,
-  instagram: Instagram,
-  twitter: Twitter, // May need to use X instead
-  youtube: Youtube,
-} as const;
+import { InstagramIcon, YoutubeIcon, TwitterIcon } from '../ui/SocialIcons';
 
 const footerLinks = {
   shop: [
