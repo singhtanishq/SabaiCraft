@@ -55,9 +55,9 @@ const features = [
 
 const socialLinks = [
   { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
-  { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-  { icon: X, href: 'https://x.com', label: 'Twitter' },
-  { icon: Youtube, href: 'https://youtube.com', label: 'YouTube' },
+  { icon: InstagramIcon, href: 'https://instagram.com', label: 'Instagram' },
+  { icon: TwitterIcon, href: 'https://x.com', label: 'Twitter' },
+  { icon: YoutubeIcon, href: 'https://youtube.com', label: 'YouTube' },
 ];
 
 const trustBadges = [
