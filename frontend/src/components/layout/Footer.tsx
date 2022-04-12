@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Facebook,
-  Youtube,
   X,
   Mail,
   MapPin,
