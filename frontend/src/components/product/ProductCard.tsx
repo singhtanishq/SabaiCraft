@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Star } from 'lucide-react';
 import { Badge } from '../ui/Badge';
-import { cn, formatPrice } from '../../utils/format';
+import { formatPrice } from '../../utils/format';
+import { cn } from '../../utils/cn';
 import type { Product, ProductVariant } from '../../types';
 
 interface ProductCardProps {
