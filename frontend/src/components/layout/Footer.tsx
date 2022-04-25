@@ -13,7 +13,7 @@ import {
   Leaf,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
-import { InstagramIcon, YoutubeIcon, TwitterIcon } from '../ui/SocialIcons';
+import { FacebookIcon, InstagramIcon, YoutubeIcon, TwitterIcon, X } from '../ui/SocialIcons';
 
 const footerLinks = {
   shop: [
@@ -53,7 +53,7 @@ const features = [
 ];
 
 const socialLinks = [
-  { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
+  { icon: FacebookIcon, href: 'https://facebook.com', label: 'Facebook' },
   { icon: InstagramIcon, href: 'https://instagram.com', label: 'Instagram' },
   { icon: TwitterIcon, href: 'https://x.com', label: 'Twitter' },
   { icon: YoutubeIcon, href: 'https://youtube.com', label: 'YouTube' },
