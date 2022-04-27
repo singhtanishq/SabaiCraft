@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  Facebook,
   X,
   Mail,
   MapPin,
@@ -13,7 +12,7 @@ import {
   Leaf,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
-import { FacebookIcon, InstagramIcon, YoutubeIcon, TwitterIcon, X } from '../ui/SocialIcons';
+import { FacebookIcon, InstagramIcon, YoutubeIcon, TwitterIcon } from '../ui/SocialIcons';
 
 const footerLinks = {
   shop: [
