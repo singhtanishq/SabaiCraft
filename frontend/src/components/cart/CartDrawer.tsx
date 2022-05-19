@@ -3,7 +3,8 @@ import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
 import { Button } from '../ui/Button';
 import { Drawer } from '../ui/Drawer';
-import { cn, formatPrice } from '../../utils/cn';
+import { cn } from '@utils/cn';
+import { formatPrice } from '@utils/format';
 import { Link } from 'react-router-dom';
 
 export function CartDrawer() {
