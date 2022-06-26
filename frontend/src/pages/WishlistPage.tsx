@@ -1,17 +1,15 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, X, Star, ChevronRight } from 'lucide-react';
-import { useWishlistStore } from '@store/wishlistStore';
-import { useCartStore } from '@store/cartStore';
-import { ProductCard } from '@components/product/ProductCard';
-import { Button } from '@components/ui/Button';
-import { Card } from '@components/ui/Card';
-import { EmptyState, EmptyWishlist } from '@components/ui/EmptyState';
-import { formatPrice } from '@utils/format'
-import { cn } from '@utils/cn';
+import { useWishlistStore } from '../../store/wishlistStore';
+import { useCartStore } from '../../store/cartStore';
+import { ProductCard } from '../components/product/ProductCard';
+import { Button } from '../components/ui/Button';
+import { formatPrice } from '../../utils/format';
+import { cn } from '../../utils/cn';
 
 export function WishlistPage() {
-  const { items, removeItem, toggleItem, isInWishlist } = useWishlistStore();
+  const { items, toggleItem } = useWishlistStore();
   const { addItem } = useCartStore();
 
   const handleAddToCart = (product: any) => {
@@ -26,7 +24,12 @@ export function WishlistPage() {
     return (
       <div className="min-h-screen bg-cream-50 py-16 lg:py-24">
         <div className="container-main">
-          <EmptyWishlist onBrowseProducts={() => window.location.href = '/shop'} />
+          <p className="text-center text-olive-600 text-body-lg mb-8">
+            Your wishlist is empty
+          </p>
+          <Button asChild variant="primary">
+            <Link to="/shop">Continue Shopping</Link>
+          </Button>
         </div>
       </div>
     );
