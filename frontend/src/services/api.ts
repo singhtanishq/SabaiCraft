@@ -385,9 +385,9 @@ class ApiClient {
 
 export class ApiError extends Error {
   constructor(
-    public status: number,
+    public readonly status: number,
     message: string,
-    public errors?: Record<string, string[]>
+    public readonly errors?: Record<string, string[]>
   ) {
     super(message);
     this.name = 'ApiError';
