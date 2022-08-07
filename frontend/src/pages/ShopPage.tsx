@@ -150,7 +150,7 @@ export function ShopPage() {
                       />
                       <span className="text-body-sm text-olive-700">All Categories</span>
                     </label>
-                    {categories.map((cat) => (
+                    {categories.map((cat: typeof categories[0]) => (
                       <label key={cat.id} className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="radio"
