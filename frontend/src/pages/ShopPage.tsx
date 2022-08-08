@@ -297,7 +297,7 @@ export function ShopPage() {
                 )}
                 role="list"
               >
-                {filteredProducts.map((product, index) => (
+                {filteredProducts.map((product: Product, index: number) => (
                   <ProductCard
                     key={product.id}
                     product={product}
