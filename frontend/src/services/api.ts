@@ -384,13 +384,14 @@ class ApiClient {
 }
 
 export class ApiError extends Error {
-  constructor(
-    public readonly status: number,
-    message: string,
-    public readonly errors?: Record<string, string[]>
-  ) {
+  public readonly status: number;
+  public readonly errors?: Record<string, string[]>;
+
+  constructor(status: number, message: string, errors?: Record<string, string[]>) {
     super(message);
     this.name = 'ApiError';
+    this.status = status;
+    this.errors = errors;
   }
 }
 
