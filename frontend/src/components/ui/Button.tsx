@@ -24,6 +24,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       fullWidth = false,
       disabled,
       children,
+      asChild = false,
       ...props
     },
     ref
@@ -50,8 +51,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const widthClass = fullWidth ? 'w-full' : '';
 
+    const Comp = asChild ? Slot : 'button';
+
     return (
-      <button
+      <Comp
         ref={ref}
         className={cn(baseClasses, variantClasses[variant], sizeClasses[size], widthClass, className)}
         disabled={disabled || isLoading}
@@ -89,7 +92,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
           </>
         )}
-      </button>
+      </Comp>
     );
   }
 );
