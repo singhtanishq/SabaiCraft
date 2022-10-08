@@ -5,18 +5,12 @@
     "lib": ["ES2023"],
     "types": ["node"],
     "skipLibCheck": true,
-    "moduleResolution": "node",
-
-    /* Bundler mode */
-    "module": "nodenext",
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": false,
     "moduleDetection": "force",
     "noEmit": true,
-
-    /* Linting */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
