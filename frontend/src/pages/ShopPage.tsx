@@ -25,7 +25,7 @@ export function ShopPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const { addItem } = useCartStore();
-  const { toggleItem, isInWishlist } = useWishlistStore();
+  const { toggleItem } = useWishlistStore();
 
   const filteredProducts = useMemo(() => {
     let result = products.filter((p) => p.isActive);
@@ -150,7 +150,7 @@ export function ShopPage() {
                       />
                       <span className="text-body-sm text-olive-700">All Categories</span>
                     </label>
-                    {categories.map((cat: typeof categories[0]) => (
+                    {categories.map((cat) => (
                       <label key={cat.id} className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="radio"
