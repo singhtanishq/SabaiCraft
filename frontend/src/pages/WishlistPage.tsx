@@ -3,10 +3,8 @@ import { motion } from 'framer-motion';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { useCartStore } from '../../store/cartStore';
-import { ProductCard } from '../components/product/ProductCard';
-import { Button } from '../components/ui/Button';
-import { formatPrice } from '../../utils/format';
-import { cn } from '../../utils/cn';
+import { ProductCard } from '../../components/product/ProductCard';
+import { Button } from '../../components/ui/Button';
 
 export function WishlistPage() {
   const { items, toggleItem } = useWishlistStore();
@@ -67,7 +65,7 @@ export function WishlistPage() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           role="list"
         >
-          {items.map((item, index) => (
+          {items.map((item: any, index: number) => (
             <motion.article
               key={item.id}
               initial={{ opacity: 0, y: 20 }}
