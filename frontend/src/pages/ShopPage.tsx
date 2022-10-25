@@ -1,19 +1,18 @@
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, ArrowRight, Search, Filter, ChevronDown, Grid, List } from 'lucide-react';
+import { Search, Filter, ChevronDown, Grid, List } from 'lucide-react';
 import { useState, useMemo } from 'react';
-import { products, categories, searchProducts, getProductsByCategory } from '../../data/products';
-import { ProductCard } from '../../components/product/ProductCard';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Badge } from '../../components/ui/Badge';
-import { SkeletonProductGrid } from '../../components/ui/Skeleton';
-import { EmptyState, EmptySearch } from '../../components/ui/EmptyState';
-import { formatPrice } from '../../utils/format'
-import { cn } from '../../utils/cn';
-import { useCartStore } from '../../store/cartStore';
-import { useWishlistStore } from '../../store/wishlistStore';
-import type { Product } from '../../types';
+import { products, categories, searchProducts, getProductsByCategory } from '@data/products';
+import { ProductCard } from '@components/product/ProductCard';
+import { Button } from '@components/ui/Button';
+import { Input } from '@components/ui/Input';
+import { Badge } from '@components/ui/Badge';
+import { SkeletonProductGrid } from '@components/ui/Skeleton';
+import { EmptyState, EmptySearch } from '@components/ui/EmptyState';
+import { formatPrice } from '@utils/format';
+import { cn } from '@utils/cn';
+import { useCartStore } from '@store/cartStore';
+import { useWishlistStore } from '@store/wishlistStore';
+import type { Product } from '@types';
 
 export function ShopPage() {
   const [searchQuery, setSearchQuery] = useState('');
