@@ -1,12 +1,12 @@
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Package, Truck, CheckCircle, Clock, X, Eye, RotateCcw, MapPin, Phone, Mail, ChevronRight, Shield } from 'lucide-react';
+import { Package, Truck, CheckCircle, Clock, X, Eye, RotateCcw, MapPin, Phone, ChevronRight, Shield } from 'lucide-react';
 import { useAuthStore } from '@store/authStore';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { Badge } from '@components/ui/Badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
-import { formatPrice } from '@utils/format'
+import { formatPrice } from '@utils/format';
 import { cn } from '@utils/cn';
 import type { Order, OrderItem } from '@types';
 
@@ -53,7 +53,7 @@ const statusSteps: Order['status'][] = ['pending', 'confirmed', 'processing', 's
 export function OrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>();
   const { isAuthenticated } = useAuthStore();
-  const order = mockOrder; // In real app, fetch by orderId
+  const order = mockOrder;
 
   if (!isAuthenticated) {
     return (
