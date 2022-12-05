@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User, UserPlus, Shield } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Shield } from 'lucide-react';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
 import { useAuthStore } from '@store/authStore';
 import { useToastHelpers } from '@components/ui/Toast';
-import { cn } from '@utils/cn';
 
 export function RegisterPage() {
   const navigate = useNavigate();
-  const { login } = useAuthStore();
-  const { success, error } = useToastHelpers();
+  const { register } = useAuthStore();
+  const { success } = useToastHelpers();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -47,19 +46,20 @@ export function RegisterPage() {
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const newUser = {
-      id: `user-${Date.now()}`,
-      email: formData.email,
-      name: `${formData.firstName} ${formData.lastName}`,
-      role: 'customer' as const,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    login(newUser);
-    success('Account Created!', `Welcome to SabaiCraft, ${formData.firstName}!`);
-    navigate('/account', { replace: true });
-    setIsLoading(false);
+    try {
+      await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      });
+      success('Account Created!', `Welcome to SabaiCraft, ${formData.firstName}!`);
+      navigate('/account', { replace: true });
+    } catch (err) {
+      // Error handled by toast in the store
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -153,7 +153,7 @@ export function RegisterPage() {
 
           <div className="space-y-3">
             <p className="text-caption text-olive-500 flex items-start gap-2">
-              <Shield className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <span className="w-4 h-4 flex-shrink-0 mt-0.5">✓</span>
               By creating an account, you agree to our <Link to="/terms" className="underline hover:text-olive-700">Terms of Service</Link> and <Link to="/privacy" className="underline hover:text-olive-700">Privacy Policy</Link>.
             </p>
             <label className="flex items-start gap-3 cursor-pointer">
