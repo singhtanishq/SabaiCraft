@@ -6,7 +6,7 @@ import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
 import { useAuthStore } from '@store/authStore';
-import { useToastHelpers } from '@components/ui/Toast';
+import { useToastHelpers } from '@components/ui';
 
 export function RegisterPage() {
   const navigate = useNavigate();
