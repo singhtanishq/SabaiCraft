@@ -22,7 +22,7 @@
       "@utils/*": ["src/utils/*"],
       "@store/*": ["src/store/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@types/*": ["src/types/*"],
+      "@app-types/*": ["src/types/*"],
       "@data/*": ["src/data/*"]
     },
     "ignoreDeprecations": "6.0",

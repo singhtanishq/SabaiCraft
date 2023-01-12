@@ -8,7 +8,7 @@ import { Badge } from '@components/ui/Badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
 import { formatPrice } from '@utils/format';
 import { cn } from '@utils/cn';
-import type { Order, OrderItem } from '@types';
+import type { Order, OrderItem } from '@app-types';
 
 const mockOrder: Order = {
   id: 'ord-1',

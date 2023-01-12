@@ -15,7 +15,7 @@ import { formatPrice, calculateDiscountPercent } from '@utils/format'
 import { cn } from '@utils/cn';
 import { useCartStore } from '@store/cartStore';
 import { useWishlistStore } from '@store/wishlistStore';
-import type { Product, ProductVariant } from '@types';
+import type { Product, ProductVariant } from '@app-types';
 
 export function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
