@@ -23,6 +23,7 @@
       "@store/*": ["src/store/*"],
       "@hooks/*": ["src/hooks/*"],
       "@app-types/*": ["src/types/*"],
+      "@app-types": ["src/types/index.ts"],
       "@data/*": ["src/data/*"]
     },
     "ignoreDeprecations": "6.0",
