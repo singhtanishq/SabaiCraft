@@ -46,18 +46,19 @@ export function ProductDetailPage() {
     setSelectedVariant(product.variants[0]);
   }
 
-  const wishlisted = isInWishlist(product.id, selectedVariant.id);
+  const variant = selectedVariant!;
+  const wishlisted = isInWishlist(product.id, variant.id);
   const hasDiscount = product.compareAtPrice && product.compareAtPrice > product.basePrice;
   const discountPercent = calculateDiscountPercent(product.basePrice, product.compareAtPrice);
-  const inStock = selectedVariant.inventory > 0;
-  const lowStock = inStock && selectedVariant.inventory <= 5;
+  const inStock = variant.inventory > 0;
+  const lowStock = inStock && variant.inventory <= 5;
   const relatedProducts = getRelatedProducts(product.id, product.categoryId, 4);
 
   const imageUrls = product.images.map((img) => img.url);
 
   const handleAddToCart = () => {
     if (!inStock) return;
-    addItem(product, selectedVariant, quantity);
+    addItem(product, variant, quantity);
   };
 
   const handleBuyNow = () => {
