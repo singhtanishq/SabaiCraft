@@ -1,4 +1,5 @@
-import { forwardRef, RadioHTMLAttributes, LabelHTMLAttributes } from 'react';
+import { forwardRef, InputHTMLAttributes, createContext, useContext } from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '../../utils/cn';
 
 interface RadioGroupContextValue {
@@ -8,8 +9,6 @@ interface RadioGroupContextValue {
 }
 
 const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
-
-import { createContext, useContext } from 'react';
 
 export interface RadioGroupProps {
   value: string;
@@ -27,7 +26,7 @@ export function RadioGroup({ value, onChange, children, disabled, className }: R
   );
 }
 
-export interface RadioGroupItemProps extends Omit<RadioHTMLAttributes<HTMLInputElement>, 'type' | 'checked' | 'onChange'> {
+export interface RadioGroupItemProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'checked' | 'onChange'> {
   value: string;
   label: string;
   description?: string;
