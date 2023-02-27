@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment, ReactNode, KeyboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { cn } from '../../utils/cn';
@@ -36,7 +36,7 @@ export function Modal({
   closeOnEscape = true,
   className,
 }: ModalProps) {
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLElement>) => {
     if (e.key === 'Escape' && closeOnEscape) {
       onClose();
     }
