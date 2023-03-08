@@ -13,7 +13,7 @@ import { formatPrice } from '@utils/format'
 import { cn } from '@utils/cn';
 import { useCartStore } from '@store/cartStore';
 import { useWishlistStore } from '@store/wishlistStore';
-import type { Product } from '../../types';
+import type { Product } from '@app-types';
 
 export function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
