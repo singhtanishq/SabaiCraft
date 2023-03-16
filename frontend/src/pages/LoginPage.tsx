@@ -49,7 +49,7 @@ const [formData, setFormData] = useState<LoginFormData>({ email: '', password: '
       updatedAt: new Date().toISOString(),
     };
 
-    login(demoUser);
+    login(formData.email, formData.password);
     success('Welcome back!', `Hello, ${demoUser.name}`);
     navigate(from, { replace: true });
     setIsLoading(false);
