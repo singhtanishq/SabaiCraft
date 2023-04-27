@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Package, Truck, CheckCircle, Clock, X, Eye, RotateCcw, MapPin, Phone, ChevronRight, Shield } from 'lucide-react';
 import { useAuthStore } from '@store/authStore';
-import { Button } from '@components/ui/Button';
-import { Card } from '@components/ui/Card';
-import { Badge } from '@components/ui/Badge';
-import { EmptyState, EmptyOrders } from '@components/ui/EmptyState';
-import { formatPrice } from '@utils/format';
-import { cn } from '@utils/cn';
+import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
+import { Badge } from '../components/ui/Badge';
+import { EmptyState, EmptyOrders } from '../components/ui/EmptyState';
+import { formatPrice } from '../utils/format';
+import { cn } from '../utils/cn';
 import type { Order, OrderItem } from '@app-types';
 
 // Mock orders data
