@@ -23,7 +23,7 @@ export const errorHandler = (
 
   if (err instanceof ZodError) {
     const errors: Record<string, string[]> = {};
-    err.errors.forEach((e) => {
+    err.issues.forEach((e) => {
       const path = e.path.join('.');
       if (!errors[path]) errors[path] = [];
       errors[path].push(e.message);
