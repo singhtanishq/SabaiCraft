@@ -205,7 +205,7 @@ router.patch('/admin/:id/status', authMiddleware, adminMiddleware, async (req, r
     const { status } = schema.parse(req.body);
 
     const order = await prisma.order.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: {
         status,
         ...(status === 'CONFIRMED' && { confirmedAt: new Date() }),
