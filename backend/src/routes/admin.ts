@@ -213,7 +213,7 @@ router.post('/coupons', async (req, res, next) => {
 
 router.put('/coupons/:id', async (req, res, next) => {
   try {
-    const coupon = await prisma.coupon.update({ where: { id: req.params.id }, data: req.body });
+    const coupon = await prisma.coupon.update({ where: { id: req.params.id as string }, data: req.body });
     res.json({ success: true, data: coupon });
   } catch (error) {
     next(error);
@@ -222,7 +222,7 @@ router.put('/coupons/:id', async (req, res, next) => {
 
 router.delete('/coupons/:id', async (req, res, next) => {
   try {
-    await prisma.coupon.delete({ where: { id: req.params.id } });
+    await prisma.coupon.delete({ where: { id: req.params.id as string } });
     res.json({ success: true, message: 'Coupon deleted' });
   } catch (error) {
     next(error);
