@@ -195,7 +195,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res, next) => {
         compareAtPrice: z.number().int().positive().optional(),
         inventory: z.number().int().nonnegative(),
         image: z.string().optional(),
-        attributes: z.record(z.string()),
+        attributes: z.string(), // JSON string
       })),
       tags: z.array(z.string()).optional(),
     });
