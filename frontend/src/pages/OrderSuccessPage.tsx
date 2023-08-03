@@ -1,12 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, Truck, Shield, RotateCcw, Mail, MapPin, Phone, Clock } from 'lucide-react';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { cn } from '@utils/cn';
 
-export function OrderSuccessPage({ params }: { params: Promise<{ orderId: string }> }) {
-  const orderId = (params as any).orderId || 'ORD-UNKNOWN';
+export function OrderSuccessPage() {
+  const params = useParams();
+  const orderId = params.orderId || 'ORD-UNKNOWN';
   const estimatedDelivery = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
 
   return (
