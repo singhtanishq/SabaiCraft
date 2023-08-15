@@ -52,7 +52,7 @@ export function Drawer({
   closeOnEscape = true,
   className,
 }: DrawerProps) {
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape' && closeOnEscape) {
       onClose();
     }
