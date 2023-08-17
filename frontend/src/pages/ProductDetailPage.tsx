@@ -41,11 +41,13 @@ export function ProductDetailPage() {
     );
   }
 
-  if (!selectedVariant) {
+  // Initialize selectedVariant if null
+  if (!selectedVariant && product.variants.length > 0) {
     setSelectedVariant(product.variants[0]);
   }
 
-  const variant = selectedVariant!;
+  // Use the first variant as fallback for type safety
+  const variant = selectedVariant ?? product.variants[0];
   const wishlisted = isInWishlist(product.id, variant.id);
   const hasDiscount = product.compareAtPrice && product.compareAtPrice > product.basePrice;
   const discountPercent = calculateDiscountPercent(product.basePrice, product.compareAtPrice);
