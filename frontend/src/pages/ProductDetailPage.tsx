@@ -275,13 +275,13 @@ export function ProductDetailPage() {
                       value={quantity}
                       onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                       min="1"
-                      max={selectedVariant.inventory}
+                      max={variant.inventory}
                       className="w-16 text-center border-x border-olive-200 bg-white focus:outline-none text-body font-medium"
                       aria-label="Quantity"
                     />
                     <button
-                      onClick={() => setQuantity((prev) => Math.min(selectedVariant.inventory, prev + 1))}
-                      disabled={quantity >= selectedVariant.inventory || !inStock}
+                      onClick={() => setQuantity((prev) => Math.min(variant.inventory, prev + 1))}
+                      disabled={quantity >= variant.inventory || !inStock}
                       className="px-4 py-2 bg-olive-50 text-olive-600 hover:bg-olive-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       aria-label="Increase quantity"
                     >
@@ -290,7 +290,7 @@ export function ProductDetailPage() {
                   </div>
                   {lowStock && (
                     <Badge variant="warning" size="sm">
-                      Only {selectedVariant.inventory} left in stock
+                      Only {variant.inventory} left in stock
                     </Badge>
                   )}
                   {!inStock && (
