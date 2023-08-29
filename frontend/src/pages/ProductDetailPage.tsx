@@ -64,7 +64,7 @@ export function ProductDetailPage() {
 
   const handleBuyNow = () => {
     if (!inStock) return;
-    addItem(product, selectedVariant, quantity);
+    addItem(product, variant, quantity);
     window.location.href = '/checkout';
   };
 
