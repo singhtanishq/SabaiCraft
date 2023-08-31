@@ -324,7 +324,7 @@ export function ProductDetailPage() {
 
               {/* Wishlist */}
               <button
-                onClick={() => toggleItem(product, selectedVariant)}
+                onClick={() => toggleItem(product, variant)}
                 className={cn(
                   'flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 font-medium text-body-sm transition-all w-full sm:w-auto',
                   wishlisted ? 'border-red-300 bg-red-50 text-red-600 hover:bg-red-100' : 'border-olive-200 hover:border-olive-300 text-olive-700'
