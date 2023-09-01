@@ -29,12 +29,15 @@ const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({});
+    const newErrors: Record<string, string> = {};
 
-    if (!formData.email) setErrors.email = 'Email is required';
-    else if (!formData.email.includes('@')) setErrors.email = 'Invalid email';
-    if (!formData.password) setErrors.password = 'Password is required';
-    if (Object.keys(errors).length > 0) return;
+    if (!formData.email) newErrors.email = 'Email is required';
+    else if (!formData.email.includes('@')) newErrors.email = 'Invalid email';
+    if (!formData.password) newErrors.password = 'Password is required';
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
