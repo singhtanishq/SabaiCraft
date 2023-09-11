@@ -79,7 +79,7 @@ export function RippleButton({
     <button
       onClick={handleClick}
       className={className}
-      style={{ position: 'relative', overflow: 'hidden', ...(props.style || {}) }}
+      style={{ position: 'relative' as const, overflow: 'hidden' as const, ...(props.style || {}) }}
       {...props}
     >
       {children}
