@@ -57,6 +57,7 @@ export function RippleButton({
   children,
   className,
   rippleColor = 'currentColor',
+  style,
   ...props
 }: RippleProps) {
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
@@ -79,7 +80,7 @@ export function RippleButton({
     <button
       onClick={handleClick}
       className={className}
-      style={{ position: 'relative' as const, overflow: 'hidden' as const, ...(props.style || {}) }}
+      style={{ position: 'relative' as const, overflow: 'hidden' as const, ...(style || {}) }}
       {...props}
     >
       {children}
