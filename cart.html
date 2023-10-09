@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+    <header>
+        <h1>Shopping Cart</h1>
+        <a href="index.html" class="return-button">Return to home</a>
+    </header>    
+
+    <section class="page" id="page-1">
+        <section class="product">
+            <img src="sample.png" alt="Sample Product">
+            <div class="details">
+                <p><b>Product Name</b></p>
+                <p>Details about product</p>
+                <p><b><font color="Green">₹800.00</font></b></p>
+            </div>
+            <div class="quantity">
+                <span class="quantity-value"></span>
+                <div class="quantity-controls">
+                    <button class="control-button minus">-</button>
+                    <span class="quantity-number">1</span>
+                    <button class="control-button plus">+</button>
+                </div>
+            </div>
+        </section>
+        
+        <div class="horizontal-line"></div>
+    
+        <section class="product">
+            <img src="sample.png" alt="Sample Product">
+            <div class="details">
+                <p><b>Product Name</b></p>
+                <p>Details about product</p>
+                <p><b><font color="Green">₹1200.00</font></b></p>
+            </div>
+            <div class="quantity">
+                <span class="quantity-value"></span>
+                <div class="quantity-controls">
+                    <button class="control-button minus">-</button>
+                    <span class="quantity-number">1</span>
+                    <button class="control-button plus">+</button>
+                </div>
+            </div>
+        </section>
+        
+        <div class="horizontal-line"></div>
+        <br><br>
+        <h2>Summary</h2>
+        <p>Total Amount: ₹<span id="total-amount"></span></p>
+        <br>
+        <button class="review-button" onclick="nextPage('page-1', 'page-2')">Review and Proceed</button>
+    </section>
+
+    <section class="page" id="page-2" style="display:none;">
+        <h2>Shipping Details</h2>
+        <div class="horizontal-line"></div>
+        <br><br>
+        <form id="address-form">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="e.g. Tanya Singh" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="contact">Contact Number:</label>
+                <input type="text" id="contact" name="contact" placeholder="e.g. (123) 456-7890" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" placeholder="e.g. 123 Street, City" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" placeholder="e.g. Kolkata" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" placeholder="e.g. West Bengal" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="zip">ZIP Code:</label>
+                <input type="text" id="zip" name="zip" placeholder="e.g. 123456" required>
+            </div>
+            <br><br>
+            <button class="prev-button" onclick="prevPage('page-2', 'page-1')">Previous</button>
+            <button class="next-button" onclick="nextPage('page-2', 'page-3')">Next</button>
+        </form>
+    </section>
+
+    <section class="page" id="page-3" style="display:none;">
+        <h2>Payment</h2>
+        <div class="horizontal-line"></div>
+        <br><br>
+        <form id="payment-form">
+            <div class="form-group">
+                <label for="payment-method">Payment Method:</label>
+                <select id="payment-method" name="payment-method" required>
+                    <option value="" disabled selected>Select Payment Method</option>
+                    <option value="card">Debit/Credit Card</option>
+                    <option value="netbanking">NetBanking</option>
+                    <option value="upi">UPI</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="cash">Cash on Delivery</option>
+                </select>
+            </div>
+            <br>
+            <div class="horizontal-line"></div>
+            <br><br>
+            <div id="card-details" class="form-group" style="display:none;">
+                <label for="card-number">Card Number:</label>
+                <input type="text" id="card-number" name="card-number" placeholder="XXXX XXXX XXXX XXXX" required>
+                
+                <label for="expiry">Expiry Date:</label>
+                <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                
+                <label for="cvv">CVV:</label>
+                <input type="text" id="cvv" name="cvv" placeholder="123" required>
+            </div>
+            
+            <div id="netbanking-details" class="form-group" style="display:none;">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="NetBanking username" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="********" required>
+            </div>
+            
+            <div id="upi-details" class="form-group" style="display:none;">
+                <label for="upi-id">UPI ID:</label>
+                <input type="text" id="upi-id" name="upi-id" placeholder="8888888888@abc" required>
+            </div>
+            
+            <div id="paypal-details" class="form-group" style="display:none;">
+                <label for="paypal-id">PayPal ID:</label>
+                <input type="text" id="paypal-id" name="paypal-id" placeholder="Paypal username" required>
+            </div>
+            
+            <div id="cash-details" class="form-group" style="display:none;">
+                <p>Pay at doorstep</p>
+            </div>
+            <br><br>
+            <button class="prev-button" onclick="prevPage('page-3', 'page-2')">Previous</button>
+            <button class="next-button" onclick="nextPage('page-3', 'page-4')">Confirm and Place Order</button>
+        </form>
+    </section>
+
+    <section class="page" id="page-4" style="display:none;">
+        <h2>Page 4</h2>
+        <p>Order Confirmed!</p>
+        <div id="confirmation-details"></div>
+        <a href="index.html" class="home-button">Home</a>
+    </section>
+
+    <script src="cart.js"></script>
+</body>
+</html>
