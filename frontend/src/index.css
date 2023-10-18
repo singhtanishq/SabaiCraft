@@ -112,11 +112,11 @@
   }
 
   .body-sm {
-    @apply text-body-sm text-olive-600 leading-relaxed;
+    @apply text-body-sm text-olive-700 leading-relaxed;
   }
 
   .caption {
-    @apply text-caption text-olive-500 leading-normal;
+    @apply text-caption text-olive-600 leading-normal;
   }
 
   .link {
