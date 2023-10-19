@@ -88,7 +88,7 @@ export function ContactPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  return (
+return (
     <div className="min-h-screen bg-cream-50">
       {/* Hero */}
       <section className="relative bg-olive-950 text-cream-50 py-16 lg:py-24 overflow-hidden">
@@ -106,8 +106,8 @@ export function ContactPage() {
               <Mail className="w-4 h-4 text-sabai-300" />
               <span className="text-body-sm font-medium">Get in Touch</span>
             </div>
-            <h1 className="heading-display text-display-xl lg:text-display-lg mb-4 text-balance">
-              We\'d Love to Hear from You
+            <h1 className="heading-display text-display-md lg:text-display-lg mb-4 text-balance">
+              We&apos;d Love to Hear from You
             </h1>
             <p className="body-lg text-olive-300 max-w-2xl mx-auto text-pretty">
               Have questions about our products, your order, or want to collaborate? Our team is here to help.
@@ -125,7 +125,7 @@ export function ContactPage() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="lg:col-span-1 space-y-6"
+              className="lg:col-span-1 space-y-6 min-w-0"
             >
               <Card padding="lg" className="h-full">
                 <h3 className="heading-3 mb-6">Contact Information</h3>
@@ -142,10 +142,10 @@ export function ContactPage() {
                       <div className="w-12 h-12 rounded-xl bg-sage-100 flex items-center justify-center text-sage-600 flex-shrink-0">
                         <info.icon className="w-6 h-6" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="font-medium text-olive-900 text-body-sm">{info.title}</p>
                         <p className="text-olive-700 text-body">{info.value}</p>
-                        <p className="caption text-olive-500">{info.desc}</p>
+                        <p className="caption text-olive-600">{info.desc}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -171,7 +171,7 @@ export function ContactPage() {
                     <span>Sunday</span>
                     <span className="font-medium text-olive-900">Closed</span>
                   </div>
-                  <p className="caption text-olive-500 pt-2">All times IST</p>
+                  <p className="caption text-olive-600 pt-2">All times IST</p>
                 </div>
               </Card>
             </motion.div>
@@ -181,7 +181,7 @@ export function ContactPage() {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="lg:col-span-2"
+              className="lg:col-span-2 min-w-0"
             >
               <Card padding="lg">
                 <h3 className="heading-3 mb-6 flex items-center gap-2">
@@ -212,7 +212,7 @@ export function ContactPage() {
                     label="Subject"
                     value={formData.subject}
                     onChange={(e) => handleInputChange('subject', e.target.value)}
-                    placeholder="What's this about?"
+                    placeholder="What&apos;s this about?"
                     required
                   />
 
