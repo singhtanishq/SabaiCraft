@@ -18,12 +18,12 @@ export function MainLayout({ children }: MainLayoutProps) {
       <div className="min-h-screen flex flex-col">
         <Header onMenuClick={() => setMobileDrawerOpen(true)} />
         <MobileDrawer isOpen={mobileDrawerOpen} onClose={() => setMobileDrawerOpen(false)} />
-        <main className="flex-1 flex flex-col pt-16 lg:pt-20">
+        <main id="main-content" className="flex-1 flex flex-col pt-16 lg:pt-20">
           <Outlet />
+          {children}
         </main>
         <Footer className="flex-shrink-0" />
         <ToastContainer position="top-right" />
-        {children}
       </div>
     </ToastProvider>
   );
