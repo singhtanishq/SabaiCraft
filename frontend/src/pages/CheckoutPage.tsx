@@ -1,37 +1,219 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle, CreditCard, Smartphone, Building2, Mail, MapPin, Phone, User, Lock, Truck } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle,
+  CreditCard,
+  Smartphone,
+  Building2,
+  Mail,
+  MapPin,
+  Lock,
+  Truck,
+  LogIn,
+  User,
+} from 'lucide-react';
 import { useCartStore } from '@store/cartStore';
 import { useAuthStore } from '@store/authStore';
+import { api } from '@services/api';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
 import { RadioGroup, RadioGroupItem } from '@components/ui/RadioGroup';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
+import { Skeleton } from '@components/ui/Skeleton';
 import { formatPrice } from '@utils/format';
 import { cn } from '@utils/cn';
 import { useToastHelpers } from '@components/ui';
+import type { Address } from '@types/index';
 
 const steps = [
-  { id: 'info', label: 'Information', icon: Mail },
-  { id: 'shipping', label: 'Shipping', icon: Truck },
+  { id: 'shipping', label: 'Shipping', icon: MapPin },
   { id: 'payment', label: 'Payment', icon: CreditCard },
   { id: 'review', label: 'Review', icon: CheckCircle },
-];
+] as const;
+
+const PAYMENT_METHODS = [
+  { value: 'COD', label: 'Cash on Delivery', description: 'Pay in cash when your order arrives', icon: <Truck className="w-5 h-5" /> },
+  { value: 'CARD', label: 'Credit / Debit Card', description: 'Visa, Mastercard, RuPay, Amex', icon: <CreditCard className="w-5 h-5" /> },
+  { value: 'UPI', label: 'UPI', description: 'PhonePe, Google Pay, Paytm, BHIM', icon: <Smartphone className="w-5 h-5" /> },
+  { value: 'NETBANKING', label: 'Net Banking', description: 'All major Indian banks', icon: <Building2 className="w-5 h-5" /> },
+] as const;
+
+const paymentMethodLabel = (value: string) =>
+  PAYMENT_METHODS.find((m) => m.value === value)?.label ?? value;
+
+const emptyAddressForm = {
+  name: '',
+  phone: '',
+  addressLine1: '',
+  addressLine2: '',
+  city: '',
+  state: '',
+  postalCode: '',
+  country: 'India',
+};
 
 export function CheckoutPage() {
   const navigate = useNavigate();
   const { cart, getSubtotal, clearCart } = useCartStore();
-  const { user, isAuthenticated, login } = useAuthStore();
-  const { success, error } = useToastHelpers();
+  const { user, isAuthenticated } = useAuthStore();
+  const { success, error: toastError } = useToastHelpers();
 
-  if (!cart || cart.items.length === 0) {
+  // Hooks must run unconditionally (before any early returns).
+  const [currentStep, setCurrentStep] = useState(0);
+  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
+  const [addressesLoading, setAddressesLoading] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [addressForm, setAddressForm] = useState(emptyAddressForm);
+  const [paymentMethod, setPaymentMethod] = useState<string>('COD');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const hasItems = !!cart && cart.items.length > 0;
+
+  useEffect(() => {
+    document.title = 'Checkout | SabaiCraft';
+  }, []);
+
+  // Load saved addresses for signed-in users.
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    let cancelled = false;
+    setAddressesLoading(true);
+    api
+      .getAddresses()
+      .then((response) => {
+        if (cancelled) return;
+        const addresses: Address[] = response.data ?? [];
+        setSavedAddresses(addresses);
+        const preferred = addresses.find((a) => a.isDefault) ?? addresses[0];
+        if (preferred) {
+          setSelectedAddressId((current) => current ?? preferred.id);
+          setShowAddressForm(addresses.length === 0);
+        } else {
+          setShowAddressForm(true);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setShowAddressForm(true);
+      })
+      .finally(() => {
+        if (!cancelled) setAddressesLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated]);
+
+  const subtotal = getSubtotal();
+  const shipping = subtotal >= 200000 ? 0 : 9900;
+  const tax = useMemo(() => Math.round(subtotal * 0.18), [subtotal]);
+  const total = subtotal + shipping + tax;
+
+  const setField = (field: string, value: string) => {
+    setAddressForm((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => (prev[field] ? { ...prev, [field]: '' } : prev));
+  };
+
+  const validateAddressForm = (): boolean => {
+    const next: Record<string, string> = {};
+    if (!addressForm.name.trim()) next.name = 'Full name is required';
+    if (!addressForm.phone.trim()) next.phone = 'Phone number is required';
+    else if (!/^[\d+\-\s()]{10,15}$/.test(addressForm.phone.trim())) next.phone = 'Enter a valid phone number';
+    if (!addressForm.addressLine1.trim()) next.addressLine1 = 'Address is required';
+    if (!addressForm.city.trim()) next.city = 'City is required';
+    if (!addressForm.state.trim()) next.state = 'State is required';
+    if (!addressForm.postalCode.trim()) next.postalCode = 'Postal code is required';
+    else if (!/^\d{6}$/.test(addressForm.postalCode.trim())) next.postalCode = 'Enter a valid 6-digit PIN code';
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
+  const handlePlaceOrder = async () => {
+    let addressId = selectedAddressId;
+
+    if (showAddressForm || !addressId) {
+      if (!validateAddressForm()) {
+        setCurrentStep(0);
+        return;
+      }
+    }
+
+    setIsProcessing(true);
+    try {
+      if (showAddressForm || !addressId) {
+        const addressResponse = await api.createAddress({
+          name: addressForm.name.trim(),
+          phone: addressForm.phone.trim(),
+          addressLine1: addressForm.addressLine1.trim(),
+          addressLine2: addressForm.addressLine2.trim() || undefined,
+          city: addressForm.city.trim(),
+          state: addressForm.state.trim(),
+          postalCode: addressForm.postalCode.trim(),
+          country: addressForm.country,
+          type: 'shipping',
+        });
+        addressId = addressResponse.data.id;
+      }
+
+      const orderResponse = await api.createOrder({
+        shippingAddressId: addressId!,
+        paymentMethod: paymentMethod as 'COD' | 'CARD' | 'UPI' | 'NETBANKING' | 'WALLET',
+      });
+
+      await clearCart();
+      success('Order placed!', `Your order ${orderResponse.data.orderNumber} has been confirmed.`);
+      navigate(`/order-success/${orderResponse.data.id}`, { replace: true });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to place order. Please try again.';
+      toastError('Order failed', message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // ---- Gate: not signed in ----
+  if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-cream-50 flex items-center justify-center py-16">
+      <div className="flex-1 bg-cream-50 flex items-center justify-center py-16 px-4">
+        <Card padding="lg" className="w-full max-w-md text-center">
+          <div className="w-16 h-16 rounded-full bg-sage-100 flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-8 h-8 text-sage-600" />
+          </div>
+          <h1 className="heading-3 mb-2">Sign in to checkout</h1>
+          <p className="body-sm text-olive-600 mb-8">
+            Sign in or create an account to place your order, track shipments, and reorder your favourites.
+          </p>
+          <div className="space-y-3">
+            <Button asChild variant="primary" size="lg" className="w-full">
+              <Link to="/login?redirect=/checkout">
+                <LogIn className="w-4 h-4" />
+                Sign In
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="w-full">
+              <Link to="/register?redirect=/checkout">Create Account</Link>
+            </Button>
+          </div>
+          {hasItems && (
+            <p className="caption text-olive-500 mt-6">
+              Your cart ({cart!.items.length} item{cart!.items.length !== 1 ? 's' : ''}) will be waiting for you.
+            </p>
+          )}
+        </Card>
+      </div>
+    );
+  }
+
+  // ---- Gate: empty cart ----
+  if (!hasItems) {
+    return (
+      <div className="flex-1 bg-cream-50 flex items-center justify-center py-16 px-4">
         <div className="text-center">
-          <h2 className="heading-2 mb-2">Your cart is empty</h2>
-          <Button asChild variant="primary" size="lg" className="mt-4">
+          <h1 className="heading-2 mb-2">Your cart is empty</h1>
+          <p className="body text-olive-600 mb-6">Add some treasures before heading to checkout.</p>
+          <Button asChild variant="primary" size="lg">
             <Link to="/shop">Continue Shopping</Link>
           </Button>
         </div>
@@ -39,595 +221,409 @@ export function CheckoutPage() {
     );
   }
 
-  const subtotal = getSubtotal();
-  const shipping = subtotal >= 200000 ? 0 : 9900;
-  const tax = Math.round(subtotal * 0.18);
-  const total = subtotal + shipping + tax;
-
-  const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState({
-    email: user?.email || '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    postalCode: '',
-    country: 'India',
-    shippingMethod: 'standard',
-    paymentMethod: 'cod',
-    cardNumber: '',
-    cardExpiry: '',
-    cardCvv: '',
-    upiId: '',
-  });
-
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const validateStep = (step: number): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (step === 0) {
-      if (!formData.email) newErrors.email = 'Email is required';
-      else if (!formData.email.includes('@')) newErrors.email = 'Invalid email';
-      if (!formData.firstName) newErrors.firstName = 'First name is required';
-      if (!formData.lastName) newErrors.lastName = 'Last name is required';
-      if (!formData.phone) newErrors.phone = 'Phone number is required';
-    }
-
-    if (step === 1) {
-      if (!formData.addressLine1) newErrors.addressLine1 = 'Address is required';
-      if (!formData.city) newErrors.city = 'City is required';
-      if (!formData.state) newErrors.state = 'State is required';
-      if (!formData.postalCode) newErrors.postalCode = 'Postal code is required';
-    }
-
-    if (step === 2) {
-      if (formData.paymentMethod === 'card') {
-        if (!formData.cardNumber) newErrors.cardNumber = 'Card number is required';
-        else if (formData.cardNumber.replace(/\s/g, '').length < 16) newErrors.cardNumber = 'Invalid card number';
-        if (!formData.cardExpiry) newErrors.cardExpiry = 'Expiry date is required';
-        if (!formData.cardCvv) newErrors.cardCvv = 'CVV is required';
-      }
-      if (formData.paymentMethod === 'upi' && !formData.upiId) {
-        newErrors.upiId = 'UPI ID is required';
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleNext = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
-    }
-  };
-
-  const handleBack = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 0));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateStep(currentStep)) return;
-
-    setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Simulate order creation
-    const orderId = `ORD-${Date.now().toString(36).toUpperCase()}`;
-    clearCart();
-    setIsProcessing(false);
-
-    success('Order Placed!', `Your order ${orderId} has been confirmed.`);
-    navigate(`/order-success/${orderId}`);
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
-    }
-  };
+  const selectedAddress = savedAddresses.find((a) => a.id === selectedAddressId);
 
   return (
-    <div className="min-h-screen bg-cream-50 py-8 lg:py-12">
+    <div className="bg-cream-50 py-8 lg:py-12">
       <div className="container-main">
-        {/* Progress Steps */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex items-center justify-between">
-            {steps.map((step, index) => (
-              <motion.div
-                key={step.id}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                className="flex flex-col items-center"
-              >
-                <div className={cn(
-                  'relative w-12 h-12 rounded-full flex items-center justify-center text-body-sm font-medium transition-all',
-                  index < currentStep
-                    ? 'bg-sage-600 text-cream-50'
-                    : index === currentStep
-                      ? 'bg-olive-950 text-cream-50 ring-4 ring-olive-950/20'
-                      : 'bg-olive-100 text-olive-400'
-                )}>
-                  {index < currentStep ? <CheckCircle className="w-6 h-6" /> : <step.icon className="w-6 h-6" />}
+        {/* Page heading */}
+        <div className="mb-8">
+          <h1 className="heading-1 mb-2">Checkout</h1>
+          <p className="text-olive-600 text-body-lg">
+            {cart!.items.length} item{cart!.items.length !== 1 ? 's' : ''} · {formatPrice(total)}
+          </p>
+        </div>
+
+        {/* Progress steps */}
+        <nav aria-label="Checkout progress" className="mb-10">
+          <ol className="flex items-center">
+            {steps.map((step, index) => {
+              const isComplete = index < currentStep;
+              const isCurrent = index === currentStep;
+              return (
+                <li key={step.id} className="flex items-center flex-1 last:flex-none">
+                  <div className="flex flex-col items-center gap-2 flex-none">
+                    <div
+                      className={cn(
+                        'w-10 h-10 rounded-full flex items-center justify-center text-body-sm font-medium transition-all',
+                        isComplete
+                          ? 'bg-sage-600 text-cream-50'
+                          : isCurrent
+                            ? 'bg-olive-950 text-cream-50 ring-4 ring-olive-950/10'
+                            : 'bg-olive-100 text-olive-400'
+                      )}
+                      aria-current={isCurrent ? 'step' : undefined}
+                    >
+                      {isComplete ? <CheckCircle className="w-5 h-5" /> : <step.icon className="w-5 h-5" />}
+                    </div>
+                    <span
+                      className={cn(
+                        'text-caption font-medium whitespace-nowrap',
+                        isComplete || isCurrent ? 'text-olive-900' : 'text-olive-400'
+                      )}
+                    >
+                      {step.label}
+                    </span>
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div className="flex-1 h-0.5 mx-3 mb-6 rounded-full" aria-hidden="true">
+                      <div className={cn('h-full rounded-full transition-all', isComplete ? 'bg-sage-600' : 'bg-olive-100')} />
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+
+        <div className="grid lg:grid-cols-3 gap-8 items-start">
+          {/* Form column */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Step 1: Shipping */}
+            {currentStep === 0 && (
+              <Card padding="lg">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="heading-3 flex items-center gap-2">
+                    <MapPin className="w-6 h-6 text-sage-600" />
+                    Shipping Address
+                  </h2>
+                  {savedAddresses.length > 0 && (
+                    <Button variant="ghost" size="sm" onClick={() => { setShowAddressForm((v) => !v); setErrors({}); }}>
+                      {showAddressForm ? 'Use saved address' : '+ New address'}
+                    </Button>
+                  )}
                 </div>
-                <span className={cn('mt-2 text-caption font-medium', index <= currentStep ? 'text-olive-900' : 'text-olive-400')}>
-                  {step.label}
-                </span>
-                {index < steps.length - 1 && (
-                  <div className={cn(
-                    'absolute top-6 left-1/2 w-full h-1',
-                    index < currentStep ? 'bg-sage-600' : 'bg-olive-100'
-                  )} />
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="lg:col-span-2 space-y-6"
-          >
-            <form onSubmit={handleSubmit}>
-              {/* Step 1: Information */}
-              <AnimatePresence mode="wait">
-                {currentStep === 0 && (
-                  <motion.div
-                    key="info"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
+                {addressesLoading ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                  </div>
+                ) : !showAddressForm && savedAddresses.length > 0 ? (
+                  <RadioGroup
+                    value={selectedAddressId ?? ''}
+                    onChange={(v) => setSelectedAddressId(v)}
                   >
-                    <Card padding="lg">
-                      <h3 className="heading-3 mb-6 flex items-center gap-2">
-                        <Mail className="w-6 h-6 text-sage-600" />
-                        Contact Information
-                      </h3>
-
-                      <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                        <Input
-                          label="First Name"
-                          value={formData.firstName}
-                          onChange={(e) => handleInputChange('firstName', e.target.value)}
-                          error={errors.firstName}
-                          placeholder="John"
-                          required
-                        />
-                        <Input
-                          label="Last Name"
-                          value={formData.lastName}
-                          onChange={(e) => handleInputChange('lastName', e.target.value)}
-                          error={errors.lastName}
-                          placeholder="Doe"
-                          required
-                        />
-                      </div>
-
+                    {savedAddresses.map((address) => (
+                      <RadioGroupItem
+                        key={address.id}
+                        value={address.id}
+                        label={`${address.name}${address.isDefault ? ' · Default' : ''}`}
+                        description={`${address.addressLine1}${address.addressLine2 ? `, ${address.addressLine2}` : ''}, ${address.city}, ${address.state} ${address.postalCode} · ${address.phone}`}
+                      />
+                    ))}
+                  </RadioGroup>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid sm:grid-cols-2 gap-4">
                       <Input
-                        label="Email Address"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        error={errors.email}
-                        placeholder="john@example.com"
+                        label="Full Name"
+                        value={addressForm.name}
+                        onChange={(e) => setField('name', e.target.value)}
+                        error={errors.name}
+                        placeholder={user?.name || 'John Doe'}
+                        autoComplete="name"
                         required
                       />
-
                       <Input
                         label="Phone Number"
                         type="tel"
-                        value={formData.phone}
-                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        value={addressForm.phone}
+                        onChange={(e) => setField('phone', e.target.value)}
                         error={errors.phone}
                         placeholder="+91 98765 43210"
+                        autoComplete="tel"
                         required
                       />
-
-                      {!isAuthenticated && (
-                        <div className="mt-4 p-4 bg-olive-50 rounded-lg border border-olive-200">
-                          <label className="flex items-start gap-3 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              className="mt-1 w-4 h-4 text-sage-600 border-olive-300 rounded focus:ring-sage-500"
-                            />
-                            <div>
-                              <p className="font-medium text-olive-900 text-body-sm">Create an account</p>
-                              <p className="text-caption text-olive-600 mt-0.5">
-                                Save your information for faster checkout next time
-                              </p>
-                            </div>
-                          </label>
-                        </div>
-                      )}
-                    </Card>
-
-                    <div className="flex justify-end mt-6">
-                      <Button size="lg" onClick={handleNext} disabled={isProcessing}>
-                        Continue to Shipping
-                        <ArrowRight className="w-5 h-5" />
-                      </Button>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Step 2: Shipping */}
-              <AnimatePresence mode="wait">
-                {currentStep === 1 && (
-                  <motion.div
-                    key="shipping"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Card padding="lg">
-                      <h3 className="heading-3 mb-6 flex items-center gap-2">
-                        <Truck className="w-6 h-6 text-sage-600" />
-                        Shipping Address
-                      </h3>
-
-                      <Input
-                        label="Address Line 1"
-                        value={formData.addressLine1}
-                        onChange={(e) => handleInputChange('addressLine1', e.target.value)}
-                        error={errors.addressLine1}
-                        placeholder="House/Flat No, Building, Street"
-                        required
-                      />
-
-                      <Input
-                        label="Address Line 2 (Optional)"
-                        value={formData.addressLine2}
-                        onChange={(e) => handleInputChange('addressLine2', e.target.value)}
-                        placeholder="Landmark, Area"
-                      />
-
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <Input
-                          label="City"
-                          value={formData.city}
-                          onChange={(e) => handleInputChange('city', e.target.value)}
-                          error={errors.city}
-                          placeholder="Mumbai"
-                          required
-                        />
-                        <Input
-                          label="State"
-                          value={formData.state}
-                          onChange={(e) => handleInputChange('state', e.target.value)}
-                          error={errors.state}
-                          placeholder="Maharashtra"
-                          required
-                        />
-                      </div>
-
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <Input
-                          label="Postal Code"
-                          value={formData.postalCode}
-                          onChange={(e) => handleInputChange('postalCode', e.target.value)}
-                          error={errors.postalCode}
-                          placeholder="400001"
-                          required
-                        />
-                        <Input
-                          label="Country"
-                          value={formData.country}
-                          onChange={(e) => handleInputChange('country', e.target.value)}
-                          disabled
-                        />
-                      </div>
-
-                      <div className="mt-6">
-                        <h4 className="font-medium text-olive-900 text-body-sm mb-3">Shipping Method</h4>
-                        <RadioGroup value={formData.shippingMethod} onChange={(v) => handleInputChange('shippingMethod', v)}>
-                          <div className="space-y-3">
-                            <RadioGroupItem
-                              value="standard"
-                              label="Standard Shipping"
-                              description={shipping === 0 ? 'Free (5-7 business days)' : `₹${shipping/100} (5-7 business days)`}
-                            />
-                            <RadioGroupItem
-                              value="express"
-                              label="Express Shipping"
-                              description={`₹${199} (2-3 business days)`}
-                            />
-                          </div>
-                        </RadioGroup>
-                      </div>
-                    </Card>
-
-                    <div className="flex justify-between mt-6">
-                      <Button variant="outline" size="lg" onClick={handleBack}>
-                        <ArrowRight className="w-5 h-5 rotate-180" />
-                        Back
-                      </Button>
-                      <Button size="lg" onClick={handleNext} disabled={isProcessing}>
-                        Continue to Payment
-                        <ArrowRight className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Step 3: Payment */}
-              <AnimatePresence mode="wait">
-                {currentStep === 2 && (
-                  <motion.div
-                    key="payment"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Card padding="lg">
-                      <h3 className="heading-3 mb-6 flex items-center gap-2">
-                        <CreditCard className="w-6 h-6 text-sage-600" />
-                        Payment Method
-                      </h3>
-
-                      <RadioGroup value={formData.paymentMethod} onChange={(v) => handleInputChange('paymentMethod', v)}>
-                        <div className="space-y-3">
-                          <RadioGroupItem
-                            value="cod"
-                            label="Cash on Delivery"
-                            description="Pay when you receive your order"
-                            icon={<Mail className="w-5 h-5" />}
-                          />
-                          <RadioGroupItem
-                            value="card"
-                            label="Credit / Debit Card"
-                            description="Visa, Mastercard, RuPay, Amex"
-                            icon={<CreditCard className="w-5 h-5" />}
-                          />
-                          <RadioGroupItem
-                            value="upi"
-                            label="UPI"
-                            description="PhonePe, Google Pay, Paytm, BHIM"
-                            icon={<Smartphone className="w-5 h-5" />}
-                          />
-                          <RadioGroupItem
-                            value="netbanking"
-                            label="Net Banking"
-                            description="All major Indian banks"
-                            icon={<Building2 className="w-5 h-5" />}
-                          />
-                        </div>
-                      </RadioGroup>
-
-                      {formData.paymentMethod === 'card' && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="mt-6 space-y-4"
-                        >
-                          <Input
-                            label="Card Number"
-                            value={formData.cardNumber}
-                            onChange={(e) => handleInputChange('cardNumber', e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim())}
-                            error={errors.cardNumber}
-                            placeholder="1234 5678 9012 3456"
-                            leftIcon={<Lock className="w-5 h-5" />}
-                          />
-                          <div className="grid grid-cols-2 gap-4">
-                            <Input
-                              label="Expiry (MM/YY)"
-                              value={formData.cardExpiry}
-                              onChange={(e) => handleInputChange('cardExpiry', e.target.value.replace(/\D/g, '').replace(/^(\d{2})(\d)/, '$1/$2'))}
-                              error={errors.cardExpiry}
-                              placeholder="12/25"
-                            />
-                            <Input
-                              label="CVV"
-                              type="password"
-                              value={formData.cardCvv}
-                              onChange={(e) => handleInputChange('cardCvv', e.target.value.replace(/\D/g, ''))}
-                              error={errors.cardCvv}
-                              placeholder="123"
-                            />
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {formData.paymentMethod === 'upi' && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="mt-6"
-                        >
-                          <Input
-                            label="UPI ID"
-                            value={formData.upiId}
-                            onChange={(e) => handleInputChange('upiId', e.target.value)}
-                            error={errors.upiId}
-                            placeholder="yourname@upi"
-                            leftIcon={<Smartphone className="w-5 h-5" />}
-                          />
-                        </motion.div>
-                      )}
-
-                      {formData.paymentMethod === 'netbanking' && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="mt-6"
-                        >
-                          <p className="text-olive-600 text-body-sm mb-3">
-                            You will be redirected to your bank's secure payment page after placing the order.
-                          </p>
-                          <select
-                            value=""
-                            onChange={(e) => handleInputChange('bank', e.target.value)}
-                            className="input"
-                          >
-                            <option value="">Select Your Bank</option>
-                            <option>State Bank of India</option>
-                            <option>HDFC Bank</option>
-                            <option>ICICI Bank</option>
-                            <option>Axis Bank</option>
-                            <option>Kotak Mahindra Bank</option>
-                            <option>Punjab National Bank</option>
-                            <option>Bank of Baroda</option>
-                            <option>Other Bank</option>
-                          </select>
-                        </motion.div>
-                      )}
-                    </Card>
-
-                    <div className="flex justify-between mt-6">
-                      <Button variant="outline" size="lg" onClick={handleBack}>
-                        <ArrowRight className="w-5 h-5 rotate-180" />
-                        Back
-                      </Button>
-                      <Button size="lg" onClick={handleNext} disabled={isProcessing}>
-                        Continue to Review
-                        <ArrowRight className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Step 4: Review */}
-              <AnimatePresence mode="wait">
-                {currentStep === 3 && (
-                  <motion.div
-                    key="review"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Card padding="lg">
-                      <h3 className="heading-3 mb-6 flex items-center gap-2">
-                        <CheckCircle className="w-6 h-6 text-sage-600" />
-                        Review Your Order
-                      </h3>
-
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="font-medium text-olive-900 text-body-sm mb-3">Contact</h4>
-                          <p className="text-olive-600 text-body-sm">{formData.email}</p>
-                          <p className="text-olive-600 text-body-sm">{formData.phone}</p>
-                        </div>
-
-                        <div>
-                          <h4 className="font-medium text-olive-900 text-body-sm mb-3">Shipping Address</h4>
-                          <p className="text-olive-600 text-body-sm">
-                            {formData.firstName} {formData.lastName}<br />
-                            {formData.addressLine1}<br />
-                            {formData.addressLine2 && `${formData.addressLine2}<br />`}
-                            {formData.city}, {formData.state} {formData.postalCode}<br />
-                            {formData.country}
-                          </p>
-                        </div>
-
-                        <div>
-                          <h4 className="font-medium text-olive-900 text-body-sm mb-3">Payment Method</h4>
-                          <p className="text-olive-600 text-body-sm capitalize">{formData.paymentMethod.replace('cod', 'Cash on Delivery').replace('upi', 'UPI').replace('netbanking', 'Net Banking')}</p>
-                        </div>
-
-                        <div>
-                          <h4 className="font-medium text-olive-900 text-body-sm mb-3">Order Items</h4>
-                          <div className="space-y-2 max-h-48 overflow-y-auto">
-                            {cart.items.map((item) => (
-                              <div key={item.id} className="flex justify-between text-body-sm py-2 border-b border-olive-100">
-                                <span className="text-olive-600">{item.product.name} × {item.quantity}</span>
-                                <span className="font-medium text-olive-900">{formatPrice(item.variant.price * item.quantity)}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-
-                    <div className="flex justify-between mt-6">
-                      <Button variant="outline" size="lg" onClick={handleBack}>
-                        <ArrowRight className="w-5 h-5 rotate-180" />
-                        Back
-                      </Button>
-                      <Button size="lg" onClick={handleSubmit} isLoading={isProcessing} disabled={isProcessing} className="w-full sm:w-auto">
-                        {isProcessing ? 'Processing...' : 'Place Order'}
-                      </Button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </form>
-          </motion.div>
-
-          {/* Order Summary Sidebar */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <Card className="sticky top-24" padding="lg">
-              <h3 className="heading-3 mb-4">Order Summary</h3>
-
-              <div className="space-y-3 mb-6 max-h-60 overflow-y-auto">
-                {cart.items.map((item) => (
-                  <div key={item.id} className="flex gap-3">
-                    <img
-                      src={item.product.images[0]?.url}
-                      alt={item.product.name}
-                      className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
-                      loading="lazy"
+                    <Input
+                      label="Address Line 1"
+                      value={addressForm.addressLine1}
+                      onChange={(e) => setField('addressLine1', e.target.value)}
+                      error={errors.addressLine1}
+                      placeholder="House/Flat No, Building, Street"
+                      autoComplete="address-line1"
+                      required
                     />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-olive-900 text-body-sm truncate">{item.product.name}</p>
-                      <p className="text-caption text-olive-500">{Object.values(item.variant.attributes).join(' / ')}</p>
-                      <p className="font-medium text-olive-900 text-body-sm">{formatPrice(item.variant.price * item.quantity)}</p>
+                    <Input
+                      label="Address Line 2 (Optional)"
+                      value={addressForm.addressLine2}
+                      onChange={(e) => setField('addressLine2', e.target.value)}
+                      placeholder="Landmark, Area"
+                      autoComplete="address-line2"
+                    />
+                    <div className="grid sm:grid-cols-3 gap-4">
+                      <Input
+                        label="City"
+                        value={addressForm.city}
+                        onChange={(e) => setField('city', e.target.value)}
+                        error={errors.city}
+                        placeholder="Mumbai"
+                        autoComplete="address-level2"
+                        required
+                      />
+                      <Input
+                        label="State"
+                        value={addressForm.state}
+                        onChange={(e) => setField('state', e.target.value)}
+                        error={errors.state}
+                        placeholder="Maharashtra"
+                        autoComplete="address-level1"
+                        required
+                      />
+                      <Input
+                        label="PIN Code"
+                        inputMode="numeric"
+                        maxLength={6}
+                        value={addressForm.postalCode}
+                        onChange={(e) => setField('postalCode', e.target.value.replace(/\D/g, ''))}
+                        error={errors.postalCode}
+                        placeholder="400001"
+                        autoComplete="postal-code"
+                        required
+                      />
                     </div>
-                    <span className="text-caption text-olive-500 self-center">×{item.quantity}</span>
+                    <Input
+                      label="Country"
+                      value={addressForm.country}
+                      onChange={(e) => setField('country', e.target.value)}
+                      autoComplete="country-name"
+                    />
                   </div>
-                ))}
-              </div>
+                )}
 
-              <div className="space-y-3 border-t border-olive-200 pt-4">
-                <div className="flex justify-between text-body-sm">
-                  <span className="text-olive-600">Subtotal</span>
-                  <span className="font-medium text-olive-900">{formatPrice(subtotal)}</span>
+                <div className="flex justify-end mt-8">
+                  <Button
+                    size="lg"
+                    onClick={() => {
+                      if (showAddressForm && !validateAddressForm()) return;
+                      if (!showAddressForm && !selectedAddressId) {
+                        toastError('Select an address', 'Choose a saved address or add a new one.');
+                        return;
+                      }
+                      setCurrentStep(1);
+                    }}
+                  >
+                    Continue to Payment
+                    <ArrowRight className="w-5 h-5" />
+                  </Button>
                 </div>
-                <div className="flex justify-between text-body-sm">
-                  <span className="text-olive-600">Shipping</span>
-                  <span className="font-medium text-olive-900">
-                    {shipping === 0 ? <span className="text-sage-600 flex items-center gap-1"><Truck className="w-4 h-4" /> Free</span> : formatPrice(shipping)}
-                  </span>
+              </Card>
+            )}
+
+            {/* Step 2: Payment */}
+            {currentStep === 1 && (
+              <Card padding="lg">
+                <h2 className="heading-3 mb-6 flex items-center gap-2">
+                  <Lock className="w-6 h-6 text-sage-600" />
+                  Payment Method
+                </h2>
+
+                <RadioGroup value={paymentMethod} onChange={setPaymentMethod}>
+                  {PAYMENT_METHODS.map((method) => (
+                    <RadioGroupItem
+                      key={method.value}
+                      value={method.value}
+                      label={method.label}
+                      description={method.description}
+                      icon={method.icon}
+                    />
+                  ))}
+                </RadioGroup>
+
+                {paymentMethod === 'CARD' && (
+                  <p className="mt-4 p-3 bg-sabai-50 border border-sabai-200 rounded-lg text-caption text-olive-700">
+                    You will be redirected to a secure payment gateway to complete your card payment after placing the order.
+                  </p>
+                )}
+                {paymentMethod === 'UPI' && (
+                  <p className="mt-4 p-3 bg-sabai-50 border border-sabai-200 rounded-lg text-caption text-olive-700">
+                    You will receive a payment request on your UPI app after placing the order.
+                  </p>
+                )}
+                {paymentMethod === 'NETBANKING' && (
+                  <p className="mt-4 p-3 bg-sabai-50 border border-sabai-200 rounded-lg text-caption text-olive-700">
+                    You will be redirected to your bank's secure page after placing the order.
+                  </p>
+                )}
+
+                <div className="flex justify-between mt-8">
+                  <Button variant="outline" size="lg" onClick={() => setCurrentStep(0)}>
+                    <ArrowRight className="w-5 h-5 rotate-180" />
+                    Back
+                  </Button>
+                  <Button size="lg" onClick={() => setCurrentStep(2)}>
+                    Review Order
+                    <ArrowRight className="w-5 h-5" />
+                  </Button>
                 </div>
-                <div className="flex justify-between text-body-sm">
-                  <span className="text-olive-600">Tax (18% GST)</span>
-                  <span className="font-medium text-olive-900">{formatPrice(tax)}</span>
+              </Card>
+            )}
+
+            {/* Step 3: Review */}
+            {currentStep === 2 && (
+              <Card padding="lg">
+                <h2 className="heading-3 mb-6 flex items-center gap-2">
+                  <CheckCircle className="w-6 h-6 text-sage-600" />
+                  Review Your Order
+                </h2>
+
+                <div className="space-y-6">
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div>
+                      <h3 className="font-medium text-olive-900 text-body-sm mb-2">Shipping Address</h3>
+                      {selectedAddress ? (
+                        <address className="not-italic text-olive-600 text-body-sm leading-relaxed">
+                          {selectedAddress.name}
+                          <br />
+                          {selectedAddress.addressLine1}
+                          {selectedAddress.addressLine2 && (
+                            <>
+                              <br />
+                              {selectedAddress.addressLine2}
+                            </>
+                          )}
+                          <br />
+                          {selectedAddress.city}, {selectedAddress.state} {selectedAddress.postalCode}
+                          <br />
+                          {selectedAddress.phone}
+                        </address>
+                      ) : (
+                        <address className="not-italic text-olive-600 text-body-sm leading-relaxed">
+                          {addressForm.name}
+                          <br />
+                          {addressForm.addressLine1}
+                          {addressForm.addressLine2 && (
+                            <>
+                              <br />
+                              {addressForm.addressLine2}
+                            </>
+                          )}
+                          <br />
+                          {addressForm.city}, {addressForm.state} {addressForm.postalCode}
+                          <br />
+                          {addressForm.phone}
+                        </address>
+                      )}
+                      <Button variant="link" size="sm" className="mt-2 px-0" onClick={() => setCurrentStep(0)}>
+                        Edit
+                      </Button>
+                    </div>
+
+                    <div>
+                      <h3 className="font-medium text-olive-900 text-body-sm mb-2">Payment Method</h3>
+                      <p className="text-olive-600 text-body-sm">{paymentMethodLabel(paymentMethod)}</p>
+                      <Button variant="link" size="sm" className="mt-2 px-0" onClick={() => setCurrentStep(1)}>
+                        Edit
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-medium text-olive-900 text-body-sm mb-3">Order Items</h3>
+                    <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                      {cart!.items.map((item) => (
+                        <div key={item.id} className="flex justify-between gap-4 text-body-sm py-2 border-b border-olive-100 last:border-b-0">
+                          <span className="text-olive-600 truncate">
+                            {item.product.name} × {item.quantity}
+                          </span>
+                          <span className="font-medium text-olive-900 flex-shrink-0">
+                            {formatPrice(item.variant.price * item.quantity)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-between text-heading-sm font-display font-medium text-olive-950 pt-2 border-t border-olive-200">
-                  <span>Total</span>
-                  <span>{formatPrice(total)}</span>
+
+                <div className="flex flex-col sm:flex-row justify-between gap-3 mt-8">
+                  <Button variant="outline" size="lg" onClick={() => setCurrentStep(1)} disabled={isProcessing}>
+                    <ArrowRight className="w-5 h-5 rotate-180" />
+                    Back
+                  </Button>
+                  <Button
+                    size="lg"
+                    onClick={handlePlaceOrder}
+                    isLoading={isProcessing}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? 'Placing order…' : 'Place Order'}
+                  </Button>
+                </div>
+              </Card>
+            )}
+          </div>
+
+          {/* Order summary */}
+          <Card className="sticky top-24" padding="lg" aria-label="Order summary">
+            <h2 className="heading-3 mb-4">Order Summary</h2>
+
+            <div className="space-y-3 mb-6 max-h-72 overflow-y-auto pr-1">
+              {cart!.items.map((item) => (
+                <div key={item.id} className="flex gap-3">
+                  <img
+                    src={item.product.images[0]?.url}
+                    alt=""
+                    className="w-16 h-16 rounded-lg object-cover flex-shrink-0 bg-olive-50"
+                    loading="lazy"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-olive-900 text-body-sm truncate">{item.product.name}</p>
+                    <p className="text-caption text-olive-500">{Object.values(item.variant.attributes).join(' / ')}</p>
+                    <p className="font-medium text-olive-900 text-body-sm">{formatPrice(item.variant.price * item.quantity)}</p>
+                  </div>
+                  <span className="text-caption text-olive-500 self-center">×{item.quantity}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-3 border-t border-olive-200 pt-4">
+              <div className="flex justify-between text-body-sm">
+                <span className="text-olive-600">Subtotal</span>
+                <span className="font-medium text-olive-900">{formatPrice(subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-body-sm">
+                <span className="text-olive-600">Shipping</span>
+                <span className="font-medium text-olive-900 flex items-center gap-1">
+                  {shipping === 0 ? (
+                    <>
+                      <Truck className="w-4 h-4 text-sage-600" /> Free
+                    </>
+                  ) : (
+                    formatPrice(shipping)
+                  )}
+                </span>
+              </div>
+              <div className="flex justify-between text-body-sm">
+                <span className="text-olive-600">Tax (18% GST)</span>
+                <span className="font-medium text-olive-900">{formatPrice(tax)}</span>
+              </div>
+              <div className="flex justify-between text-heading-sm font-display font-medium text-olive-950 pt-3 border-t border-olive-200">
+                <span>Total</span>
+                <span>{formatPrice(total)}</span>
+              </div>
+            </div>
+
+            {shipping > 0 && (
+              <div className="mt-4 p-3 bg-sabai-50 rounded-lg border border-sabai-200">
+                <p className="text-caption text-olive-700 flex items-center gap-2">
+                  <Truck className="w-4 h-4 flex-shrink-0" />
+                  Add {formatPrice(200000 - subtotal)} more for free shipping
+                </p>
+                <div className="mt-2 h-1.5 bg-olive-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-sabai-500 rounded-full transition-all duration-500"
+                    style={{ width: `${Math.min(100, (subtotal / 200000) * 100)}%` }}
+                  />
                 </div>
               </div>
-            </Card>
-          </motion.div>
+            )}
+
+            <p className="caption text-olive-500 mt-4 flex items-center justify-center gap-1.5">
+              <User className="w-3.5 h-3.5" />
+              Signed in as {user?.email}
+            </p>
+          </Card>
         </div>
       </div>
     </div>
