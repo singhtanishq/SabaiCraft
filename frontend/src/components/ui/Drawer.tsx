@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment, ReactNode, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { cn } from '../../utils/cn';
@@ -24,10 +24,10 @@ const positionClasses = {
 };
 
 const sizeClasses = {
-  sm: 'w-72',
-  md: 'w-96',
-  lg: 'w-[32rem]',
-  xl: 'w-[36rem]',
+  sm: 'w-72 max-w-full',
+  md: 'w-96 max-w-full',
+  lg: 'w-[32rem] max-w-full',
+  xl: 'w-[36rem] max-w-full',
   full: 'w-full max-w-2xl',
 };
 
@@ -52,11 +52,55 @@ export function Drawer({
   closeOnEscape = true,
   className,
 }: DrawerProps) {
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape' && closeOnEscape) {
-      onClose();
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Lock body scroll and close on Escape while open.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && closeOnEscape) {
+        onClose();
+        return;
+      }
+      // Minimal focus trap: keep Tab cycling inside the drawer.
+      if (e.key === 'Tab' && panelRef.current) {
+        const focusables = panelRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+        if (e.shiftKey && active === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose, closeOnEscape]);
+
+  // Move focus into the panel when it opens.
+  useEffect(() => {
+    if (isOpen) {
+      const raf = requestAnimationFrame(() => {
+        panelRef.current?.focus();
+      });
+      return () => cancelAnimationFrame(raf);
     }
-  };
+  }, [isOpen]);
 
   const isBottom = position === 'bottom';
 
@@ -74,6 +118,8 @@ export function Drawer({
             aria-hidden="true"
           />
           <motion.div
+            ref={panelRef}
+            tabIndex={-1}
             initial={{
               opacity: 0,
               x: isBottom ? 0 : position === 'left' ? -300 : 300,
@@ -87,12 +133,11 @@ export function Drawer({
             }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className={cn(
-              'fixed z-[400] flex flex-col bg-white shadow-elevated',
+              'fixed z-[400] flex flex-col bg-white shadow-elevated focus:outline-none',
               positionClasses[position],
               isBottom ? bottomSizeClasses[size] : sizeClasses[size],
               className
             )}
-            onKeyDown={handleKeyDown}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'drawer-title' : undefined}
