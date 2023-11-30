@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Plus, Minus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { Button } from '../ui/Button';
 import { Drawer } from '../ui/Drawer';
@@ -10,6 +11,7 @@ import { Link } from 'react-router-dom';
 const FREE_SHIPPING_THRESHOLD = 200000; // ₹2,000 in paise
 
 export function CartDrawer() {
+  const navigate = useNavigate();
   const { cart, isCartOpen, closeCart, removeItem, updateQuantity, getSubtotal } = useCartStore();
 
   const isOpen = isCartOpen;
@@ -27,16 +29,17 @@ export function CartDrawer() {
       size="lg"
       title="Shopping Cart"
       showCloseButton
+      bodyClassName={items.length > 0 ? 'p-0' : undefined}
     >
       {items.length === 0 ? (
         <EmptyCart
           onContinueShopping={() => {
             closeCart();
-            window.location.hash = '';
+            navigate('/shop');
           }}
         />
       ) : (
-        <div className="flex flex-col h-full -m-4 sm:-m-6">
+        <div className="flex flex-col h-full">
           {/* Cart Items */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-0 space-y-4">
             {items.map((item, index) => (
