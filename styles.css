@@ -211,15 +211,14 @@ body {
 .featured-products {
     margin-top: 50px;
     text-align: center;
-font-family: poppins; 
-    
+    font-family: poppins; 
     color: #283618; 
    
 }
 
 .featured-products h2 {
     font-size: 42px;
-font-family: bosento regular; 
+    font-family: bosento regular; 
     margin-bottom: 40px;
 }
 
@@ -293,9 +292,9 @@ font-family: bosento regular;
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
-    padding: 2%;
-    padding-left: 250px;
-    padding-right: 250px;
+    padding: 5%;
+    padding-left: 50%;
+    padding-right: 100%;
     padding-bottom: 1%;
 }
 
@@ -306,7 +305,7 @@ font-family: bosento regular;
 }
 
 .product img {
-    max-width: 250px;
+    max-width: 300px;
     border: 1px solid #ccc;
     border-radius: 20px;
     margin-top: 20px;
