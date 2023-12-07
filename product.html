@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Description</title>
+    <link rel="stylesheet" href="product.css">
+</head>
+<body>
+    <header>
+        <button class="nav-button" onclick="redirectTo('index.html')">Home</button>
+        <button class="nav-button" onclick="redirectTo('cart.html')">Go to Cart</button>
+    </header>
+
+    <main class="center-content"> 
+        <section class="product-details">
+            <h1>Sabai Handle Basket</h1>
+            <p>Handmade handle basket crafted with high quality material</p>
+
+            <div class="image-slider">
+                <div class="image-container">
+                    <img id="product-image" src="Images/p1.jpg" alt="Product Image 1">
+                    <p id="image-description">Description for Image 1</p>
+                </div>
+            
+                <div class="arrow-controls">
+                    <button class="arrow-button left" onclick="changeImage(-1)">
+                        <img src="Images/arrow-l.png" alt="Previous Arrow">
+                    </button>
+                    <button class="arrow-button right" onclick="changeImage(1)">
+                        <img src="Images/arrow-r.png" alt="Next Arrow">
+                    </button>
+                </div>
+            </div>
+            
+            <div class="price-details">
+                <div class="discounted-price" style="font-size: 24px;">INR 1,499/-</div>
+                <div class="mrp" style="font-size: 16px; color: #9c9c9c; text-decoration: line-through;">MRP: 2000/-</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="buy-now-button">Buy Now</button>
+                <button class="add-to-cart-button">Add to Cart</button>
+            </div>
+        </section>
+
+        <section class="product-description">
+            <div class="horizontal-line"></div>
+            
+            <section class="small-images">
+                <div class="small-image-container">
+                    <img src="Images/l1.png" alt="Image 1" class="small-image">
+                    <p class="image-label" style="font-size:12px">7 Days Return</p>
+                </div>
+                <div class="small-image-container">
+                    <img src="Images/l2.png" alt="Image 2" class="small-image">
+                    <p class="image-label" style="font-size:12px">Quality Check</p>
+                </div>
+                <div class="small-image-container">
+                    <img src="Images/l3.png" alt="Image 3" class="small-image">
+                    <p class="image-label" style="font-size:12px">Free Delivery</p>
+                </div>
+                <div class="small-image-container">
+                    <img src="Images/l4.png" alt="Image 4" class="small-image">
+                    <p class="image-label" style="font-size:12px">Top Brand</p>
+                </div>
+            </section>
+
+            <div class="horizontal-line"></div>
+            <h1 style="margin-top: 50px;">Product description:</h1>
+
+            <div class="product-about">
+            <p style="font-size: larger;text-align: center;">
+                Introducing SabaiCraft's Handwoven Masterpieces: Elevate Your Space with Timeless Elegance
+            </p>
+            
+            <p style="font-family:Arial, Helvetica, sans-serif;">
+                In the realm of artisanal excellence, SabaiCraft stands as a beacon of tradition and sophistication, bringing you a curated collection of handmade baskets that transcend utility to become timeless works of art. Our Handle Baskets, a testament to the skillful hands that weave them, are crafted with precision, passion, and a commitment to preserving the rich heritage of traditional basketry.
+            </p>
+
+            <p style="font-weight: bold;"> Craftsmanship: </p> 
+            <p style="font-family:Arial, Helvetica, sans-serif;">
+                At the heart of each SabaiCraft Handle Basket is a story of unparalleled craftsmanship. Meticulously handwoven by skilled artisans, these baskets exemplify the perfect fusion of age-old techniques and contemporary design. The result is not just a functional storage solution but a piece of art that seamlessly integrates into your living space.
+            </p>
+
+            <p style="font-weight: bold;"> Timeless Design: </p> 
+            <p style="font-family:Arial, Helvetica, sans-serif;">
+                Our Handle Baskets are designed to stand the test of time, both in terms of durability and style. The classic yet versatile design ensures that these baskets complement a myriad of interior aesthetics, from modern chic to rustic charm. The intricate patterns and textures add an element of sophistication, making them a perfect addition to any room.
+            </p>
+
+            <p style="font-weight: bold;"> Natural Materials, Sustainable Beauty: </p>
+            <p style="font-family:Arial, Helvetica, sans-serif;">
+                SabaiCraft is committed to sustainability, and our Handle Baskets reflect this ethos. Woven from natural, eco-friendly materials, these baskets not only enhance the aesthetics of your space but also contribute to a greener planet. Each basket is a conscious choice towards a more sustainable and ethical lifestyle.
+            </p>
+
+            </div>
+            <br>
+            <div class="horizontal-line"></div>
+                
+        </section>
+
+        <section class="featured-products">
+            <h2>Related Products</h2>
+            <p>Based on your interest, you may like these products</p>
+            <br>
+            <div class="product">
+                <img src="Images/p1.jpg"><br>
+                <h3>Sabai Handle Basket</h3>
+                <p>₹1000</p>
+                <div class="action-buttons">
+                    <button class="add-to-cart-button">Add to Cart</button>
+                </div>
+            </div>
+            <div class="product">
+                <img src="Images/p2.jpg"><br>
+                <h3>Sabai Cap Basket</h3>
+                <p>₹1200</p>
+                <div class="action-buttons">
+                    <button class="add-to-cart-button">Add to Cart</button>
+                </div>
+            </div>
+            <div class="product">
+                <img src="Images/p2.jpg"><br>
+                <h3>Sabai Basket</h3>
+                <p>₹800</p>
+                <div class="action-buttons">
+                    <button class="add-to-cart-button">Add to Cart</button>
+                </div>
+            </div>
+            <div class="product">
+                <img src="Images/p2.jpg"><br>
+                <h3>Sabai Basket</h3>
+                <p>₹800</p>
+                <div class="action-buttons">
+                    <button class="add-to-cart-button">Add to Cart</button>
+                </div>
+            </div>
+            
+            
+        </section>
+        <div class="horizontal-line"></div>
+
+        <section class="reviews">
+
+            <div class="container">
+                <div class="text">
+                    
+                    <h1>Reviews</h1>
+                    <p style="text-align: center;font-weight: bolder;color: #9c9c9c;">4.5 Ratings</p>
+                </div>
+                <img src="Images/review.gif" alt="Review">
+            </div>
+
+            <div class="review-container">
+                <div class="review-box">
+                    
+                    <div class="user-info">
+                        <h3>Tanya</h3>
+                        <p>Excellent product! I'm very happy with my purchase.</p>
+                    </div>
+                </div>
+                <div class="review-box">
+                   
+                    <div class="user-info">
+                        <h3>Ramashre</h3>
+                        <p>Great quality and fast shipping. Highly recommend!</p>
+                    </div>
+                </div>
+                <div class="review-box">
+                   
+                    <div class="user-info">
+                        <h3>Anuradha</h3>
+                        <p>I liked it, they were exactly how they were promised.</p>
+                    </div>
+                </div>
+                <div class="review-box">
+                    
+                    <div class="user-info">
+                        <h3>Tanishq</h3>
+                        <p>Amazing customer service. Will buy again!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-section">
+            <h2>Main Menu</h2>
+            <ul>
+                <li>Home</li>
+                <li>About Us</li>
+                <li>Shop</li>
+                <li>Help</li>
+                
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h2>Discover</h2>
+            <ul>
+                <li>The Team</li>
+                <li>Our History</li>
+                <li>Brand Motto</li>
+                <li>Our Artisans</li>
+                
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h2>Company</h2>
+            <ul>
+                <li>SabaiCraft Treasures</li>
+                <li>Press</li>
+                <li>Careers</li>
+              
+                <li>Terms and conditions</li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h2>Contact Us</h2>
+            <ul>
+              
+                <li>Twitter</li>
+                <li>Instagram</li>
+                <li>Facebook</li>
+                <li>contact@sabaicraft.com</li>
+            </ul>
+        </div>
+        <br>
+    </footer>
+
+    <div class="horizontal-line"></div>
+    <div class="copyright"> &copy; SabaiCraft Treasures. All Rights Reserved.</div>
+
+    <script src="product.js"></script>
+</body>
+</html>
