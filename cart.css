@@ -1,33 +1,33 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: Poppins, sans-serif;
     margin: 0;
-    align-self: center;
-    align-items: center;
-    align-content: center;
-    text-align: center;
+    align-self: left;
+    align-items: left;
+    align-content: left;
+    text-align: left;
 }
 
 header {
-    background-color: #9100d4;
-    color: #fff;
+    background-color: #283618;
+    color: #FEFAE0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 5px 40px;
 }
 
 header h1 {
-    margin: 10;
+    margin-right: 80px;
     font-weight:bold;
-    font-family: cursive;
+    font-family: poppins;
 }
 
 .return-button {
-    background-color: #fff;
-    color: #9100d4;
+    background-color: #FEFAE0;
+    color: #283618;
     border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
+    padding: 8px 16px;
+    border-radius: 15px;
     text-decoration: none;
     font-weight: bold;
     cursor: pointer;
@@ -36,46 +36,47 @@ header h1 {
 .product {
     display: flex;
     align-items: center;
-    margin: 20px 0;
-    margin-top: 5%;
+    margin: 80px 0;
+    margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 .product img {
-    max-width: 175px;
-    margin-right: 20px;
+    max-width: 300px;
+    margin-right: 60px;
     margin-left: 5%;
     border-radius: 15px;
 }
 
 .quantity-button {
-    background-color: #fff;
+    background-color: #d8a53f;
     border: none;
     font-size: 20px;
     cursor: pointer;
 }
 
 .quantity-button:hover {
-    background-color: #ddd;
+    background-color: #d8a53f;
 }
 
 .review-button {
-    background-color: #ffcc00;
-    color: #000;
+    background-color: #606C38;
+    color: #FEFAE0;
     border: none;
     padding: 15px 25px;
-    font-size: 16px;
+    font-size: 18px;
     cursor: pointer;
     font-weight: bolder;
-    border-radius: 15px;
+    border-radius: 25px;
 }
 
 .review-button:hover {
-    background-color: #ffa600;
-    transform: scale(1.1);
+    background-color: #d8a53f;
+    transform: scale(1.05);
 }
 
 .next-button {
-    background-color: #11b402;
+    background-color: #283618;
     color: #ffffff;
     border: none;
     padding: 15px 25px;
@@ -87,12 +88,12 @@ header h1 {
 }
 
 .next-button:hover {
-    background-color: #008d00;
+    background-color: #606C38;
     transform: scale(1.1);
 }
 
 .prev-button {
-    background-color: #db0000;
+    background-color: #d8a53f;
     color: #ffffff;
     border: none;
     padding: 15px 25px;
@@ -103,12 +104,12 @@ header h1 {
 }
 
 .prev-button:hover {
-    background-color: #b40101;
+    background-color: #606C38;
     transform: scale(1.1);
 }
 
 .home-button {
-    background-color: #11cc00;
+    background-color: #283618;
     color: #ffffff;
     border: none;
     padding: 15px 25px;
@@ -120,7 +121,7 @@ header h1 {
 }
 
 .home-button:hover {
-    background-color: #1dad00;
+    background-color: #606C38;
 }
 
 .control-button {
@@ -156,30 +157,35 @@ header h1 {
 }
 
 .form-group {
-    margin-bottom: 20px;
+    width: 50%;
+    margin-bottom: 1px;
     text-align: left;
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 25%;
+    margin-right: 25%;
 }
 
 .form-group label {
+    font-size: 14px;
     display: block;
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-weight:bold;
+    margin-bottom: 1px;
+    padding-left: 20px;
 }
 
 .form-group input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #b1b1b1;
-    border-radius: 10px;
-    font-size: 16px;
+    padding: 5px;
+    padding-left: 10px;
+    border: 2px solid #cecece;
+    border-radius: 25px;
+    font-size: 18px;
     margin-bottom: 30px;
 }
 
 .form-group span.hint {
-    font-size: 14px;
-    color: #666;
+    font-size: 12px;
+    color: #9b9b9b;
     display: block;
     margin-top: 5px;
 }
+
