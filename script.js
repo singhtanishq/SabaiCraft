@@ -58,4 +58,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     setInterval(nextReview, 3000);
+
+    const addToCartButtons = document.querySelectorAll('.buy-button');
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const addedToCartMessage = document.createElement('div');
+            addedToCartMessage.textContent = 'Added to cart';
+            addedToCartMessage.classList.add('added-to-cart-message');
+            document.body.appendChild(addedToCartMessage);
+
+            setTimeout(() => {
+                addedToCartMessage.remove();
+            }, 3000);
+        });
+    });
+
+    // New code for product image click redirect
+    const productImages = document.querySelectorAll('.product img');
+
+    productImages.forEach(image => {
+        image.addEventListener('click', function(event) {
+            window.location.href = 'product.html'; // Change this URL to your actual product page
+        });
+    });
+
 });
