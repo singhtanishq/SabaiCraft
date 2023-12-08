@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
     showBanner(currentBannerIndex);
     setInterval(switchBanner, 2000);
 
-    // New code for reviews section
     let reviewIndex = 0;
     const reviews = document.querySelectorAll('.review-box');
 
@@ -76,10 +75,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const productImages = document.querySelectorAll('.product img');
-
+    const productImage = document.querySelectorAll('.product-center img');
     productImages.forEach(image => {
         image.addEventListener('click', function(event) {
-            window.location.href = 'product.html'; // Change this URL to your actual product page
+            window.location.href = 'product.html'; 
+        });
+    });
+
+    productImage.forEach(image => {
+        image.addEventListener('click', function(event) {
+            window.location.href = 'product.html'; 
         });
     });
 
