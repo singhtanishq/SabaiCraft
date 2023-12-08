@@ -47,4 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     buyNowButton.addEventListener('click', redirectToCart);
     addToCartButton.addEventListener('click', showAddedToCartMessage);
+
+    const productImages = document.querySelectorAll('.product img');
+
+    productImages.forEach(image => {
+        image.addEventListener('click', function(event) {
+            window.location.href = 'product.html'; 
+        });
+    });
 });
