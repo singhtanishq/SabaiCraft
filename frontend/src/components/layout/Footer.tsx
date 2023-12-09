@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  X,
   Mail,
   MapPin,
   Phone,
@@ -20,27 +19,17 @@ const footerLinks = {
     { name: 'New Arrivals', href: '/shop?sort=newest' },
     { name: 'Best Sellers', href: '/shop?sort=popular' },
     { name: 'Categories', href: '/categories' },
-    { name: 'Gift Cards', href: '/gift-cards' },
   ],
   support: [
     { name: 'Contact Us', href: '/contact' },
     { name: 'FAQs', href: '/faq' },
     { name: 'Shipping Info', href: '/shipping' },
     { name: 'Returns & Exchanges', href: '/returns' },
-    { name: 'Track Order', href: '/track' },
+    { name: 'Track Order', href: '/orders' },
   ],
   company: [
     { name: 'Our Story', href: '/about' },
-    { name: 'Our Artisans', href: '/artisans' },
     { name: 'Sustainability', href: '/sustainability' },
-    { name: 'Careers', href: '/careers' },
-    { name: 'Press', href: '/press' },
-  ],
-  legal: [
-    { name: 'Privacy Policy', href: '/privacy' },
-    { name: 'Terms of Service', href: '/terms' },
-    { name: 'Cookie Policy', href: '/cookies' },
-    { name: 'Accessibility', href: '/accessibility' },
   ],
 };
 

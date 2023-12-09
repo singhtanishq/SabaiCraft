@@ -200,6 +200,40 @@ const INFO_PAGES: Record<string, InfoContent> = {
       },
     ],
   },
+  sustainability: {
+    title: 'Sustainability',
+    intro:
+      'Sustainability is not a feature of our products — it is the reason they exist. Here is how every SabaiCraft piece treads lightly on the planet.',
+    updated: '',
+    sections: [
+      {
+        heading: 'A Fibre That Gives Back',
+        paragraphs: [
+          'Sabai grass is a wild perennial — it needs no irrigation, no fertilisers, and no replanting. Harvesting it actually maintains the grasslands that prevent soil erosion and support local biodiversity.',
+        ],
+      },
+      {
+        heading: 'Plastic-Free, End to End',
+        bullets: [
+          '100% natural fibre products — biodegradable at end of life',
+          'Recycled, plastic-free packaging on every order',
+          'No synthetic dyes in our natural range',
+        ],
+      },
+      {
+        heading: 'Fair to Artisans',
+        paragraphs: [
+          'We buy directly from weaving families around Varanasi, eliminating middlemen so a fair share of every purchase reaches the hands that made it. Every order helps keep a centuries-old craft economically alive.',
+        ],
+      },
+      {
+        heading: 'Built to Last',
+        paragraphs: [
+          'The most sustainable product is the one you do not throw away. Sabai weave is remarkably durable — with basic care, your basket or mat will serve for many years and quietly return to the earth at the end.',
+        ],
+      },
+    ],
+  },
   cookies: {
     title: 'Cookie Policy',
     intro: 'This policy explains how SabaiCraft uses cookies and similar storage on your device.',
