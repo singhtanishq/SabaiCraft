@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
+  Check,
   Mail,
   MapPin,
   Phone,
@@ -59,6 +61,16 @@ interface FooterProps {
 }
 
 export function Footer({ className }: FooterProps) {
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterDone, setNewsletterDone] = useState(false);
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newsletterEmail.trim())) {
+      setNewsletterDone(true);
+    }
+  };
+
   return (
     <footer className={cn("bg-olive-950 text-cream-50", className)} role="contentinfo">
       {/* Trust Bar */}
@@ -125,20 +137,30 @@ export function Footer({ className }: FooterProps) {
             <div className="max-w-xs">
               <h4 className="font-medium text-body-sm text-cream-50 mb-3">Stay Connected</h4>
               <p className="text-olive-400 text-caption mb-3">Subscribe for stories, launches & exclusive offers.</p>
-              <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-2.5 bg-olive-800/50 border border-olive-700 rounded-lg text-cream-50 placeholder-olive-400 text-sm focus:outline-none focus:border-sabai-500 focus:ring-2 focus:ring-sabai-500/20"
-                  aria-label="Email address"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2.5 bg-sabai-500 text-olive-950 font-medium rounded-lg hover:bg-sabai-400 transition-colors whitespace-nowrap"
-                >
-                  Subscribe
-                </button>
-              </form>
+              {newsletterDone ? (
+                <p className="flex items-center gap-2 text-body-sm text-sabai-400" role="status">
+                  <Check className="w-4 h-4" aria-hidden="true" />
+                  Thanks for subscribing — see you in your inbox!
+                </p>
+              ) : (
+                <form className="flex gap-2" onSubmit={handleNewsletterSubmit}>
+                  <input
+                    type="email"
+                    required
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="flex-1 min-w-0 px-4 py-2.5 bg-olive-800/50 border border-olive-700 rounded-lg text-cream-50 placeholder-olive-400 text-sm focus:outline-none focus:border-sabai-500 focus:ring-2 focus:ring-sabai-500/20"
+                    aria-label="Email address"
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-2.5 bg-sabai-500 text-olive-950 font-medium rounded-lg hover:bg-sabai-400 transition-colors whitespace-nowrap"
+                  >
+                    Subscribe
+                  </button>
+                </form>
+              )}
             </div>
           </motion.div>
 
