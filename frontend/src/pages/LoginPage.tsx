@@ -60,7 +60,6 @@ export function LoginPage() {
       const message =
         err instanceof Error ? err.message : 'Unable to sign in. Please check your credentials.';
       error('Sign in failed', message);
-      setErrors({ password: ' ' });
     } finally {
       setIsLoading(false);
     }
