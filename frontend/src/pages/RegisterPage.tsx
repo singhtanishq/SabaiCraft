@@ -1,17 +1,29 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User, Shield } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
 import { useAuthStore } from '@store/authStore';
+import { useCartStore } from '@store/cartStore';
+import { useWishlistStore } from '@store/wishlistStore';
 import { useToastHelpers } from '@components/ui';
 
 export function RegisterPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { register } = useAuthStore();
-  const { success } = useToastHelpers();
+  const { success, error } = useToastHelpers();
+
+  const redirectTo =
+    new URLSearchParams(location.search).get('redirect') ||
+    (location.state as { from?: { pathname: string } })?.from?.pathname ||
+    '/account';
+
+  useEffect(() => {
+    document.title = 'Create Account | SabaiCraft';
+  }, []);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -27,12 +39,15 @@ export function RegisterPage() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.firstName) newErrors.firstName = 'First name is required';
-    if (!formData.lastName) newErrors.lastName = 'Last name is required';
+    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
     if (!formData.email) newErrors.email = 'Email is required';
-    else if (!formData.email.includes('@')) newErrors.email = 'Invalid email';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Enter a valid email address';
     if (!formData.password) newErrors.password = 'Password is required';
     else if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
+    else if (!/(?=[A-Za-z])/.test(formData.password) || !/(?=\d)/.test(formData.password)) {
+      newErrors.password = 'Password must contain letters and numbers';
+    }
     if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
 
     setErrors(newErrors);
@@ -44,19 +59,21 @@ export function RegisterPage() {
     if (!validateForm()) return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     try {
       await register({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
         password: formData.password,
       });
-      success('Account Created!', `Welcome to SabaiCraft, ${formData.firstName}!`);
-      navigate('/account', { replace: true });
+      useCartStore.getState().enableBackendSync();
+      useWishlistStore.getState().enableBackendSync();
+      success('Account created!', `Welcome to SabaiCraft, ${formData.firstName}!`);
+      navigate(redirectTo.startsWith('/') ? redirectTo : '/account', { replace: true });
     } catch (err) {
-      // Error handled by toast in the store
+      const message =
+        err instanceof Error ? err.message : 'Unable to create your account. Please try again.';
+      error('Registration failed', message);
     } finally {
       setIsLoading(false);
     }
