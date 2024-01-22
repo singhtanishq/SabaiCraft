@@ -25,6 +25,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       children,
       asChild = false,
+      type = 'button',
       ...props
     },
     ref
@@ -56,6 +57,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         ref={ref}
+        type={asChild ? undefined : type}
         className={cn(baseClasses, variantClasses[variant], sizeClasses[size], widthClass, className)}
         disabled={disabled || isLoading}
         {...props}
