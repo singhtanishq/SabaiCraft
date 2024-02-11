@@ -9,7 +9,7 @@ export function ProtectedRoute() {
   if (isLoading) {
     return (
       <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
-        <div className="w-8 h-8 border-3 border-sage-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-[3px] border-sage-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
