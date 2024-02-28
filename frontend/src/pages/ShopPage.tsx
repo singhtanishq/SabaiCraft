@@ -8,7 +8,6 @@ import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Badge } from '@components/ui/Badge';
 import { SkeletonProductGrid } from '@components/ui/Skeleton';
-import { ErrorState } from '@components/ui/ErrorState';
 import { EmptySearch } from '@components/ui/EmptyState';
 import { formatPrice } from '@utils/format';
 import { cn } from '@utils/cn';
