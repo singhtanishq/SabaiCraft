@@ -1,4 +1,5 @@
-import { Fragment, ReactNode, createContext, useContext, useState, useCallback, ReactElement } from 'react';
+import { ReactNode, createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 import { cn } from '../../utils/cn';
@@ -55,11 +56,11 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
       exit={{ opacity: 0, x: 100, scale: 0.95 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       className={cn(
-        'flex items-start gap-3 p-4 rounded-xl border shadow-lg min-w-[320px] max-w-md',
+        'flex items-start gap-3 p-4 rounded-xl border shadow-lg min-w-[280px] max-w-md w-full sm:w-auto',
         toastColors[toast.type]
       )}
-      role="alert"
-      aria-live="polite"
+      role={toast.type === 'error' ? 'alert' : 'status'}
+      aria-live={toast.type === 'error' ? 'assertive' : 'polite'}
     >
       <div className="flex-shrink-0 mt-0.5">{toastIcons[toast.type]}</div>
       <div className="flex-1 min-w-0">
@@ -73,6 +74,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
         )}
         {toast.action && (
           <button
+            type="button"
             onClick={() => {
               toast.action?.onClick();
               onClose();
@@ -87,6 +89,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
         )}
       </div>
       <button
+        type="button"
         onClick={onClose}
         className={cn(
           'flex-shrink-0 p-1 rounded-lg transition-colors',
@@ -95,7 +98,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
         )}
         aria-label="Dismiss notification"
       >
-        <X className="w-4 h-4" />
+        <X className="w-4 h-4" aria-hidden="true" />
       </button>
     </motion.div>
   );
@@ -103,39 +106,54 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
-
-  const addToast = useCallback((toast: Omit<Toast, 'id'>) => {
-    const id = Math.random().toString(36).substring(2, 9);
-    const newToast = { ...toast, id };
-    setToasts((prev) => [...prev, newToast]);
-
-    if (toast.duration !== 0) {
-      setTimeout(() => {
-        setToasts((prev) => prev.filter((t) => t.id !== id));
-      }, toast.duration ?? 5000);
-    }
-
-    return id;
-  }, []);
+  const timers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   const removeToast = useCallback((id: string) => {
+    const timer = timers.current.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      timers.current.delete(id);
+    }
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
+  const addToast = useCallback(
+    (toast: Omit<Toast, 'id'>) => {
+      const id = Math.random().toString(36).substring(2, 9);
+      const newToast = { ...toast, id };
+      setToasts((prev) => [...prev.slice(-4), newToast]);
+
+      if (toast.duration !== 0) {
+        const timer = setTimeout(() => {
+          timers.current.delete(id);
+          setToasts((prev) => prev.filter((t) => t.id !== id));
+        }, toast.duration ?? 5000);
+        timers.current.set(id, timer);
+      }
+
+      return id;
+    },
+    []
+  );
+
   const clearToasts = useCallback(() => {
+    timers.current.forEach((timer) => clearTimeout(timer));
+    timers.current.clear();
     setToasts([]);
+  }, []);
+
+  // Clean up pending timers on unmount.
+  useEffect(() => {
+    const pending = timers.current;
+    return () => {
+      pending.forEach((timer) => clearTimeout(timer));
+      pending.clear();
+    };
   }, []);
 
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast, clearToasts }}>
       {children}
-      <AnimatePresence>
-        {toasts.map((toast) => (
-          <Fragment key={toast.id}>
-            <ToastItem toast={toast} onClose={() => removeToast(toast.id)} />
-          </Fragment>
-        ))}
-      </AnimatePresence>
     </ToastContext.Provider>
   );
 }
@@ -171,32 +189,39 @@ export function useToastHelpers() {
   return { success, error, warning, info };
 }
 
-// ToastContainer for rendering toasts at a specific position
-export function ToastContainer({ position = 'top-right' }: { position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center' }) {
+export type ToastPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
+
+// ToastContainer renders the toast stack at a fixed position (portaled to body).
+export function ToastContainer({ position = 'top-right' }: { position?: ToastPosition }) {
   const { toasts, removeToast } = useToast();
 
-  const positionClasses = {
-    'top-right': 'fixed top-4 right-4',
-    'top-left': 'fixed top-4 left-4',
-    'bottom-right': 'fixed bottom-4 right-4',
-    'bottom-left': 'fixed bottom-4 left-4',
-    'top-center': 'fixed top-4 left-1/2 -translate-x-1/2',
-    'bottom-center': 'fixed bottom-4 left-1/2 -translate-x-1/2',
+  const positionClasses: Record<ToastPosition, string> = {
+    'top-right': 'top-4 right-4 items-end',
+    'top-left': 'top-4 left-4 items-start',
+    'bottom-right': 'bottom-4 right-4 items-end',
+    'bottom-left': 'bottom-4 left-4 items-start',
+    'top-center': 'top-4 left-1/2 -translate-x-1/2 items-center',
+    'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2 items-center',
   };
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <div
       className={cn(
-        'flex flex-col gap-3 z-[700] pointer-events-none',
+        'fixed flex flex-col gap-3 z-[700] pointer-events-none max-w-[calc(100vw-2rem)]',
         positionClasses[position]
       )}
-      style={{ pointerEvents: 'none' }}
+      aria-live="polite"
     >
-      {toasts.map((toast) => (
-        <div key={toast.id} className="pointer-events-auto">
-          <ToastItem toast={toast} onClose={() => removeToast(toast.id)} />
-        </div>
-      ))}
-    </div>
+      <AnimatePresence>
+        {toasts.map((toast) => (
+          <div key={toast.id} className="pointer-events-auto w-full sm:w-auto">
+            <ToastItem toast={toast} onClose={() => removeToast(toast.id)} />
+          </div>
+        ))}
+      </AnimatePresence>
+    </div>,
+    document.body
   );
 }
