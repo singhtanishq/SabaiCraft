@@ -1,109 +1,69 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useWishlistStore } from '@store/wishlistStore';
-import { useCartStore } from '@store/cartStore';
 import { ProductCard } from '@components/product/ProductCard';
 import { Button } from '@components/ui/Button';
+import { EmptyWishlist } from '@components/ui/EmptyState';
+import type { Product } from '@app-types';
 
 export function WishlistPage() {
-  const { items, toggleItem } = useWishlistStore();
-  const { addItem } = useCartStore();
+  const { items } = useWishlistStore();
+  const navigate = useNavigate();
 
-  const handleAddToCart = (product: any) => {
-    addItem(product, product.variants[0], 1);
-  };
+  useEffect(() => {
+    document.title = 'My Wishlist | SabaiCraft';
+  }, []);
 
-  const handleWishlist = (product: any) => {
-    toggleItem(product, product.variants[0]);
-  };
-
-  if (items.length === 0) {
-    return (
-      <div className="min-h-screen bg-cream-50 py-16 lg:py-24">
-        <div className="container-main">
-          <p className="text-center text-olive-600 text-body-lg mb-8">
-            Your wishlist is empty
-          </p>
-          <Button asChild variant="primary">
-            <Link to="/shop">Continue Shopping</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  // Wishlist entries synced from the backend should always embed a product;
+  // guard anyway so one malformed entry cannot break the page.
+  const savedItems = items.filter((item) => !!item.product?.variants);
 
   return (
-    <div className="min-h-screen bg-cream-50 py-8 lg:py-12">
+    <div className="bg-cream-50 py-8 lg:py-12">
       <div className="container-main">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="heading-1 flex items-center gap-3">
-                <Heart className="w-8 h-8 text-red-500" />
-                My Wishlist
-              </h1>
-              <p className="text-olive-600 text-body-lg mt-1">
-                {items.length} item{items.length !== 1 ? 's' : ''} saved for later
-              </p>
+        {savedItems.length === 0 ? (
+          <EmptyWishlist onBrowseProducts={() => navigate('/shop')} />
+        ) : (
+          <>
+            {/* Header */}
+            <div className="mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h1 className="heading-1 flex items-center gap-3">
+                    <Heart className="w-8 h-8 text-red-500 fill-current" aria-hidden="true" />
+                    My Wishlist
+                  </h1>
+                  <p className="text-olive-600 text-body-lg mt-1">
+                    {savedItems.length} item{savedItems.length !== 1 ? 's' : ''} saved for later
+                  </p>
+                </div>
+                <Button asChild variant="primary">
+                  <Link to="/shop">Continue Shopping</Link>
+                </Button>
+              </div>
             </div>
-            <Button asChild variant="primary">
-              <Link to="/shop">Continue Shopping</Link>
-            </Button>
-          </div>
-        </motion.div>
 
-        {/* Wishlist Items */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          role="list"
-        >
-          {items.map((item: any, index: number) => (
-            <motion.article
-              key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.08 }}
-              exit={{ opacity: 0, x: -20 }}
+            {/* Wishlist Items */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              role="list"
             >
-              <ProductCard
-                product={item.product}
-                index={0}
-                variant="grid"
-                onAddToCart={handleAddToCart}
-                onToggleWishlist={handleWishlist}
-              />
-            </motion.article>
-          ))}
-        </motion.div>
-
-        {/* Move all to cart */}
-        {items.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-10 text-center"
-          >
-            <Button
-              variant="secondary"
-              size="lg"
-              onClick={() => {
-                items.forEach((item) => addItem(item.product, item.product.variants[0], 1));
-              }}
-              className="w-full sm:w-auto"
-            >
-              <ShoppingBag className="w-5 h-5 mr-2" />
-              Add All to Cart ({items.length} items)
-            </Button>
-          </motion.div>
+              {savedItems.map((item, index) => (
+                <motion.article
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.06 }}
+                >
+                  <ProductCard product={item.product as Product} index={index} />
+                </motion.article>
+              ))}
+            </motion.div>
+          </>
         )}
       </div>
     </div>
