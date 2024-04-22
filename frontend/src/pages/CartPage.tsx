@@ -1,22 +1,22 @@
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { X, Plus, Minus, Trash2, ArrowRight, Shield, Truck, RotateCcw } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Minus, Trash2, ArrowRight, Shield, Truck, RotateCcw } from 'lucide-react';
 import { useCartStore } from '@store/cartStore';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
-import { Badge } from '@components/ui/Badge';
 import { formatPrice } from '@utils/format'
 import { cn } from '@utils/cn';
 import { EmptyCart } from '@components/ui/EmptyState';
 
 export function CartPage() {
+  const navigate = useNavigate();
   const { cart, removeItem, updateQuantity, getSubtotal, clearCart } = useCartStore();
 
   if (!cart || cart.items.length === 0) {
     return (
-      <div className="min-h-screen bg-cream-50 py-16 lg:py-24">
+      <div className="bg-cream-50 py-16 lg:py-24">
         <div className="container-main">
-          <EmptyCart onContinueShopping={() => window.location.href = '/shop'} />
+          <EmptyCart onContinueShopping={() => navigate('/shop')} />
         </div>
       </div>
     );

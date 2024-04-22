@@ -3,14 +3,20 @@ import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { cn } from '../../utils/cn';
-import { categories } from '../../data/products';
+import { categories as fallbackCategories } from '../../data/products';
+import type { Category } from '../../types';
 
 interface CategoriesProps {
   title?: string;
   subtitle?: string;
+  categories?: Category[];
 }
 
-export function Categories({ title = 'Shop by Category', subtitle = 'Explore our handcrafted collections' }: CategoriesProps) {
+export function Categories({
+  title = 'Shop by Category',
+  subtitle = 'Explore our handcrafted collections',
+  categories = fallbackCategories,
+}: CategoriesProps) {
   return (
     <section className="section-lg bg-olive-50/50" aria-labelledby="categories-heading">
       <div className="container-main">
