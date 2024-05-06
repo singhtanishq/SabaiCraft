@@ -4,7 +4,7 @@ export interface User {
   name: string;
   phone?: string;
   avatar?: string;
-  role: 'customer' | 'admin';
+  role: 'CUSTOMER' | 'ADMIN';
   createdAt: string;
   updatedAt: string;
 }
@@ -119,9 +119,9 @@ export interface Order {
   id: string;
   userId: string;
   orderNumber: string;
-  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
-  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded' | 'cod';
-  paymentMethod: 'card' | 'upi' | 'netbanking' | 'wallet' | 'cod';
+  status: 'PENDING' | 'CONFIRMED' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'REFUNDED';
+  paymentStatus: 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED' | 'COD';
+  paymentMethod: 'CARD' | 'UPI' | 'NETBANKING' | 'WALLET' | 'COD';
   items: OrderItem[];
   subtotal: number;
   discount: number;
