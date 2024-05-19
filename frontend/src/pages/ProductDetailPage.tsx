@@ -74,8 +74,9 @@ export function ProductDetailPage() {
         const response = await api.getProductBySlug(slug);
         if (cancelled) return;
         const data = response.data as any;
-        const { related: _related, ...rawProduct } = data;
+        const { related, ...rawProduct } = data;
         setProduct(normalizeProduct(rawProduct));
+        setRelatedProducts((related ?? []).map(normalizeProduct));
         setReviews((data.reviews ?? []) as ReviewWithName[]);
         document.title = `${rawProduct.name} | SabaiCraft`;
       } catch {
@@ -84,6 +85,12 @@ export function ProductDetailPage() {
         if (cancelled) return;
         if (localProduct) {
           setProduct(localProduct);
+          const category = localCategories.find((c) => c.id === localProduct.categoryId);
+          setRelatedProducts(
+            localProducts
+              .filter((p) => p.categoryId === localProduct.categoryId && p.id !== localProduct.id)
+              .slice(0, 4)
+          );
           setReviews([]);
           document.title = `${localProduct.name} | SabaiCraft`;
         } else {

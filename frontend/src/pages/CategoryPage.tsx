@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight, Grid, List, Filter, Search, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronDown, Grid, List, Filter, Search, ChevronLeft } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useCatalog, searchLocalProducts, sortProducts } from '@hooks/useCatalog';
 import { ProductCard } from '@components/product/ProductCard';
