@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ChevronRight, ShoppingBag, Heart, Star, Truck, Shield, RotateCcw, CheckCircle, ImageOff } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '@services/api';
-import { getProductBySlug, categories as localCategories } from '@data/products';
+import { getProductBySlug, getRelatedProducts, products as localProducts, categories as localCategories } from '@data/products';
 import { normalizeProduct } from '@hooks/useCatalog';
 import { ProductCard } from '@components/product/ProductCard';
 import { Button } from '@components/ui/Button';
@@ -54,6 +54,7 @@ export function ProductDetailPage() {
   const [notFound, setNotFound] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<ReviewWithName[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -152,14 +153,13 @@ export function ProductDetailPage() {
   const inStock = hasVariant && variant!.inventory > 0;
   const lowStock = inStock && variant!.inventory <= 5;
 
-  const relatedProducts = product
-    ? product.relatedOverride
-    : [];
-
   const categorySlug = product.category?.slug ?? localCategories.find((c) => c.id === product.categoryId)?.slug;
   const categoryName = product.category?.name ?? localCategories.find((c) => c.id === product.categoryId)?.name;
 
-  const related = relatedProducts.length > 0 ? relatedProducts : [];
+  // Local fallback dataset has no embedded related list — derive it.
+  const related = relatedProducts.length > 0
+    ? relatedProducts
+    : getRelatedProducts(product.id, product.categoryId, 4);
 
   const handleAddToCart = () => {
     if (!hasVariant || !inStock) return;
