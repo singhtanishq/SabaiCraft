@@ -184,33 +184,6 @@ router.get('/:slug', async (req, res, next) => {
   }
 });
 
-// Search suggestions
-router.get('/search/suggestions', async (req, res, next) => {
-  try {
-    const { q } = req.query;
-    if (!q || (q as string).length < 2) {
-      return res.json({ success: true, data: [] });
-    }
-
-    const query = q as string;
-    const products = await prisma.product.findMany({
-      where: {
-        isActive: true,
-        OR: [
-          { name: { contains: query } },
-          { tags: { contains: query } },
-        ],
-      },
-      select: { id: true, name: true, slug: true, images: { take: 1 }, basePrice: true },
-      take: 5,
-    });
-
-    res.json({ success: true, data: products });
-  } catch (error) {
-    next(error);
-  }
-});
-
 // Admin: Create product
 router.post('/', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
