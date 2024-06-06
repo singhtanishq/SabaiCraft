@@ -236,24 +236,82 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res, next) => {
   }
 });
 
-// Admin: Update product
+// Admin: Update product (whitelisted fields only — never pass raw body to Prisma)
 router.put('/:id', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
-    const product = await prisma.product.update({
-      where: { id: req.params.id as string },
-      data: req.body,
-      include: { images: true, variants: true },
+    const schema = z.object({
+      name: z.string().min(1).optional(),
+      slug: z.string().min(1).optional(),
+      description: z.string().min(1).optional(),
+      shortDescription: z.string().optional(),
+      categoryId: z.string().optional(),
+      basePrice: z.number().int().positive().optional(),
+      compareAtPrice: z.number().int().positive().nullable().optional(),
+      isActive: z.boolean().optional(),
+      isFeatured: z.boolean().optional(),
+      tags: z.array(z.string()).optional(),
+      images: z.array(z.object({
+        id: z.string().optional(),
+        url: z.string().url(),
+        alt: z.string(),
+        position: z.number().int(),
+      })).optional(),
+      variants: z.array(z.object({
+        id: z.string().optional(),
+        name: z.string(),
+        sku: z.string(),
+        price: z.number().int().positive(),
+        compareAtPrice: z.number().int().positive().nullable().optional(),
+        inventory: z.number().int().nonnegative(),
+        image: z.string().optional(),
+        attributes: z.string(),
+      })).optional(),
     });
+    const data = schema.parse(req.body);
+
+    const { images, variants, tags, ...scalarData } = data;
+    if (tags !== undefined) {
+      (scalarData as any).tags = tags.join(',');
+    }
+
+    const product = await prisma.$transaction(async (tx) => {
+      // Replace image/variant sets when provided.
+      if (images) {
+        await tx.productImage.deleteMany({ where: { productId: req.params.id as string } });
+        if (images.length > 0) {
+          await tx.productImage.createMany({
+            data: images.map((img) => ({ ...img, productId: req.params.id as string })),
+          });
+        }
+      }
+      if (variants) {
+        await tx.productVariant.deleteMany({ where: { productId: req.params.id as string } });
+        if (variants.length > 0) {
+          await tx.productVariant.createMany({
+            data: variants.map((v) => ({ ...v, productId: req.params.id as string })),
+          });
+        }
+      }
+      return tx.product.update({
+        where: { id: req.params.id as string },
+        data: scalarData,
+        include: { images: true, variants: true },
+      });
+    });
+
     res.json({ success: true, data: product });
   } catch (error) {
     next(error);
   }
 });
 
-// Admin: Delete product
+// Admin: Delete product (soft delete keeps order history references intact)
 router.delete('/:id', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
-    await prisma.product.delete({ where: { id: req.params.id as string } });
+    await prisma.product.update({
+      where: { id: req.params.id as string },
+      data: { isActive: false },
+    });
     res.json({ success: true, message: 'Product deleted' });
   } catch (error) {
     next(error);
