@@ -97,9 +97,20 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
     const tax = Math.round(subtotal * 0.18);
     const total = subtotal + shipping + tax;
 
-    // Get shipping address
+    // Get shipping address and verify ownership
     const shippingAddress = await prisma.address.findUnique({ where: { id: data.shippingAddressId } });
     if (!shippingAddress) throw new AppError(404, 'Shipping address not found');
+    if (shippingAddress.userId !== req.user!.id) {
+      throw new AppError(403, 'Not authorized to use this address');
+    }
+
+    if (data.billingAddressId && data.billingAddressId !== data.shippingAddressId) {
+      const billingAddress = await prisma.address.findUnique({ where: { id: data.billingAddressId } });
+      if (!billingAddress) throw new AppError(404, 'Billing address not found');
+      if (billingAddress.userId !== req.user!.id) {
+        throw new AppError(403, 'Not authorized to use this address');
+      }
+    }
 
     const billingAddressId = data.billingAddressId || data.shippingAddressId;
 
