@@ -149,12 +149,17 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
         include: { items: true, shippingAddress: true },
       });
 
-      // Update inventory
+      // Update inventory with a conditional decrement so concurrent orders
+      // cannot drive stock negative — rolls back the whole order if any
+      // variant is short.
       for (const item of cart.items) {
-        await tx.productVariant.update({
-          where: { id: item.variantId },
+        const updated = await tx.productVariant.updateMany({
+          where: { id: item.variantId, inventory: { gte: item.quantity } },
           data: { inventory: { decrement: item.quantity } },
         });
+        if (updated.count !== 1) {
+          throw new AppError(409, `Insufficient inventory for ${item.product.name}`);
+        }
       }
 
       // Clear cart
