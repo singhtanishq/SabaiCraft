@@ -43,6 +43,13 @@ export const errorHandler = (
         message: `${field} already exists`,
       });
     }
+    if (err.code === 'P2003') {
+      // Foreign key constraint — e.g. deleting an address referenced by an order.
+      return res.status(409).json({
+        success: false,
+        message: 'This record is referenced by other data and cannot be deleted',
+      });
+    }
     if (err.code === 'P2025') {
       return res.status(404).json({
         success: false,
