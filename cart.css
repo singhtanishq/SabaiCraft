@@ -189,7 +189,6 @@ header h1 {
     margin-top: 5px;
 }
 
-/* cart.css */
 .progress-tracker {
     display: flex;
     justify-content: space-around;
@@ -215,11 +214,11 @@ header h1 {
     content: "";
     position: absolute;
     height: 4px;
-    width: calc(100% + 1px); /* Adjust the line length as needed */
+    width: calc(100% + 1px); 
     background-color: #606C38;
     top: 50%;
     left: 200%;
-    transform: translate(-100%, -1px); /* Adjust the translation to center the line */
+    transform: translate(-100%, -1px); 
 }
 
 .step-active {
@@ -236,9 +235,9 @@ header h1 {
     content: "";
     position: absolute;
     height: 4px;
-    width: calc(100% + 1px); /* Adjust the line length as needed */
+    width: calc(100% + 1px); 
     background-color: #606C38;
     top: 50%;
     left: 200%;
-    transform: translate(-100%, -1px); /* Adjust the translation to center the line */
+    transform: translate(-100%, -1px); 
 }
