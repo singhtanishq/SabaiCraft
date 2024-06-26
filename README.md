@@ -1,4 +1,4 @@
-# E-Commerce Website
+# SabaiCraft : An Ecommerce Platform
 This project aims to demostrate an e-commerce website using HTML, CSS and JavaScript. 
 
 To view the E-commerce Webpage LIVE on browser [click here](https://singhtanishq.github.io/ecommerce/index.html) (Desktop recommended)
