@@ -213,7 +213,34 @@ router.post('/coupons', async (req, res, next) => {
 
 router.put('/coupons/:id', async (req, res, next) => {
   try {
-    const coupon = await prisma.coupon.update({ where: { id: req.params.id as string }, data: req.body });
+    const schema = z.object({
+      code: z.string().min(1).toUpperCase().optional(),
+      description: z.string().optional(),
+      type: z.enum(['percentage', 'fixed']).optional(),
+      value: z.number().int().positive().optional(),
+      minOrderAmount: z.number().int().positive().optional(),
+      maxDiscount: z.number().int().positive().optional(),
+      usageLimit: z.number().int().positive().optional(),
+      userLimit: z.number().int().positive().optional(),
+      validFrom: z.string().datetime().optional(),
+      validUntil: z.string().datetime().optional(),
+      isActive: z.boolean().optional(),
+      applicableCategories: z.array(z.string()).optional(),
+      applicableProducts: z.array(z.string()).optional(),
+    });
+    const data = schema.parse(req.body);
+
+    const { validFrom, validUntil, applicableCategories, applicableProducts, ...scalarData } = data;
+    const updateData: Record<string, unknown> = { ...scalarData };
+    if (validFrom !== undefined) updateData.validFrom = new Date(validFrom);
+    if (validUntil !== undefined) updateData.validUntil = new Date(validUntil);
+    if (applicableCategories !== undefined) updateData.applicableCategories = applicableCategories.join(',');
+    if (applicableProducts !== undefined) updateData.applicableProducts = applicableProducts.join(',');
+
+    const coupon = await prisma.coupon.update({
+      where: { id: req.params.id as string },
+      data: updateData,
+    });
     res.json({ success: true, data: coupon });
   } catch (error) {
     next(error);
