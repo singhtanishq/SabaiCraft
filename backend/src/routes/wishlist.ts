@@ -32,16 +32,23 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
     });
     const data = schema.parse(req.body);
 
-    // Check if already in wishlist
-    const existing = await prisma.wishlistItem.findUnique({
-      where: { userId_productId_variantId: { userId: req.user!.id, productId: data.productId, variantId: data.variantId } },
-    });
+    // variantId is nullable in the compound unique key; undefined must be
+    // normalized to null or Prisma throws on the where clause.
+    const matchWhere = {
+      userId_productId_variantId: {
+        userId: req.user!.id,
+        productId: data.productId,
+        variantId: data.variantId ?? null,
+      },
+    };
+
+    const existing = await prisma.wishlistItem.findUnique({ where: matchWhere });
     if (existing) {
       return res.json({ success: true, data: existing, message: 'Already in wishlist' });
     }
 
     const item = await prisma.wishlistItem.create({
-      data: { userId: req.user!.id, productId: data.productId, variantId: data.variantId },
+      data: { userId: req.user!.id, productId: data.productId, variantId: data.variantId ?? null },
       include: { product: { include: { images: { take: 1 } } } },
     });
 

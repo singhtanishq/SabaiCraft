@@ -115,10 +115,22 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res, next) => {
   }
 });
 
-// Admin: Update category
+// Admin: Update category (whitelisted fields only)
 router.put('/:id', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
-    const category = await prisma.category.update({ where: { id: req.params.id as string }, data: req.body });
+    const schema = z.object({
+      name: z.string().min(1).optional(),
+      slug: z.string().min(1).optional(),
+      description: z.string().optional(),
+      image: z.string().url().optional(),
+      parentId: z.string().nullable().optional(),
+    });
+    const data = schema.parse(req.body);
+
+    const category = await prisma.category.update({
+      where: { id: req.params.id as string },
+      data,
+    });
     res.json({ success: true, data: category });
   } catch (error) {
     next(error);
