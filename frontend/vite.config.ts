@@ -20,4 +20,17 @@ export default defineConfig({
       '@data': path.resolve(__dirname, './src/data'),
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'framework', test: /node_modules\/(react|react-dom|react-router|scheduler)[\/\\]/ },
+            { name: 'motion', test: /node_modules\/(framer-motion|motion)[\/\\]/ },
+            { name: 'vendor', test: /node_modules\// },
+          ],
+        },
+      },
+    },
+  },
 })
