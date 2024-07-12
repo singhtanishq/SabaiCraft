@@ -15,7 +15,7 @@ import wishlistRoutes from './routes/wishlist';
 import userRoutes from './routes/user';
 import adminRoutes from './routes/admin';
 import { errorHandler } from './middleware/errorHandler';
-import { authMiddleware } from './middleware/auth';
+import { authMiddleware, optionalAuthMiddleware } from './middleware/auth';
 
 dotenv.config();
 
@@ -72,7 +72,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', apiLimiter, productRoutes);
 app.use('/api/categories', apiLimiter, categoryRoutes);
-app.use('/api/cart', apiLimiter, cartRoutes);
+app.use('/api/cart', apiLimiter, optionalAuthMiddleware, cartRoutes);
 app.use('/api/orders', apiLimiter, authMiddleware, orderRoutes);
 app.use('/api/wishlist', apiLimiter, authMiddleware, wishlistRoutes);
 app.use('/api/user', apiLimiter, authMiddleware, userRoutes);
