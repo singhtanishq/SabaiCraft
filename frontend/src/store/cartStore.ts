@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { api } from '../services/api';
+import { normalizeVariant } from '../utils/normalize';
 import type { Cart, CartItem, Product, ProductVariant } from '../types';
 
 interface CartState {
@@ -50,7 +51,7 @@ const transformBackendCart = (backendCart: any): Cart => {
     productId: item.productId,
     product: item.product,
     variantId: item.variantId,
-    variant: item.variant,
+    variant: normalizeVariant(item.variant),
     quantity: item.quantity,
   }));
   return {
