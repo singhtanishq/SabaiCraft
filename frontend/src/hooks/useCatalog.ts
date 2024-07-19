@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '@services/api';
+import { normalizeVariant } from '@utils/normalize';
 import { products as localProducts, categories as localCategories } from '@data/products';
 import type { Category, Product, ProductVariant } from '@app-types';
 
@@ -9,32 +10,6 @@ import type { Category, Product, ProductVariant } from '@app-types';
  * unreachable (e.g. backend not started). Exposes loading/error state so
  * pages can render skeletons or error banners.
  */
-
-function safeParseAttributes(raw: unknown): Record<string, string> {
-  if (raw && typeof raw === 'object') return raw as Record<string, string>;
-  if (typeof raw === 'string') {
-    try {
-      const parsed = JSON.parse(raw);
-      return parsed && typeof parsed === 'object' ? parsed : {};
-    } catch {
-      return {};
-    }
-  }
-  return {};
-}
-
-function normalizeVariant(v: any): ProductVariant {
-  return {
-    id: v.id,
-    name: v.name,
-    sku: v.sku,
-    price: v.price,
-    compareAtPrice: v.compareAtPrice ?? undefined,
-    inventory: v.inventory ?? 0,
-    image: v.image ?? undefined,
-    attributes: safeParseAttributes(v.attributes),
-  };
-}
 
 export function normalizeProduct(p: any): Product {
   return {

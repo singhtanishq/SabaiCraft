@@ -568,7 +568,7 @@ export function CheckoutPage() {
                   />
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-olive-900 text-body-sm truncate">{item.product.name}</p>
-                    <p className="text-caption text-olive-500">{Object.values(item.variant.attributes).join(' / ')}</p>
+                    <p className="text-caption text-olive-500">{Object.values(item.variant.attributes).join(' / ') || item.variant.name}</p>
                     <p className="font-medium text-olive-900 text-body-sm">{formatPrice(item.variant.price * item.quantity)}</p>
                   </div>
                   <span className="text-caption text-olive-500 self-center">×{item.quantity}</span>
