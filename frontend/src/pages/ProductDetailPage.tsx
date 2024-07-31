@@ -17,7 +17,6 @@ import { cn } from '@utils/cn';
 import { useCartStore } from '@store/cartStore';
 import { useWishlistStore } from '@store/wishlistStore';
 import { useToastHelpers } from '@components/ui';
-import { useAuthStore } from '@store/authStore';
 import type { Product, ProductVariant, Review } from '@app-types';
 
 interface ReviewWithName extends Review {
@@ -46,8 +45,7 @@ export function ProductDetailPage() {
   const navigate = useNavigate();
   const { addItem, openCart } = useCartStore();
   const { toggleItem, isInWishlist } = useWishlistStore();
-  const { isAuthenticated } = useAuthStore();
-  const { success, error: toastError } = useToastHelpers();
+  const { success } = useToastHelpers();
 
   // All hooks run unconditionally and before any early return.
   const [isLoading, setIsLoading] = useState(true);
