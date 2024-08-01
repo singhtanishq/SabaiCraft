@@ -106,7 +106,7 @@ return (
               <Mail className="w-4 h-4 text-sabai-300" />
               <span className="text-body-sm font-medium">Get in Touch</span>
             </div>
-            <h1 className="heading-display text-display-md lg:text-display-lg mb-4 text-balance">
+            <h1 className="heading-display text-cream-50 text-display-md lg:text-display-lg mb-4 text-balance">
               We&apos;d Love to Hear from You
             </h1>
             <p className="body-lg text-olive-300 max-w-2xl mx-auto text-pretty">
