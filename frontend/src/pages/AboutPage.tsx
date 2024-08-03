@@ -84,8 +84,7 @@ export function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
               className="space-y-6"
             >
@@ -95,8 +94,7 @@ export function AboutPage() {
                   <motion.p
                     key={index}
                     initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
                     className="body-lg leading-relaxed"
                   >
@@ -108,8 +106,7 @@ export function AboutPage() {
 
             <motion.div
               initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
@@ -117,8 +114,7 @@ export function AboutPage() {
                   <motion.article
                     key={value.title}
                     initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.3 + index * 0.08 }}
                     className="card p-6 h-full"
                   >
@@ -144,8 +140,7 @@ export function AboutPage() {
         <div className="container-main">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="text-center max-w-2xl mx-auto mb-12 lg:mb-16"
           >
@@ -158,8 +153,7 @@ export function AboutPage() {
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
                 className="card p-8 text-center"
               >
@@ -178,8 +172,7 @@ export function AboutPage() {
         <div className="container-main">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="text-center max-w-2xl mx-auto mb-12 lg:mb-16"
           >
@@ -192,8 +185,7 @@ export function AboutPage() {
               <motion.article
                 key={member.name}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
                 className="card p-6 text-center"
               >
@@ -214,8 +206,7 @@ export function AboutPage() {
         <div className="container-main">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="text-center max-w-2xl mx-auto mb-12 lg:mb-16"
           >
@@ -233,8 +224,7 @@ export function AboutPage() {
               <motion.article
                 key={step.title}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
                 className="card p-6 relative"
               >
@@ -259,8 +249,7 @@ export function AboutPage() {
         <div className="container-main">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             className="relative rounded-3xl overflow-hidden bg-olive-950 text-cream-50 p-8 lg:p-16 text-center"
           >
             <div className="absolute inset-0 bg-[url('/Images/sabai mascot.png')] bg-center bg-cover opacity-[0.05]" />

@@ -181,8 +181,7 @@ export function FeaturedProducts({
       <div className="container-main">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto mb-12 lg:mb-16"
         >
@@ -194,8 +193,7 @@ export function FeaturedProducts({
 
         <motion.div
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-100px' }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
           role="list"
@@ -208,8 +206,7 @@ export function FeaturedProducts({
         {showViewAll && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-center mt-10 lg:mt-12"
           >

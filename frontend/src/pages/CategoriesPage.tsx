@@ -68,8 +68,7 @@ export function CategoriesPage() {
                 <motion.article
                   key={category.id}
                   initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-50px' }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
                   className="group"
                 >
@@ -151,8 +150,7 @@ export function CategoriesPage() {
           {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             className="mt-16 lg:mt-20 text-center"
           >
             <div className="max-w-2xl mx-auto">

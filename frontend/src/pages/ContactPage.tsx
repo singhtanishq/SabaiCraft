@@ -123,8 +123,7 @@ return (
             {/* Contact Info */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, x: 0 }}
               className="lg:col-span-1 space-y-6 min-w-0"
             >
               <Card padding="lg" className="h-full">
@@ -134,8 +133,7 @@ return (
                     <motion.div
                       key={info.title}
                       initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
+                      animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                       className="flex gap-4"
                     >
@@ -179,8 +177,7 @@ return (
             {/* Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, x: 0 }}
               className="lg:col-span-2 min-w-0"
             >
               <Card padding="lg">
@@ -256,8 +253,7 @@ return (
           {/* FAQ Section */}
           <motion.section
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             className="mt-16 lg:mt-20"
           >
             <div className="text-center max-w-2xl mx-auto mb-12">
@@ -271,8 +267,7 @@ return (
                   <motion.article
                     key={faq.question}
                     initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
                     className="card p-6"
                   >
