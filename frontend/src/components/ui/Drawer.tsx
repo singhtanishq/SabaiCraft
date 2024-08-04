@@ -133,7 +133,7 @@ export function Drawer({
               x: isBottom ? 0 : position === 'left' ? -300 : 300,
               y: isBottom ? 300 : 0,
             }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
             className={cn(
               'fixed z-[400] flex flex-col bg-white shadow-elevated focus:outline-none',
               positionClasses[position],

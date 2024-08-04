@@ -54,7 +54,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
       initial={{ opacity: 0, x: 100, scale: 0.95 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: 100, scale: 0.95 }}
-      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
       className={cn(
         'flex items-start gap-3 p-4 rounded-xl border shadow-lg min-w-[280px] max-w-md w-full sm:w-auto',
         toastColors[toast.type]
