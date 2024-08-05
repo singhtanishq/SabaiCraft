@@ -19,8 +19,8 @@ export interface DrawerProps {
 }
 
 const positionClasses = {
-  left: 'left-0',
-  right: 'right-0',
+  left: 'left-0 top-0 bottom-0 h-full',
+  right: 'right-0 top-0 bottom-0 h-full',
   bottom: 'bottom-0 left-0 right-0',
 };
 
