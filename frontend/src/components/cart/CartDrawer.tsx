@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Plus, Minus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Plus, Minus, Trash2, ShoppingBag, ArrowRight, ImageOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { Button } from '../ui/Button';
@@ -57,12 +57,18 @@ export function CartDrawer() {
                   className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-white"
                   aria-label={`View ${item.product.name}`}
                 >
-                  <img
-                    src={item.product.images[0]?.url}
-                    alt={item.product.name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
+                  {item.product.images[0]?.url ? (
+                    <img
+                      src={item.product.images[0].url}
+                      alt={item.product.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="w-full h-full flex items-center justify-center text-olive-300">
+                      <ImageOff className="w-5 h-5" aria-hidden="true" />
+                    </span>
+                  )}
                 </Link>
 
                 <div className="flex-1 min-w-0 flex flex-col justify-between">
