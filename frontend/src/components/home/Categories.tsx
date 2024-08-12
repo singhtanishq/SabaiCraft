@@ -36,7 +36,6 @@ export function Categories({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6"
-          role="list"
         >
           {categories.map((category, index) => (
             <motion.article
