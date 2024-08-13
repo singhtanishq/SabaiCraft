@@ -196,7 +196,6 @@ export function FeaturedProducts({
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
-          role="list"
         >
           {products.slice(0, 8).map((product, index) => (
             <ProductCard key={product.id} product={product} index={index} />
