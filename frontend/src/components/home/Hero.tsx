@@ -10,7 +10,7 @@ export function Hero() {
       {/* Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-olive-50 via-cream-50 to-sage-50" />
-        <div className="absolute inset-0 bg-[url('/Images/sabai mascot.png')] bg-center bg-cover opacity-[0.02]" />
+        <div className="absolute inset-0 bg-[url('/Images/sabai-mascot.png')] bg-center bg-cover opacity-[0.02]" />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-olive-950/5 via-transparent to-sage-600/5" />
       </div>
 
