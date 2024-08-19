@@ -32,7 +32,7 @@ export function Newsletter() {
   return (
     <section className="section-lg relative overflow-hidden" aria-labelledby="newsletter-heading">
       <div className="absolute inset-0 bg-gradient-to-br from-olive-950 via-olive-900 to-sage-800" />
-      <div className="absolute inset-0 bg-[url('/Images/sabai mascot.png')] bg-center bg-cover opacity-[0.03]" />
+      <div className="absolute inset-0 bg-[url('/Images/sabai-mascot.png')] bg-center bg-cover opacity-[0.03]" />
 
       <div className="container-main relative">
         <motion.div
