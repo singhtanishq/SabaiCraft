@@ -15,7 +15,9 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <ToastProvider>
-      <div className="min-h-screen flex flex-col">
+      {/* overflow-x-clip keeps decorative/reveal offsets from creating
+          horizontal scroll without clipping the fixed header */}
+      <div className="min-h-screen flex flex-col overflow-x-clip">
         <Header onMenuClick={() => setMobileDrawerOpen(true)} />
         <MobileDrawer isOpen={mobileDrawerOpen} onClose={() => setMobileDrawerOpen(false)} />
         <main id="main-content" className="flex-1 flex flex-col pt-16 lg:pt-20">
