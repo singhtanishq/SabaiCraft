@@ -51,9 +51,12 @@ export function MobileDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     navigate('/');
   };
 
-  const linkClasses = (isActive: boolean) =>
+  const linkClasses = (isActive: boolean, justified = true) =>
     cn(
-      'flex items-center justify-between px-3 py-3 rounded-lg transition-colors',
+      'flex items-center px-3 py-3 rounded-lg transition-colors',
+      // Main nav links carry a trailing chevron and justify across the row;
+      // account links have no chevron and keep icon + label together.
+      justified && 'justify-between',
       isActive
         ? 'bg-sage-50 text-olive-950 font-medium'
         : 'text-olive-600 hover:bg-olive-50 hover:text-olive-950'
@@ -149,10 +152,10 @@ export function MobileDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: ()
               const isActive = location.pathname.startsWith(link.href);
               return (
                 <Link
-                  key={link.name}
+                  key={link.href}
                   to={link.href}
                   onClick={onClose}
-                  className={cn(linkClasses(isActive), 'gap-3')}
+                  className={cn(linkClasses(isActive, false), 'gap-3')}
                 >
                   <link.icon className="w-5 h-5 text-olive-400" aria-hidden="true" />
                   <span className="font-medium text-body-sm">{link.name}</span>
