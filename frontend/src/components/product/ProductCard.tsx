@@ -121,7 +121,7 @@ export function ProductCard({
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: index * 0.06 }}
-        className="card flex gap-4 sm:gap-6 p-4 relative"
+        className="card group flex gap-4 sm:gap-6 p-4 relative"
       >
         <Link
           to={`/product/${product.slug}`}
