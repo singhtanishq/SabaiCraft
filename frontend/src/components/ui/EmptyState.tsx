@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/cn';
 
 export interface EmptyStateProps {
@@ -13,6 +14,8 @@ export interface EmptyStateProps {
   };
   className?: string;
   illustration?: ReactNode;
+  /** Heading element for the title; defaults to h3. Use h1 for full-page states. */
+  headingLevel?: 'h1' | 'h2' | 'h3' | 'h4';
 }
 
 const illustrations = {
@@ -153,6 +156,7 @@ export function EmptyState({
   action,
   className,
   illustration,
+  headingLevel: Heading = 'h3',
 }: EmptyStateProps) {
   return (
     <div
@@ -176,9 +180,9 @@ export function EmptyState({
         transition={{ type: 'spring', damping: 20, stiffness: 100, delay: 0.2 }}
         className="max-w-sm"
       >
-        <h3 className="font-display font-medium text-olive-950 text-heading-lg mb-2">
+        <Heading className="font-display font-medium text-olive-950 text-heading-lg mb-2">
           {title}
-        </h3>
+        </Heading>
         {description && (
           <p className="text-body text-olive-600 mb-6">{description}</p>
         )}
@@ -235,6 +239,7 @@ export function EmptyWishlist({ onBrowseProducts }: { onBrowseProducts: () => vo
 }
 
 export function EmptySearch({ query }: { query: string }) {
+  const navigate = useNavigate();
   return (
     <EmptyState
       illustration={illustrations.search}
@@ -242,7 +247,7 @@ export function EmptySearch({ query }: { query: string }) {
       description={`We couldn't find any products matching "${query}". Try adjusting your search or browse our categories.`}
       action={{
         label: 'Clear Search',
-        onClick: () => window.location.href = '/shop',
+        onClick: () => navigate('/shop'),
         variant: 'outline',
       }}
     />
