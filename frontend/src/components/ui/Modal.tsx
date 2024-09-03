@@ -15,6 +15,8 @@ export interface ModalProps {
   closeOnOverlayClick?: boolean;
   closeOnEscape?: boolean;
   className?: string;
+  /** Accessible name for dialogs without a visible title. */
+  ariaLabel?: string;
 }
 
 const sizeClasses = {
@@ -36,6 +38,7 @@ export function Modal({
   closeOnOverlayClick = true,
   closeOnEscape = true,
   className,
+  ariaLabel,
 }: ModalProps) {
   const idPrefix = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -113,6 +116,7 @@ export function Modal({
             )}
             role="dialog"
             aria-modal="true"
+            aria-label={!title ? ariaLabel : undefined}
             aria-labelledby={title ? titleId : undefined}
             aria-describedby={description ? descriptionId : undefined}
           >
