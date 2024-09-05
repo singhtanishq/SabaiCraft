@@ -385,6 +385,12 @@ export const products: Product[] = [
   ),
 ];
 
+// Derive category counts from the actual mock catalog so the fallback dataset
+// never advertises more products per category than it really contains.
+for (const category of categories) {
+  category.productCount = products.filter((p) => p.categoryId === category.id && p.isActive).length;
+}
+
 export function getProductById(id: string): Product | undefined {
   return products.find((p) => p.id === id);
 }
