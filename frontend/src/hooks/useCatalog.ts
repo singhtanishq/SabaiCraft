@@ -80,6 +80,10 @@ export interface CatalogState {
   usingFallback: boolean;
 }
 
+/** Catalog pages filter/sort/paginate client-side, so the full catalog is loaded. */
+const CATALOG_PAGE_LIMIT = 50;
+const CATALOG_MAX_PAGES = 20; // safety cap: 20 × 50 = 1000 products
+
 export function useCatalog(): CatalogState {
   const [state, setState] = useState<CatalogState>({
     products: [],
@@ -94,15 +98,25 @@ export function useCatalog(): CatalogState {
 
     async function load() {
       try {
-        const [productsResponse, categoriesResponse] = await Promise.all([
-          api.getProducts({ limit: 50 }),
+        // Fetch every product page: shop/category/search filter and paginate
+        // client-side, so a truncated first page would silently hide items.
+        const [categoriesResponse, products] = await Promise.all([
           api.getCategories(),
+          (async () => {
+            const collected: any[] = [];
+            for (let page = 1; page <= CATALOG_MAX_PAGES; page++) {
+              const response = await api.getProducts({ page, limit: CATALOG_PAGE_LIMIT });
+              collected.push(...(response.data ?? []));
+              if (!response.pagination || page >= response.pagination.totalPages) break;
+            }
+            return collected;
+          })(),
         ]);
         if (cancelled) return;
-        const products = (productsResponse.data ?? []).map(normalizeProduct);
+        const normalizedProducts = products.map(normalizeProduct);
         const categories = (categoriesResponse.data ?? []).map(normalizeCategory);
-        if (products.length === 0) throw new Error('Catalog is empty');
-        setState({ products, categories, isLoading: false, error: null, usingFallback: false });
+        if (normalizedProducts.length === 0) throw new Error('Catalog is empty');
+        setState({ products: normalizedProducts, categories, isLoading: false, error: null, usingFallback: false });
       } catch {
         // API unavailable — fall back to the bundled dataset.
         if (cancelled) return;
