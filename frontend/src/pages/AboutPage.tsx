@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Leaf, Heart, Sparkles, Award, Users, TreePine, Recycle, Hand } from 'lucide-react';
+import { ChevronRight, Leaf, Heart, Sparkles, Award, Users, TreePine, Recycle, Hand } from 'lucide-react';
 import { Card } from '@components/ui/Card';
 
 const story = {
@@ -54,7 +55,7 @@ export function AboutPage() {
     <div className="min-h-screen bg-cream-50">
       {/* Hero */}
       <section className="relative bg-olive-950 text-cream-50 py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/Images/sabai mascot.png')] bg-center bg-cover opacity-[0.03]" />
+        <div className="absolute inset-0 bg-[url('/Images/sabai-mascot.png')] bg-center bg-cover opacity-[0.03]" />
         <div className="absolute inset-0 bg-gradient-to-br from-olive-950 via-olive-900 to-sage-800" />
 
         <div className="container-main relative">
@@ -252,19 +253,19 @@ export function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             className="relative rounded-3xl overflow-hidden bg-olive-950 text-cream-50 p-8 lg:p-16 text-center"
           >
-            <div className="absolute inset-0 bg-[url('/Images/sabai mascot.png')] bg-center bg-cover opacity-[0.05]" />
+            <div className="absolute inset-0 bg-[url('/Images/sabai-mascot.png')] bg-center bg-cover opacity-[0.05]" />
             <div className="relative max-w-2xl mx-auto">
               <h2 className="heading-1 mb-4">Bring Home a Piece of Heritage</h2>
               <p className="body-lg text-olive-300 mb-8">
                 Every purchase supports artisan communities and sustainable practices.
               </p>
-              <a
-                href="/shop"
+              <Link
+                to="/shop"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-sabai-500 text-olive-950 font-medium rounded-xl hover:bg-sabai-400 transition-colors"
               >
                 Shop Collection
-                <ChevronRight className="w-5 h-5" />
-              </a>
+                <ChevronRight className="w-5 h-5" aria-hidden="true" />
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -272,5 +273,3 @@ export function AboutPage() {
     </div>
   );
 }
-
-import { ChevronRight } from 'lucide-react';
