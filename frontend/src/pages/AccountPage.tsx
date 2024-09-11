@@ -48,6 +48,7 @@ export function AccountPage() {
   const [tab, setTab] = useState<AccountTab>('profile');
 
   const [orders, setOrders] = useState<Order[] | null>(null);
+  const [ordersTotal, setOrdersTotal] = useState<number | null>(null);
   const [addresses, setAddresses] = useState<Address[] | null>(null);
 
   const [profileForm, setProfileForm] = useState({ name: '', phone: '' });
@@ -63,6 +64,7 @@ export function AccountPage() {
   const [addressForm, setAddressForm] = useState(emptyAddressForm);
   const [addressErrors, setAddressErrors] = useState<Record<string, string>>({});
   const [isSavingAddress, setIsSavingAddress] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState<Address | null>(null);
 
   const loadAddresses = useCallback(async () => {
     try {
@@ -82,7 +84,11 @@ export function AccountPage() {
     setProfileForm({ name: user?.name ?? '', phone: user?.phone ?? '' });
     api
       .getOrders({ limit: 50 })
-      .then((response) => setOrders(response.data ?? []))
+      .then((response) => {
+        setOrders(response.data ?? []);
+        // Exact count from the API; the order list itself is capped at 50.
+        setOrdersTotal(response.pagination?.total ?? null);
+      })
       .catch(() => setOrders([]));
     loadAddresses();
   }, [isAuthenticated, user?.name, user?.phone, loadAddresses]);
@@ -163,7 +169,12 @@ export function AccountPage() {
     e.preventDefault();
     const errors: Record<string, string> = {};
     if (!addressForm.name.trim()) errors.name = 'Full name is required';
-    if (!addressForm.phone.trim()) errors.phone = 'Phone is required';
+    if (!addressForm.phone.trim()) {
+      errors.phone = 'Phone is required';
+    } else if (!/^[\d+\-\s()]{10,15}$/.test(addressForm.phone.trim())) {
+      // Same format rule as checkout so both forms agree.
+      errors.phone = 'Enter a valid phone number (10-15 digits)';
+    }
     if (!addressForm.addressLine1.trim()) errors.addressLine1 = 'Address is required';
     if (!addressForm.city.trim()) errors.city = 'City is required';
     if (!addressForm.state.trim()) errors.state = 'State is required';
@@ -205,6 +216,8 @@ export function AccountPage() {
       success('Address removed');
     } catch (err) {
       toastError('Could not remove address', err instanceof Error ? err.message : 'Please try again.');
+    } finally {
+      setAddressToDelete(null);
     }
   };
 
@@ -241,7 +254,7 @@ export function AccountPage() {
     );
   }
 
-  const totalOrders = orders?.length ?? 0;
+  const totalOrders = ordersTotal ?? orders?.length ?? 0;
   const totalSpent = (orders ?? [])
     .filter((o) => !['CANCELLED', 'REFUNDED'].includes(String(o.status).toUpperCase()))
     .reduce((sum, o) => sum + o.total, 0);
@@ -394,12 +407,13 @@ export function AccountPage() {
                       <Button type="submit" isLoading={isSavingProfile} disabled={isSavingProfile}>
                         Save Changes
                       </Button>
-                      <span className="caption text-olive-500">
-                        Member since{' '}
-                        {user?.createdAt
-                          ? new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
-                          : '—'}
-                      </span>
+                      {/* Only shown when the API provides a signup date. */}
+                      {user?.createdAt && (
+                        <span className="caption text-olive-500">
+                          Member since{' '}
+                          {new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
+                        </span>
+                      )}
                     </div>
                   </form>
                 </Card>
@@ -510,7 +524,7 @@ export function AccountPage() {
                                 variant="ghost"
                                 size="xs"
                                 className="text-red-600 hover:bg-red-50"
-                                onClick={() => handleAddressDelete(address)}
+                                onClick={() => setAddressToDelete(address)}
                                 aria-label={`Delete ${address.name}'s address`}
                               >
                                 <Trash2 className="w-3.5 h-3.5 mr-1" aria-hidden="true" />
@@ -601,6 +615,31 @@ export function AccountPage() {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Delete confirmation */}
+      <Modal
+        isOpen={!!addressToDelete}
+        onClose={() => setAddressToDelete(null)}
+        title="Delete address?"
+        size="sm"
+      >
+        <p className="text-body text-olive-600 mb-6">
+          This will permanently remove the address for{' '}
+          <span className="font-medium text-olive-900">{addressToDelete?.name}</span> from your address book.
+        </p>
+        <div className="flex justify-end gap-3">
+          <Button variant="ghost" onClick={() => setAddressToDelete(null)}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            className="bg-red-600 hover:bg-red-700 focus-visible:ring-red-500/30"
+            onClick={() => addressToDelete && handleAddressDelete(addressToDelete)}
+          >
+            Delete Address
+          </Button>
+        </div>
       </Modal>
     </div>
   );
