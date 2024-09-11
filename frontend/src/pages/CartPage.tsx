@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, Trash2, ArrowRight, Shield, Truck, RotateCcw } from 'lucide-react';
+import { Plus, Minus, Trash2, ArrowRight, Shield, Truck, RotateCcw, ImageOff } from 'lucide-react';
 import { useCartStore } from '@store/cartStore';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
@@ -26,6 +26,8 @@ export function CartPage() {
   const shipping = subtotal >= 200000 ? 0 : 9900;
   const tax = Math.round(subtotal * 0.18);
   const total = subtotal + shipping + tax;
+  // Total units (quantities summed), not line items.
+  const cartTotalUnits = cart.items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="bg-cream-50 py-8 lg:py-12">
@@ -38,7 +40,7 @@ export function CartPage() {
           className="mb-8"
         >
           <h1 className="heading-1 mb-2">Shopping Cart</h1>
-          <p className="text-olive-600 text-body-lg">{cart.items.length} item{cart.items.length !== 1 ? 's' : ''} in your cart</p>
+          <p className="text-olive-600 text-body-lg">{cartTotalUnits} item{cartTotalUnits !== 1 ? "s" : ""} in your cart</p>
         </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -64,7 +66,13 @@ export function CartPage() {
                   className="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-olive-50"
                   aria-label={`View ${item.product.name}`}
                 >
-                  <img src={item.product.images[0]?.url} alt={item.product.name} className="w-full h-full object-cover" loading="lazy" />
+                  {item.product.images[0]?.url ? (
+                    <img src={item.product.images[0].url} alt={item.product.name} className="w-full h-full object-cover" loading="lazy" />
+                  ) : (
+                    <span className="w-full h-full flex items-center justify-center text-olive-300">
+                      <ImageOff className="w-6 h-6" aria-hidden="true" />
+                    </span>
+                  )}
                 </Link>
 
                 <div className="flex-1 min-w-0 flex flex-col justify-between">
@@ -142,7 +150,7 @@ export function CartPage() {
 
               <div className="space-y-3">
                 <div className="flex justify-between text-body-sm">
-                  <span className="text-olive-600">Subtotal ({cart.items.length} items)</span>
+                  <span className="text-olive-600">Subtotal ({cartTotalUnits} items)</span>
                   <span className="font-medium text-olive-900">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-body-sm">
@@ -193,7 +201,7 @@ export function CartPage() {
               </Button>
 
               <p className="text-caption text-olive-500 text-center">
-                Secure checkout • 18% GST included • Free shipping over ₹2,000
+                Secure checkout • 18% GST added at checkout • Free shipping over ₹2,000
               </p>
 
               {/* Trust Indicators */}
