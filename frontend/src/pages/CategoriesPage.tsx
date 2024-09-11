@@ -32,7 +32,7 @@ export function CategoriesPage() {
     <div className="bg-cream-50">
       {/* Hero */}
       <section className="relative bg-olive-950 text-cream-50 py-16 lg:py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/Images/sabai mascot.png')] bg-center bg-cover opacity-[0.03]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[url('/Images/sabai-mascot.png')] bg-center bg-cover opacity-[0.03]" aria-hidden="true" />
         <div className="absolute inset-0 bg-gradient-to-br from-olive-950 via-olive-900 to-sage-800" aria-hidden="true" />
 
         <div className="container-main relative">
