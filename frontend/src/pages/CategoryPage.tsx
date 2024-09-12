@@ -40,6 +40,14 @@ export function CategoryPage() {
     setSearchQuery('');
   }, [slug]);
 
+  // Category pages have no dedicated document title (App.tsx only covers
+  // static routes), so keep it in sync with the active category.
+  useEffect(() => {
+    document.title = category
+      ? `${category.name} | SabaiCraft`
+      : 'Categories | SabaiCraft';
+  }, [category]);
+
   const categoryProducts = useMemo(() => {
     if (!category) return [];
     const categoryIds = [category.id, ...(category.children?.map((c) => c.id) ?? [])];
@@ -117,7 +125,7 @@ export function CategoryPage() {
     <div className="bg-cream-50">
       {/* Category Hero */}
       <section className="relative bg-olive-950 text-cream-50 py-16 lg:py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/Images/sabai mascot.png')] bg-center bg-cover opacity-[0.03]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[url('/Images/sabai-mascot.png')] bg-center bg-cover opacity-[0.03]" aria-hidden="true" />
         <div className="absolute inset-0 bg-gradient-to-br from-olive-950 via-olive-900 to-sage-800" aria-hidden="true" />
 
         <div className="container-main relative">
@@ -262,7 +270,10 @@ export function CategoryPage() {
               <div className="flex items-center gap-2">
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as SortKey)}
+                  onChange={(e) => {
+                    setSortBy(e.target.value as SortKey);
+                    setPage(1);
+                  }}
                   className="input py-2 px-3 text-sm appearance-none bg-white"
                   aria-label="Sort products"
                 >
@@ -315,7 +326,6 @@ export function CategoryPage() {
                     ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
                     : 'flex flex-col gap-4'
                 )}
-                role="list"
               >
                 {pageProducts.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} variant={viewMode} />
