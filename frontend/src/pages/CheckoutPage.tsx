@@ -11,6 +11,7 @@ import {
   Truck,
   LogIn,
   User,
+  ImageOff,
 } from 'lucide-react';
 import { useCartStore } from '@store/cartStore';
 import { useAuthStore } from '@store/authStore';
@@ -560,12 +561,18 @@ export function CheckoutPage() {
             <div className="space-y-3 mb-6 max-h-72 overflow-y-auto pr-1">
               {cart!.items.map((item) => (
                 <div key={item.id} className="flex gap-3">
-                  <img
-                    src={item.product.images[0]?.url}
-                    alt=""
-                    className="w-16 h-16 rounded-lg object-cover flex-shrink-0 bg-olive-50"
-                    loading="lazy"
-                  />
+                  {item.product.images[0]?.url ? (
+                    <img
+                      src={item.product.images[0].url}
+                      alt=""
+                      className="w-16 h-16 rounded-lg object-cover flex-shrink-0 bg-olive-50"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0 bg-olive-50 text-olive-300">
+                      <ImageOff className="w-5 h-5" aria-hidden="true" />
+                    </span>
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-olive-900 text-body-sm truncate">{item.product.name}</p>
                     <p className="text-caption text-olive-500">{Object.values(item.variant.attributes).join(' / ') || item.variant.name}</p>
