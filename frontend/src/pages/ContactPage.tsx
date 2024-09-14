@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Phone, Clock, Send, MessageSquare, CheckCircle } from 'lucide-react';
+import { Mail, MapPin, Phone, Clock, Send, MessageSquare } from 'lucide-react';
 import { Button } from '@components/ui/Button';
 import { Input, Textarea } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
@@ -63,8 +63,6 @@ export function ContactPage() {
     subject: '',
     message: '',
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const { success, error } = useToastHelpers();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,14 +72,14 @@ export function ContactPage() {
       return;
     }
 
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    setSubmitStatus('success');
-    success('Message Sent!', 'Thank you for reaching out. We\'ll get back to you soon.');
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setSubmitStatus('idle'), 3000);
+    // There is no messages API yet: hand the message to the visitor's email
+    // client instead of pretending it was delivered.
+    const subject = encodeURIComponent(`[SabaiCraft] ${formData.subject}`);
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
+    );
+    window.location.href = `mailto:contact@sabaicraft.com?subject=${subject}&body=${body}`;
+    success('Opening your email app', 'Your message is ready to send to contact@sabaicraft.com.');
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -92,7 +90,7 @@ return (
     <div className="min-h-screen bg-cream-50">
       {/* Hero */}
       <section className="relative bg-olive-950 text-cream-50 py-16 lg:py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/Images/sabai mascot.png')] bg-center bg-cover opacity-[0.03]" />
+        <div className="absolute inset-0 bg-[url('/Images/sabai-mascot.png')] bg-center bg-cover opacity-[0.03]" />
         <div className="absolute inset-0 bg-gradient-to-br from-olive-950 via-olive-900 to-sage-800" />
 
         <div className="container-main relative">
@@ -226,24 +224,11 @@ return (
                     type="submit"
                     size="lg"
                     className="w-full sm:w-auto"
-                    isLoading={isSubmitting}
                   >
-                    {isSubmitting ? (
-                      <>
-                        <svg className="animate-spin w-5 h-5 mr-2" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                        Sending...
-                      </>
-                    ) : submitStatus === 'success' ? (
-                      <>
-                        <CheckCircle className="w-5 h-5 mr-2" />
-                        Message Sent!
-                      </>
-                    ) : (
-                      <>
-                        Send Message
-                        <Send className="w-5 h-5 ml-2" />
-                      </>
-                    )}
+                    <>
+                      Send Message
+                      <Send className="w-5 h-5 ml-2" />
+                    </>
                   </Button>
                 </form>
               </Card>
@@ -262,7 +247,7 @@ return (
             </div>
 
             <div className="max-w-3xl mx-auto">
-              <div className="space-y-3" role="list">
+              <div className="space-y-3">
                 {faqs.map((faq, index) => (
                   <motion.article
                     key={faq.question}
