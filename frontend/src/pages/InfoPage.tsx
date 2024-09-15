@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { Link, useParams, Navigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
+import { NotFoundPage } from './NotFoundPage';
 
 interface InfoSection {
   heading: string;
@@ -68,7 +69,7 @@ const INFO_PAGES: Record<string, InfoContent> = {
       {
         heading: 'Products & Pricing',
         paragraphs: [
-          'Every SabaiCraft product is handmade, so slight variations in size, colour, and texture are natural and not defects. All prices are listed in Indian Rupees and include 18% GST where applicable. Prices may change without notice; the price at the time of your order is the price you pay.',
+          'Every SabaiCraft product is handmade, so slight variations in size, colour, and texture are natural and not defects. All prices are listed in Indian Rupees, and 18% GST is added at checkout where applicable. Prices may change without notice; the price at the time of your order is the price you pay.',
         ],
       },
       {
@@ -296,7 +297,10 @@ export function InfoPage() {
   }, [content]);
 
   if (!content) {
-    return <Navigate to="/404" replace />;
+    // Render the 404 UI directly: this component also matches "/404" (it wins
+    // the route ranking over the "*" catch-all), so redirecting there would
+    // loop and leave the page blank.
+    return <NotFoundPage />;
   }
 
   return (
