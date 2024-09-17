@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home, Search, ArrowRight, Sparkles } from 'lucide-react';
@@ -5,6 +6,10 @@ import { Button } from '@components/ui/Button';
 import { cn } from '@utils/cn';
 
 export function NotFoundPage() {
+  useEffect(() => {
+    document.title = 'Page Not Found | SabaiCraft';
+  }, []);
+
   return (
     <div className="min-h-screen bg-cream-50 flex items-center justify-center px-4">
       <motion.div
@@ -29,7 +34,7 @@ export function NotFoundPage() {
         <h2 className="heading-1 mb-4">Page Not Found</h2>
 
         <p className="body-lg text-olive-600 mb-8 max-w-sm mx-auto text-pretty">
-          Sorry, we couldn\'t find the page you\'re looking for. It might have been moved or doesn\'t exist.
+          Sorry, we couldn't find the page you're looking for. It might have been moved or doesn't exist.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
