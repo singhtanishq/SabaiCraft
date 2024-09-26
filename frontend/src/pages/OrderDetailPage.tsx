@@ -1,13 +1,14 @@
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Package, Truck, CheckCircle, X, RotateCcw, MapPin, Phone, ChevronRight, Shield } from 'lucide-react';
+import { Package, Truck, CheckCircle, X, RotateCcw, MapPin, Phone, ChevronRight, Shield, ImageOff } from 'lucide-react';
 import { api } from '@services/api';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { Badge } from '@components/ui/Badge';
 import { Skeleton } from '@components/ui/Skeleton';
 import { formatPrice } from '@utils/format';
+import { parseVariantAttributes } from '@utils/normalize';
 import { cn } from '@utils/cn';
 import type { Order } from '@app-types';
 
@@ -162,7 +163,9 @@ export function OrderDetailPage() {
           >
             <Card padding="lg">
               <h2 className="heading-3 mb-8">Order Progress</h2>
-              <ol className="flex items-start">
+              {/* Scrollable on narrow screens instead of overflowing the card */}
+              <div className="overflow-x-auto -mx-2 px-2">
+                <ol className="flex items-start min-w-[30rem]">
                 {statusSteps.map((step, index) => {
                   const isCompleted = index < currentStatusIndex;
                   const isCurrent = index === currentStatusIndex;
@@ -206,7 +209,8 @@ export function OrderDetailPage() {
                     </li>
                   );
                 })}
-              </ol>
+                </ol>
+              </div>
             </Card>
           </motion.div>
         )}
@@ -230,8 +234,12 @@ export function OrderDetailPage() {
                       className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-white"
                       aria-label={`View ${item.productName}`}
                     >
-                      {item.image && (
+                      {item.image ? (
                         <img src={item.image} alt="" className="w-full h-full object-cover" loading="lazy" />
+                      ) : (
+                        <span className="w-full h-full flex items-center justify-center bg-olive-50 text-olive-300">
+                          <ImageOff className="w-6 h-6" aria-hidden="true" />
+                        </span>
                       )}
                     </Link>
 
@@ -240,7 +248,8 @@ export function OrderDetailPage() {
                         {item.productName}
                       </Link>
                       <p className="text-caption text-olive-500 mt-0.5">
-                        {Object.entries(item.variantAttributes ?? {})
+                        {/* Backend sends variant attributes as a JSON string. */}
+                        {Object.entries(parseVariantAttributes(item.variantAttributes))
                           .map(([k, v]) => `${k}: ${v}`)
                           .join(' • ') || item.variantName}
                       </p>
@@ -369,7 +378,7 @@ export function OrderDetailPage() {
 
               <div className="pt-4 border-t border-olive-200">
                 <p className="caption text-olive-500 text-center">
-                  Secure payment • 18% GST included • Free shipping over ₹2,000
+                  Secure payment • 18% GST added at checkout • Free shipping over ₹2,000
                 </p>
               </div>
             </Card>
