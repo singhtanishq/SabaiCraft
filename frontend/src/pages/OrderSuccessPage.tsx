@@ -45,7 +45,18 @@ export function OrderSuccessPage() {
     };
   }, [orderId]);
 
-  const estimatedDelivery = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
+  // Delivery estimate anchored to when the order was actually placed.
+  const estimatedDelivery = order
+    ? new Date(new Date(order.placedAt).getTime() + 5 * 24 * 60 * 60 * 1000)
+    : null;
+  const paymentLabel =
+    order?.paymentMethod === 'COD'
+      ? 'Cash on Delivery'
+      : order
+        ? order.paymentStatus === 'PAID'
+          ? 'Paid online'
+          : `Payment ${order.paymentStatus.toLowerCase()}`
+        : null;
 
   return (
     <div className="bg-cream-50 py-16 lg:py-24">
@@ -66,9 +77,13 @@ export function OrderSuccessPage() {
             <CheckCircle className="w-12 h-12 text-sage-600" aria-hidden="true" />
           </motion.div>
 
-          <h1 className="heading-1 mb-4">Thank You for Your Order!</h1>
+          <h1 className="heading-1 mb-4">
+            {notFound && !order ? 'Order Not Found' : 'Thank You for Your Order!'}
+          </h1>
           <p className="body-lg text-olive-600 mb-8">
-            Your order has been confirmed and is being prepared with care.
+            {notFound && !order
+              ? "We couldn't find this order. It may belong to a different account."
+              : 'Your order has been confirmed and is being prepared with care.'}
           </p>
 
           {/* Order Details Card */}
@@ -100,24 +115,29 @@ export function OrderSuccessPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-olive-600">Payment</span>
-                  <span className="font-medium text-olive-900">
-                    {order.paymentMethod === 'COD' ? 'Cash on Delivery' : 'Paid online'}
-                  </span>
+                  <span className="font-medium text-olive-900">{paymentLabel}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-olive-600">Confirmation Email</span>
+                  <span className="text-olive-600">Order Placed</span>
                   <span className="font-medium text-olive-900 flex items-center gap-1">
                     <Mail className="w-4 h-4 text-sage-600" aria-hidden="true" />
-                    Sent
+                    {new Date(order.placedAt).toLocaleString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      hour: 'numeric',
+                      minute: '2-digit',
+                    })}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-olive-600">Estimated Delivery</span>
-                  <span className="font-medium text-olive-900 flex items-center gap-1">
-                    <Clock className="w-4 h-4" aria-hidden="true" />
-                    {estimatedDelivery.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
-                  </span>
-                </div>
+                {estimatedDelivery && (
+                  <div className="flex justify-between">
+                    <span className="text-olive-600">Estimated Delivery</span>
+                    <span className="font-medium text-olive-900 flex items-center gap-1">
+                      <Clock className="w-4 h-4" aria-hidden="true" />
+                      {estimatedDelivery.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
+                    </span>
+                  </div>
+                )}
               </div>
             </Card>
           ) : notFound ? (
