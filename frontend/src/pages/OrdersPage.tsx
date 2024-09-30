@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Package, Truck, CheckCircle, Clock, X, Eye, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api } from '@services/api';
@@ -7,9 +7,11 @@ import { Badge } from '@components/ui/Badge';
 import { EmptyOrders } from '@components/ui/EmptyState';
 import { Skeleton } from '@components/ui/Skeleton';
 import { useToastHelpers } from '@components/ui';
+import { useCartStore } from '@store/cartStore';
 import { formatPrice } from '@utils/format';
+import { parseVariantAttributes } from '@utils/normalize';
 import { cn } from '@utils/cn';
-import type { Order } from '@app-types';
+import type { Order, Product, ProductVariant } from '@app-types';
 
 type NormalizedStatus =
   | 'pending' | 'confirmed' | 'processing' | 'shipped'
@@ -43,11 +45,15 @@ const paymentLabel = (method: string) =>
   }[String(method).toUpperCase()] ?? method);
 
 export function OrdersPage() {
-  const { error: toastError } = useToastHelpers();
+  const navigate = useNavigate();
+  const { error: toastError, success: toastSuccess } = useToastHelpers();
+  const addItem = useCartStore((s) => s.addItem);
+  const openCart = useCartStore((s) => s.openCart);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [reorderingId, setReorderingId] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = 'My Orders | SabaiCraft';
@@ -82,6 +88,39 @@ export function OrdersPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Re-add every item of a delivered order to the cart. The optimistic cart
+  // entry only needs the fields the cart UI reads; the backend revalidates
+  // prices and inventory on sync.
+  const handleReorder = async (order: Order) => {
+    setReorderingId(order.id);
+    try {
+      for (const item of order.items) {
+        const product = {
+          id: item.productId,
+          name: item.productName,
+          slug: item.productSlug,
+          basePrice: item.price,
+          images: item.image ? [{ url: item.image, alt: item.productName }] : [],
+        } as unknown as Product;
+        const variant = {
+          id: item.variantId,
+          name: item.variantName,
+          price: item.price,
+          attributes: parseVariantAttributes(item.variantAttributes),
+          // Placeholder until the backend sync returns the real stock level.
+          inventory: 99,
+        } as unknown as ProductVariant;
+        await addItem(product, variant, item.quantity);
+      }
+      toastSuccess('Added to cart', `Items from ${order.orderNumber} are back in your cart.`);
+      openCart();
+    } catch (error) {
+      toastError('Could not reorder', error instanceof Error ? error.message : 'Please try again.');
+    } finally {
+      setReorderingId(null);
+    }
+  };
+
   return (
     <div className="bg-cream-50 py-8 lg:py-12">
       <div className="container-main">
@@ -106,7 +145,7 @@ export function OrdersPage() {
             ))}
           </div>
         ) : orders.length === 0 ? (
-          <EmptyOrders onStartShopping={() => (window.location.href = '/shop')} />
+          <EmptyOrders onStartShopping={() => navigate('/shop')} />
         ) : (
           <div className="space-y-4">
             {orders.map((order, index) => {
@@ -131,8 +170,12 @@ export function OrdersPage() {
                               i === 1 && '-ml-4 z-10'
                             )}
                           >
-                            {item.image && (
+                            {item.image ? (
                               <img src={item.image} alt="" className="w-full h-full object-cover" loading="lazy" />
+                            ) : (
+                              <span className="w-full h-full flex items-center justify-center text-olive-300">
+                                <Package className="w-6 h-6" aria-hidden="true" />
+                              </span>
                             )}
                           </div>
                         ))}
@@ -181,11 +224,15 @@ export function OrdersPage() {
                           </Link>
                         </Button>
                         {status === 'delivered' && (
-                          <Button asChild variant="outline" size="sm">
-                            <Link to={`/orders/${order.id}`}>
-                              <RotateCcw className="w-4 h-4 mr-1" aria-hidden="true" />
-                              Reorder
-                            </Link>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            isLoading={reorderingId === order.id}
+                            disabled={reorderingId === order.id}
+                            onClick={() => handleReorder(order)}
+                          >
+                            <RotateCcw className="w-4 h-4 mr-1" aria-hidden="true" />
+                            Reorder
                           </Button>
                         )}
                       </div>
