@@ -108,7 +108,12 @@ export function ProductDetailPage() {
   const variant: ProductVariant | null = useMemo(() => {
     if (!product) return null;
     if (product.variants.length === 0) return null;
-    return product.variants.find((v) => v.id === selectedVariantId) ?? product.variants[0];
+    return (
+      product.variants.find((v) => v.id === selectedVariantId) ??
+      // Prefer an in-stock variant so the page doesn't open in a disabled state.
+      product.variants.find((v) => v.inventory > 0) ??
+      product.variants[0]
+    );
   }, [product, selectedVariantId]);
 
   const imageUrls = product?.images.map((img) => img.url) ?? [];
@@ -136,6 +141,7 @@ export function ProductDetailPage() {
     return (
       <div className="bg-cream-50 flex items-center justify-center px-4 py-24">
         <EmptyState
+          headingLevel="h1"
           title="Product Not Found"
           description="The product you're looking for doesn't exist or has been removed."
           action={{ label: 'Continue Shopping', onClick: () => navigate('/shop'), variant: 'primary' }}
@@ -146,8 +152,12 @@ export function ProductDetailPage() {
 
   const hasVariant = !!variant;
   const wishlisted = hasVariant ? isInWishlist(product.id, variant.id) : isInWishlist(product.id);
-  const hasDiscount = !!product.compareAtPrice && product.compareAtPrice > product.basePrice;
-  const discountPercent = calculateDiscountPercent(product.basePrice, product.compareAtPrice);
+  // Variants carry their own pricing; fall back to product-level values only
+  // when the active variant has no compare-at price.
+  const activePrice = hasVariant ? variant!.price : product.basePrice;
+  const activeCompareAtPrice = variant?.compareAtPrice ?? product.compareAtPrice;
+  const hasDiscount = !!activeCompareAtPrice && activeCompareAtPrice > activePrice;
+  const discountPercent = calculateDiscountPercent(activePrice, activeCompareAtPrice);
   const inStock = hasVariant && variant!.inventory > 0;
   const lowStock = inStock && variant!.inventory <= 5;
 
@@ -202,8 +212,10 @@ export function ProductDetailPage() {
       {/* Product Content */}
       <div className="container-main py-8 lg:py-12">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* Image Gallery */}
+          {/* Image Gallery — min-w-0 keeps the intrinsic image width from
+              blowing the grid track out past the viewport on small screens */}
           <motion.div
+            className="min-w-0"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
@@ -295,6 +307,7 @@ export function ProductDetailPage() {
 
           {/* Product Info */}
           <motion.div
+            className="min-w-0"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -320,11 +333,11 @@ export function ProductDetailPage() {
               {/* Price */}
               <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="font-display font-medium text-heading-xl text-olive-950">
-                  {formatPrice(hasVariant ? variant!.price : product.basePrice)}
+                  {formatPrice(activePrice)}
                 </span>
                 {hasDiscount && (
                   <span className="text-heading-sm text-olive-400 line-through">
-                    {formatPrice(product.compareAtPrice!)}
+                    {formatPrice(activeCompareAtPrice!)}
                   </span>
                 )}
                 {hasDiscount && <Badge variant="danger">Save {discountPercent}%</Badge>}
@@ -606,7 +619,7 @@ export function ProductDetailPage() {
         onClose={() => setIsZoomOpen(false)}
         size="full"
         showCloseButton
-        aria-label="Product image zoom"
+        ariaLabel="Product image zoom"
       >
         <div className="relative aspect-square max-h-[80vh] mx-auto">
           {imageUrls[selectedImage] && (
