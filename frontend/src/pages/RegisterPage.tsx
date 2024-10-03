@@ -31,6 +31,7 @@ export function RegisterPage() {
     confirmPassword: '',
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -65,6 +66,11 @@ export function RegisterPage() {
         password: formData.password,
       });
       success('Account created!', `Welcome to SabaiCraft, ${formData.firstName}!`);
+      try {
+        localStorage.setItem('sabaicraft-newsletter-opt-in', String(newsletterOptIn));
+      } catch {
+        // storage unavailable
+      }
       navigate(redirectTo.startsWith('/') ? redirectTo : '/account', { replace: true });
     } catch (err) {
       const message =
@@ -170,7 +176,14 @@ export function RegisterPage() {
               By creating an account, you agree to our <Link to="/terms" className="underline hover:text-olive-700">Terms of Service</Link> and <Link to="/privacy" className="underline hover:text-olive-700">Privacy Policy</Link>.
             </p>
             <label className="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" className="mt-1 w-4 h-4 text-sage-600 border-olive-300 rounded focus:ring-sage-500" />
+              {/* No newsletter service exists yet: keep the preference locally
+                  so the choice is at least recorded and can be synced later. */}
+              <input
+                type="checkbox"
+                checked={newsletterOptIn}
+                onChange={(e) => setNewsletterOptIn(e.target.checked)}
+                className="mt-1 w-4 h-4 text-sage-600 border-olive-300 rounded focus:ring-sage-500"
+              />
               <span className="text-caption text-olive-600">
                 Subscribe to our newsletter for artisan stories, new arrivals, and exclusive offers
               </span>
