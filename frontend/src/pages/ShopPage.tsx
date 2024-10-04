@@ -41,6 +41,11 @@ export function ShopPage() {
     setPage(1);
   }, [query]);
 
+  // Changing the sort reorders the whole list; don't strand the user on page 2.
+  useEffect(() => {
+    setPage(1);
+  }, [sortParam]);
+
   const filteredProducts = useMemo(() => {
     let result = products.filter((p) => p.isActive);
 
@@ -343,7 +348,6 @@ export function ShopPage() {
                     ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
                     : 'flex flex-col gap-4'
                 )}
-                role="list"
               >
                 {pageProducts.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} variant={viewMode} />
