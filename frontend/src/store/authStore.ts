@@ -36,8 +36,9 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true,
               isLoading: false,
             });
-            useCartStore.getState().enableBackendSync();
-            useWishlistStore.getState().enableBackendSync();
+            // Fresh sign-in: fold the guest cart and wishlist into the backend.
+            await useCartStore.getState().enableBackendSync({ merge: true });
+            await useWishlistStore.getState().enableBackendSync({ merge: true });
           } else {
             throw new Error(response.message || 'Login failed');
           }
@@ -61,8 +62,9 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true,
               isLoading: false,
             });
-            useCartStore.getState().enableBackendSync();
-            useWishlistStore.getState().enableBackendSync();
+            // Fresh sign-up: fold the guest cart and wishlist into the backend.
+            await useCartStore.getState().enableBackendSync({ merge: true });
+            await useWishlistStore.getState().enableBackendSync({ merge: true });
           } else {
             throw new Error(response.message || 'Registration failed');
           }
@@ -108,9 +110,9 @@ export const useAuthStore = create<AuthState>()(
           const response = await api.getMe();
           if (response.success && response.data) {
             set({ user: response.data.user, isAuthenticated: true, isLoading: false });
+            // Session restore: never merge, or reloading would duplicate items.
             useCartStore.getState().enableBackendSync();
-            useWishlistStore.getState().enableBackendSync();
-          } else {
+            useWishlistStore.getState().enableBackendSync();          } else {
             api.setToken(null);
             set({ user: null, isAuthenticated: false, isLoading: false });
           }
