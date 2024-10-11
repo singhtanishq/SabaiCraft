@@ -20,7 +20,7 @@ interface CartState {
   toggleCart: () => void;
   getItemCount: () => number;
   getSubtotal: () => number;
-  enableBackendSync: () => void;
+  enableBackendSync: (options?: { merge?: boolean }) => Promise<void>;
   disableBackendSync: () => void;
 }
 
@@ -247,9 +247,29 @@ export const useCartStore = create<CartState>()(
         return cart?.subtotal || 0;
       },
 
-      enableBackendSync: () => {
+      enableBackendSync: async (options) => {
+        // Merge the guest cart into the backend cart so items added before
+        // sign-in survive the handoff instead of being overwritten by the
+        // (usually empty) server-side cart. Only fresh logins merge — session
+        // restores must not, or every reload would duplicate the same items.
+        const shouldMerge = options?.merge === true;
+        const localCart = get().cart;
         set({ syncWithBackend: true });
-        get().fetchCart();
+
+        if (shouldMerge && localCart && localCart.items.length > 0) {
+          try {
+            for (const item of localCart.items) {
+              await api.addToCart(item.productId, item.variantId, item.quantity);
+            }
+            // Backend is now the source of truth for these items.
+            set({ cart: createEmptyCart() });
+          } catch (error) {
+            console.error('Failed to merge guest cart into backend:', error);
+            // Keep local items on failure; the fetch below still runs.
+          }
+        }
+
+        await get().fetchCart();
       },
 
       disableBackendSync: () => set({ syncWithBackend: false }),
