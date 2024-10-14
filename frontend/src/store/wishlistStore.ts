@@ -15,7 +15,7 @@ interface WishlistState {
   clearWishlist: () => Promise<void>;
   clearLocal: () => void;
   getItemCount: () => number;
-  enableBackendSync: () => void;
+  enableBackendSync: (options?: { merge?: boolean }) => Promise<void>;
   disableBackendSync: () => void;
 }
 
@@ -144,9 +144,26 @@ export const useWishlistStore = create<WishlistState>()(
 
       getItemCount: () => get().items.length,
 
-      enableBackendSync: () => {
+      enableBackendSync: async (options) => {
+        // Merge the guest wishlist into the backend on a fresh sign-in so
+        // items saved before authenticating aren't overwritten by the
+        // (usually empty) server-side list. Session restores must not merge,
+        // or every reload would duplicate the same items.
+        const shouldMerge = options?.merge === true;
+        const localItems = get().items;
         set({ syncWithBackend: true });
-        get().fetchWishlist();
+
+        if (shouldMerge && localItems.length > 0) {
+          try {
+            for (const item of localItems) {
+              await api.addToWishlist(item.productId, item.variantId);
+            }
+          } catch (error) {
+            console.error('Failed to merge guest wishlist into backend:', error);
+          }
+        }
+
+        await get().fetchWishlist();
       },
 
       disableBackendSync: () => set({ syncWithBackend: false }),
