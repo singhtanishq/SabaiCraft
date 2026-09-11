@@ -122,6 +122,9 @@ export function Header() {
         </div>
       </div>
 
+      {/* Mobile Drawer */}
+      <MobileDrawer isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+
       {/* Main Header - Desktop */}
       <div className="hidden lg:flex items-center justify-between px-6 py-4">
         {/* Logo */}
