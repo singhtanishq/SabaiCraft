@@ -10,37 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  CUSTOMER
-  ADMIN
-}
-
-enum OrderStatus {
-  PENDING
-  CONFIRMED
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
-  REFUNDED
-}
-
-enum PaymentStatus {
-  PENDING
-  PAID
-  FAILED
-  REFUNDED
-  COD
-}
-
-enum PaymentMethod {
-  CARD
-  UPI
-  NETBANKING
-  WALLET
-  COD
-}
-
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -48,7 +17,7 @@ model User {
   passwordHash  String
   phone         String?
   avatar        String?
-  role          UserRole  @default(CUSTOMER)
+  role          String    @default("CUSTOMER") // CUSTOMER, ADMIN
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -89,29 +58,29 @@ model Category {
 }
 
 model Product {
-  id              String           @id @default(cuid())
-  name            String
-  slug            String           @unique
-  description     String
+  id               String           @id @default(cuid())
+  name             String
+  slug             String           @unique
+  description      String
   shortDescription String?
-  categoryId      String
-  category        Category         @relation(fields: [categoryId], references: [id])
-  images          ProductImage[]
-  variants        ProductVariant[]
-  basePrice       Int              // in paise
-  compareAtPrice  Int?
-  rating          Float            @default(0)
-  reviewCount     Int              @default(0)
-  isActive        Boolean          @default(true)
-  isFeatured      Boolean          @default(false)
-  tags            String[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  categoryId       String
+  category         Category         @relation(fields: [categoryId], references: [id])
+  images           ProductImage[]
+  variants         ProductVariant[]
+  basePrice        Int              // in paise
+  compareAtPrice   Int?
+  rating           Float            @default(0)
+  reviewCount      Int              @default(0)
+  isActive         Boolean          @default(true)
+  isFeatured       Boolean          @default(false)
+  tags             String           // comma-separated tags
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 
-  cartItems       CartItem[]
-  wishlistItems   WishlistItem[]
-  orderItems      OrderItem[]
-  reviews         Review[]
+  cartItems        CartItem[]
+  wishlistItems    WishlistItem[]
+  orderItems       OrderItem[]
+  reviews          Review[]
 
   @@map("products")
 }
@@ -128,27 +97,27 @@ model ProductImage {
 }
 
 model ProductVariant {
-  id            String   @id @default(cuid())
-  productId     String
-  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  name          String
-  sku           String   @unique
-  price         Int      // in paise
-  compareAtPrice Int?
-  inventory     Int      @default(0)
-  image         String?
-  attributes    Json     // e.g., { color: "Beige", size: "Medium" }
+  id              String   @id @default(cuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name            String
+  sku             String   @unique
+  price           Int      // in paise
+  compareAtPrice  Int?
+  inventory       Int      @default(0)
+  image           String?
+  attributes      String   // JSON string: { color: "Beige", size: "Medium" }
 
-  cartItems     CartItem[]
-  wishlistItems WishlistItem[]
-  orderItems    OrderItem[]
+  cartItems       CartItem[]
+  wishlistItems   WishlistItem[]
+  orderItems      OrderItem[]
 
   @@map("product_variants")
 }
 
 model Cart {
   id        String     @id @default(cuid())
-  userId    String?
+  userId    String?    @unique
   sessionId String?    @unique
   items     CartItem[]
   createdAt DateTime   @default(now())
@@ -207,93 +176,93 @@ model Address {
 }
 
 model Order {
-  id              String        @id @default(cuid())
-  userId          String
-  user            User          @relation(fields: [userId], references: [id])
-  orderNumber     String        @unique
-  status          OrderStatus   @default(PENDING)
-  paymentStatus   PaymentStatus @default(PENDING)
-  paymentMethod   PaymentMethod
-  items           OrderItem[]
-  subtotal        Int           // in paise
-  discount        Int           @default(0)
-  shipping        Int           @default(0)
-  tax             Int           @default(0)
-  total           Int           // in paise
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  orderNumber       String   @unique
+  status            String   @default("PENDING") // PENDING, CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED, REFUNDED
+  paymentStatus     String   @default("PENDING") // PENDING, PAID, FAILED, REFUNDED, COD
+  paymentMethod     String   // CARD, UPI, NETBANKING, WALLET, COD
+  items             OrderItem[]
+  subtotal          Int      // in paise
+  discount          Int      @default(0)
+  shipping          Int      @default(0)
+  tax               Int      @default(0)
+  total             Int      // in paise
   shippingAddressId String
-  shippingAddress Address       @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
-  billingAddressId String?
-  billingAddress  Address?      @relation("OrderBillingAddress", fields: [billingAddressId], references: [id])
-  notes           String?
-  trackingNumber  String?
-  trackingUrl     String?
-  placedAt        DateTime      @default(now())
-  confirmedAt     DateTime?
-  shippedAt       DateTime?
-  deliveredAt     DateTime?
-  cancelledAt     DateTime?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  shippingAddress   Address  @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddressId  String?
+  billingAddress    Address? @relation("OrderBillingAddress", fields: [billingAddressId], references: [id])
+  notes             String?
+  trackingNumber    String?
+  trackingUrl       String?
+  placedAt          DateTime @default(now())
+  confirmedAt       DateTime?
+  shippedAt         DateTime?
+  deliveredAt       DateTime?
+  cancelledAt       DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@map("orders")
 }
 
 model OrderItem {
-  id                   String   @id @default(cuid())
-  orderId              String
-  order                Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId            String
-  productName          String
-  productSlug          String
-  variantId            String
-  variantName          String
-  variantAttributes    Json
-  quantity             Int
-  price                Int      // in paise at time of purchase
-  total                Int      // price * quantity
-  image                String?
+  id                  String   @id @default(cuid())
+  orderId             String
+  order               Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId           String
+  productName         String
+  productSlug         String
+  variantId           String
+  variantName         String
+  variantAttributes   String   // JSON string
+  quantity            Int
+  price               Int      // in paise at time of purchase
+  total               Int      // price * quantity
+  image               String?
 
   @@map("order_items")
 }
 
 model Review {
-  id                String   @id @default(cuid())
-  productId         String
-  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  userId            String
-  userName          String
-  userAvatar        String?
-  rating            Int
-  title             String
-  content           String
-  images            String[]
-  isVerifiedPurchase Boolean @default(false)
-  isApproved        Boolean  @default(true)
-  helpfulCount      Int      @default(0)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id                  String   @id @default(cuid())
+  productId           String
+  product             Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId              String
+  userName            String
+  userAvatar          String?
+  rating              Int
+  title               String
+  content             String
+  images              String   // comma-separated URLs
+  isVerifiedPurchase  Boolean  @default(false)
+  isApproved          Boolean  @default(true)
+  helpfulCount        Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   @@map("reviews")
 }
 
 model Coupon {
-  id                String   @id @default(cuid())
-  code              String   @unique
-  description       String
-  type              String   // percentage, fixed
-  value             Int      // percentage (0-100) or fixed amount in paise
-  minOrderAmount    Int?
-  maxDiscount       Int?
-  usageLimit        Int?
-  usedCount         Int      @default(0)
-  userLimit         Int?
-  validFrom         DateTime
-  validUntil        DateTime
-  isActive          Boolean  @default(true)
-  applicableCategories String[] // category IDs
-  applicableProducts String[] // product IDs
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  code                 String   @unique
+  description          String
+  type                 String   // percentage, fixed
+  value                Int      // percentage (0-100) or fixed amount in paise
+  minOrderAmount       Int?
+  maxDiscount          Int?
+  usageLimit           Int?
+  usedCount            Int      @default(0)
+  userLimit            Int?
+  validFrom            DateTime
+  validUntil           DateTime
+  isActive             Boolean  @default(true)
+  applicableCategories String   // comma-separated category IDs
+  applicableProducts   String   // comma-separated product IDs
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   @@map("coupons")
 }
@@ -304,8 +273,8 @@ model AdminAuditLog {
   action    String
   entity    String
   entityId  String
-  oldData   Json?
-  newData   Json?
+  oldData   String?  // JSON string
+  newData   String?  // JSON string
   createdAt DateTime @default(now())
 
   @@map("admin_audit_logs")
