@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag } from 'lucide-react';
-import { useWishlistStore } from '@store/wishlistStore';
-import { useCartStore } from '@store/cartStore';
-import { ProductCard } from '@components/product/ProductCard';
-import { Button } from '@components/ui/Button';
+import { useWishlistStore } from '../../store/wishlistStore';
+import { useCartStore } from '../../store/cartStore';
+import { ProductCard } from '../../components/product/ProductCard';
+import { Button } from '../../components/ui/Button';
 
 export function WishlistPage() {
   const { items, toggleItem } = useWishlistStore();
