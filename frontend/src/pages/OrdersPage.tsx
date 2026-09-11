@@ -220,7 +220,7 @@ export function OrdersPage() {
                     </div>
                   </div>
                 </motion.article>
-              ))}
+              )}
             </motion.div>
           )}
         </div>
