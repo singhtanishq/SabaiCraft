@@ -19,7 +19,9 @@ import { authMiddleware } from './middleware/auth';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env['PORT'] || 3001;
+const FRONTEND_URL = process.env['FRONTEND_URL'] || 'http://localhost:5173';
+const NODE_ENV = process.env['NODE_ENV'] || 'development';
 
 // Middleware
 app.use(helmet({
@@ -27,7 +29,7 @@ app.use(helmet({
   contentSecurityPolicy: false,
 }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: FRONTEND_URL,
   credentials: true,
 }));
 app.use(morgan('dev'));
@@ -60,7 +62,7 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📍 Environment: ${NODE_ENV}`);
 });
 
 export default app;
