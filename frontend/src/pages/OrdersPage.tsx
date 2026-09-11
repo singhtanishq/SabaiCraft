@@ -6,7 +6,7 @@ import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { Badge } from '@components/ui/Badge';
 import { EmptyState, EmptyOrders } from '@components/ui/EmptyState';
-import { formatPrice } from '@utils/format'
+import { formatPrice } from '@utils/format';
 import { cn } from '@utils/cn';
 import type { Order, OrderItem } from '@app-types';
 
@@ -94,16 +94,6 @@ const statusConfig: Record<Order['status'], { label: string; icon: React.ReactNo
   refunded: { label: 'Refunded', icon: <RotateCcw className="w-4 h-4" />, color: 'text-olive-700', bgColor: 'bg-olive-100' },
 };
 
-const statusConfig2: Record<Order['status'], { label: string; icon: React.ReactNode; color: string; bgColor: string }> = {
-  pending: { label: 'Pending', icon: <Clock className="w-4 h-4" />, color: 'text-amber-700', bgColor: 'bg-amber-100' },
-  confirmed: { label: 'Confirmed', icon: <CheckCircle className="w-4 h-4" />, color: 'text-blue-700', bgColor: 'bg-blue-100' },
-  processing: { label: 'Processing', icon: <Package className="w-4 h-4" />, color: 'text-sage-700', bgColor: 'bg-sage-100' },
-  shipped: { label: 'Shipped', icon: <Truck className="w-4 h-4" />, color: 'text-purple-700', bgColor: 'bg-purple-100' },
-  delivered: { label: 'Delivered', icon: <CheckCircle className="w-4 h-4 fill-current" />, color: 'text-green-700', bgColor: 'bg-green-100' },
-  cancelled: { label: 'Cancelled', icon: <X className="w-4 h-4" />, color: 'text-red-700', bgColor: 'bg-red-100' },
-  refunded: { label: 'Refunded', icon: <RotateCcw className="w-4 h-4" />, color: 'text-olive-700', bgColor: 'bg-olive-100' },
-};
-
 export function OrdersPage() {
   const { isAuthenticated } = useAuthStore();
 
@@ -148,91 +138,92 @@ export function OrdersPage() {
             animate={{ opacity: 1 }}
             className="space-y-4"
           >
-            {userOrders.map((order, index) => (
-              <motion.article
-                key={order.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.08 }}
-                className="card p-6"
-              >
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                  {/* Order Info */}
-                  <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                    <div className="flex items-center gap-4">
-                      {order.items.slice(0, 2).map((item, i) => (
-                        <Link
-                          key={item.id}
-                          to={`/product/${item.productSlug}`}
-                          className={cn('relative w-16 h-16 rounded-lg overflow-hidden border border-olive-200', i === 1 && '-ml-4 z-10')}
-                        >
-                          <img src={item.image} alt={item.productName} className="w-full h-full object-cover" loading="lazy" />
-                        </Link>
-                      ))}
-                      {order.items.length > 2 && (
-                        <div className="relative w-16 h-16 rounded-lg border border-olive-200 bg-olive-50 flex items-center justify-center -ml-4 z-10">
-                          <span className="font-medium text-olive-600">+{order.items.length - 2}</span>
-                        </div>
-                      )}
-                    </div>
+            {userOrders.map((order, index) => {
+              const orderStatusConfig = statusConfig[order.status];
 
-                    <div>
-                      // Get status config for this order
-                      const orderStatusConfig = statusConfig[order.status];
-
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <Link
-                          to={`/orders/${order.id}`}
-                          className="font-display font-medium text-olive-950 text-heading-md hover:text-sage-700"
-                        >
-                          {order.orderNumber}
-                        </Link>
-                        <Badge className={cn(orderStatusConfig.bgColor, orderStatusConfig.color)}>
-                          <span className="inline-flex">{orderStatusConfig.icon}</span>
-                          {orderStatusConfig.label}
-                        </Badge>
-                      </div>
-                      <p className="text-olive-500 text-body-sm mt-1">
-                        Placed on {new Date(order.placedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Order Actions */}
-                  <div className="flex items-center gap-4">
-                    <div className="text-right hidden lg:block">
-                      <p className="font-display font-medium text-olive-950 text-heading-lg">{formatPrice(order.total)}</p>
-                      <p className="caption text-olive-500">Incl. GST & Shipping</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button asChild variant="outline" size="sm">
-                        <Link to={`/orders/${order.id}`}>
-                          <Eye className="w-4 h-4 mr-1" />
-                          View
-                        </Link>
-                      </Button>
-                      {order.status !== 'delivered' && order.status !== 'cancelled' && (
-                        <Button asChild variant="primary" size="sm">
-                          <Link to={`/orders/${order.id}`}>
-                            Track
+              return (
+                <motion.article
+                  key={order.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.08 }}
+                  className="card p-6"
+                >
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    {/* Order Info */}
+                    <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+                      <div className="flex items-center gap-4">
+                        {order.items.slice(0, 2).map((item, i) => (
+                          <Link
+                            key={item.id}
+                            to={`/product/${item.productSlug}`}
+                            className={cn('relative w-16 h-16 rounded-lg overflow-hidden border border-olive-200', i === 1 && '-ml-4 z-10')}
+                          >
+                            <img src={item.image} alt={item.productName} className="w-full h-full object-cover" loading="lazy" />
                           </Link>
-                        </Button>
-                      )}
-                      {order.status === 'delivered' && (
+                        ))}
+                        {order.items.length > 2 && (
+                          <div className="relative w-16 h-16 rounded-lg border border-olive-200 bg-olive-50 flex items-center justify-center -ml-4 z-10">
+                            <span className="font-medium text-olive-600">+{order.items.length - 2}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <Link
+                            to={`/orders/${order.id}`}
+                            className="font-display font-medium text-olive-950 text-heading-md hover:text-sage-700"
+                          >
+                            {order.orderNumber}
+                          </Link>
+                          <Badge className={cn(statusConfig[order.status].bgColor, statusConfig[order.status].color)}>
+                            <span className="inline-flex">{statusConfig[order.status].icon}</span>
+                            {statusConfig[order.status].label}
+                          </Badge>
+                        </div>
+                        <p className="text-olive-500 text-body-sm mt-1">
+                          Placed on {new Date(order.placedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Order Actions */}
+                    <div className="flex items-center gap-4">
+                      <div className="text-right hidden lg:block">
+                        <p className="font-display font-medium text-olive-950 text-heading-lg">{formatPrice(order.total)}</p>
+                        <p className="caption text-olive-500">Incl. GST & Shipping</p>
+                      </div>
+                      <div className="flex items-center gap-2">
                         <Button asChild variant="outline" size="sm">
                           <Link to={`/orders/${order.id}`}>
-                            <RotateCcw className="w-4 h-4 mr-1" />
-                            Reorder
+                            <Eye className="w-4 h-4 mr-1" />
+                            View
                           </Link>
                         </Button>
-                      )}
+                        {order.status !== 'delivered' && order.status !== 'cancelled' && (
+                          <Button asChild variant="primary" size="sm">
+                            <Link to={`/orders/${order.id}`}>
+                              Track
+                            </Link>
+                          </Button>
+                        )}
+                        {order.status === 'delivered' && (
+                          <Button asChild variant="outline" size="sm">
+                            <Link to={`/orders/${order.id}`}>
+                              <RotateCcw className="w-4 h-4 mr-1" />
+                              Reorder
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.article>
-            ))}
-          </motion.div>
-        )}
+                </motion.article>
+              ))}
+            </motion.div>
+          )}
+        </div>
       </div>
     </div>
   );
