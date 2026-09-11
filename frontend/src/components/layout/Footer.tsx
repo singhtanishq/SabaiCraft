@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import {
   Facebook,
   Instagram,
-  Twitter,
   Youtube,
   Mail,
   MapPin,
@@ -14,8 +13,17 @@ import {
   Headphones,
   Leaf,
   X,
+  Twitter,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
+
+// Use available icons or create custom components for social media
+const SocialIcons = {
+  facebook: Facebook,
+  instagram: Instagram,
+  twitter: Twitter, // May need to use X instead
+  youtube: Youtube,
+} as const;
 
 const footerLinks = {
   shop: [
@@ -55,9 +63,9 @@ const features = [
 ];
 
 const socialLinks = [
-  { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
   { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
-  { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
+  { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
+  { icon: X, href: 'https://x.com', label: 'Twitter' },
   { icon: Youtube, href: 'https://youtube.com', label: 'YouTube' },
 ];
 
@@ -65,10 +73,8 @@ const trustBadges = [
   { icon: Leaf, text: 'Eco-Friendly Materials' },
   { icon: Shield, text: 'Artisan Made' },
   { icon: RotateCcw, text: 'Sustainable Practices' },
-  { icon: Heart, text: 'Fair Trade' },
+  { icon: Leaf, text: 'Fair Trade' },
 ];
-
-import { Heart } from 'lucide-react';
 
 export function Footer() {
   return (
