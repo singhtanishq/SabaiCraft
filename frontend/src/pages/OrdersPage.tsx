@@ -101,8 +101,6 @@ const statusConfig2: Record<Order['status'], { label: string; icon: React.ReactN
   refunded: { label: 'Refunded', icon: <RotateCcw className="w-4 h-4" />, color: 'text-olive-700', bgColor: 'bg-olive-100' },
 };
 
-}
-
 const statusConfig2: Record<Order['status'], { label: string; icon: React.ReactNode; color: string; bgColor: string }> = {
   pending: { label: 'Pending', icon: <Clock className="w-4 h-4" />, color: 'text-amber-700', bgColor: 'bg-amber-100' },
   confirmed: { label: 'Confirmed', icon: <CheckCircle className="w-4 h-4" />, color: 'text-blue-700', bgColor: 'bg-blue-100' },
