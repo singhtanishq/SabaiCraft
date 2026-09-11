@@ -17,7 +17,12 @@ export function LoginPage() {
 
   const from = (location.state as any)?.from?.pathname || '/account';
 
-  const [formData, setFormData] = useState<{ email: string; password: string }>({ email: '', password: '' });
+  interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+const [formData, setFormData] = useState<LoginFormData>({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
