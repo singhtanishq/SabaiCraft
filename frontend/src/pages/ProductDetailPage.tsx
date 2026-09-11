@@ -33,7 +33,6 @@ export function ProductDetailPage() {
     return (
       <div className="min-h-screen bg-cream-50 flex items-center justify-center px-4">
         <EmptyState
-          illustration={<EmptyState />}
           title="Product Not Found"
           description="The product you're looking for doesn't exist or has been removed."
           action={{ label: 'Continue Shopping', onClick: () => window.location.href = '/shop', variant: 'primary' }}
