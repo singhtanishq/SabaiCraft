@@ -7,7 +7,8 @@ import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { cn, formatPrice } from '../../utils/cn';
+import { cn } from '@utils/cn';
+import { formatPrice } from '@utils/format';
 
 export function SearchModal() {
   const [isOpen, setIsOpen] = useState(false);
