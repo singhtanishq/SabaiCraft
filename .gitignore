@@ -1,0 +1,109 @@
+# =========================
+
+# Environment / Secrets
+
+# =========================
+
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# =========================
+
+# Dependencies
+
+# =========================
+
+node_modules/
+vendor/
+
+# =========================
+
+# Build / Production
+
+# =========================
+
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+coverage/
+
+# =========================
+
+# Logs
+
+# =========================
+
+*.log
+logs/
+
+# =========================
+
+# OS / Editor Files
+
+# =========================
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# =========================
+
+# Temporary / Local Files
+
+# =========================
+
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+
+# =========================
+
+# Local Database / Storage
+
+# =========================
+
+*.sqlite
+*.sqlite3
+*.db
+
+# =========================
+
+# PHP / Laravel
+
+# =========================
+
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+bootstrap/cache/
+
+# =========================
+
+# Python
+
+# =========================
+
+**pycache**/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# =========================
+
+# Auto Push Script
+
+# =========================
+
+# Uncomment this ONLY if you don't want the script itself on GitHub:
+
+# auto-push.sh
