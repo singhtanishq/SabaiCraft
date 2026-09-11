@@ -190,7 +190,7 @@ export function ToastContainer({ position = 'top-right' }: { position?: 'top-rig
         'flex flex-col gap-3 z-[700] pointer-events-none',
         positionClasses[position]
       )}
-      pointer-events="none"
+      style={{ pointerEvents: 'none' }}
     >
       {toasts.map((toast) => (
         <div key={toast.id} className="pointer-events-auto">
