@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Leaf, Heart, Sparkles, Award, Users, TreePine, Recycle, Hand } from 'lucide-react';
-import { Card } from '../ui/Card';
+import { Card } from '../../components/ui/Card';
 
 const story = {
   title: 'Our Story',

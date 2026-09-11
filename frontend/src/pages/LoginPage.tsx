@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
-import { Card } from '../ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Card } from '../../components/ui/Card';
 import { useAuthStore } from '../../store/authStore';
-import { useToastHelpers } from '../ui/Toast';
-import { cn } from '../../utils/cn';
+import { useToastHelpers } from '../../components/ui/Toast';
+import { cn } from '../../../utils/cn';
 
 export function LoginPage() {
   const navigate = useNavigate();
