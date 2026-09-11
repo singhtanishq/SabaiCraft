@@ -18,6 +18,7 @@ import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../ui/Button';
+import { MobileDrawer } from './MobileDrawer';
 import { Drawer } from '../ui/Drawer';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
