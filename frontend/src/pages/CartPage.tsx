@@ -5,7 +5,8 @@ import { useCartStore } from '@store/cartStore';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { Badge } from '@components/ui/Badge';
-import { cn, formatPrice } from '@utils/format';
+import { formatPrice } from '@utils/format'
+import { cn } from '@utils/cn';
 import { EmptyCart } from '@components/ui/EmptyState';
 
 export function CartPage() {

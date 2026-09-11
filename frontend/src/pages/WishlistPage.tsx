@@ -7,7 +7,8 @@ import { ProductCard } from '@components/product/ProductCard';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { EmptyState, EmptyWishlist } from '@components/ui/EmptyState';
-import { cn, formatPrice } from '@utils/format';
+import { formatPrice } from '@utils/format'
+import { cn } from '@utils/cn';
 
 export function WishlistPage() {
   const { items, removeItem, toggleItem, isInWishlist } = useWishlistStore();
