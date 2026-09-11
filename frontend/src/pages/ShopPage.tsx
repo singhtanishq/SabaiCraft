@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, ArrowRight, Search, Filter, ChevronDown, Grid, List } from 'lucide-react';
+import { Search, Filter, ChevronDown, Grid, List } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { products, categories, searchProducts, getProductsByCategory } from '../../data/products';
 import { ProductCard } from '../../components/product/ProductCard';
