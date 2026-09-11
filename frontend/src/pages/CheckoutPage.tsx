@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle, CreditCard, Smartphone, Building2, Mail, MapPin, Phone, User, Lock } from 'lucide-react';
+import { ArrowRight, CheckCircle, CreditCard, Smartphone, Building2, Mail, MapPin, Phone, User, Lock, Truck } from 'lucide-react';
 import { useCartStore } from '@store/cartStore';
 import { useAuthStore } from '@store/authStore';
 import { Button } from '@components/ui/Button';
@@ -9,9 +9,9 @@ import { Input } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
 import { RadioGroup, RadioGroupItem } from '@components/ui/RadioGroup';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
-import { formatPrice } from '@utils/format'
+import { formatPrice } from '@utils/format';
 import { cn } from '@utils/cn';
-import { useToastHelpers } from '@components/ui/Toast';
+import { useToastHelpers } from '@components/ui';
 
 const steps = [
   { id: 'info', label: 'Information', icon: Mail },
@@ -19,8 +19,6 @@ const steps = [
   { id: 'payment', label: 'Payment', icon: CreditCard },
   { id: 'review', label: 'Review', icon: CheckCircle },
 ];
-
-import { Truck } from 'lucide-react';
 
 export function CheckoutPage() {
   const navigate = useNavigate();
