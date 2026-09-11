@@ -152,7 +152,7 @@ export function OrderDetailPage() {
                         {isCompleted ? (
                           <CheckCircle className="w-8 h-8 text-white" />
                         ) : (
-                          <stepConfig.icon className={cn('w-8 h-8', isCurrent ? 'text-sage-600' : 'text-olive-400')} />
+                          <span className={cn('w-8 h-8', isCurrent ? 'text-sage-600' : 'text-olive-400')}>{stepConfig.icon}</span>
                         )}
                       </div>
                       <p className={cn(
