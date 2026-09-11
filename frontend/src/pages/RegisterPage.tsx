@@ -89,7 +89,7 @@ export function RegisterPage() {
             <Input
               label="First Name"
               value={formData.firstName}
-              onChange={(e) => handleInputChange('firstName', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('firstName', e.target.value)}
               error={errors.firstName}
               placeholder="John"
               leftIcon={<User className="w-5 h-5" />}
@@ -98,7 +98,7 @@ export function RegisterPage() {
             <Input
               label="Last Name"
               value={formData.lastName}
-              onChange={(e) => handleInputChange('lastName', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('lastName', e.target.value)}
               error={errors.lastName}
               placeholder="Doe"
               leftIcon={<User className="w-5 h-5" />}
@@ -110,7 +110,7 @@ export function RegisterPage() {
             label="Email Address"
             type="email"
             value={formData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('email', e.target.value)}
             error={errors.email}
             placeholder="you@example.com"
             leftIcon={<Mail className="w-5 h-5" />}
@@ -122,7 +122,7 @@ export function RegisterPage() {
               label="Password"
               type={showPassword ? 'text' : 'password'}
               value={formData.password}
-              onChange={(e) => handleInputChange('password', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('password', e.target.value)}
               error={errors.password}
               placeholder="••••••••"
               leftIcon={<Lock className="w-5 h-5" />}
@@ -144,7 +144,7 @@ export function RegisterPage() {
             label="Confirm Password"
             type={showPassword ? 'text' : 'password'}
             value={formData.confirmPassword}
-            onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('confirmPassword', e.target.value)}
             error={errors.confirmPassword}
             placeholder="••••••••"
             leftIcon={<Lock className="w-5 h-5" />}
