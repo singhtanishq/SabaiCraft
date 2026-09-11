@@ -8,7 +8,7 @@ import { Badge } from '@components/ui/Badge';
 import { EmptyState, EmptyOrders } from '@components/ui/EmptyState';
 import { formatPrice } from '@utils/format'
 import { cn } from '@utils/cn';
-import type { Order, OrderItem } from '@types';
+import type { Order, OrderItem } from '@app-types';
 
 // Mock orders data
 const mockOrders: Order[] = [
