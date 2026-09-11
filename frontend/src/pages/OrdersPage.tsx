@@ -173,8 +173,7 @@ export function OrdersPage() {
                       )}
                     </div>
 
-<div>
-                // Get status config for this order
+// Get status config for this order
                 const orderStatusConfig = statusConfig[order.status];
 
                 <div className="flex items-center gap-3 flex-wrap">
