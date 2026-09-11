@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Package, Truck, CheckCircle, Clock, X, Eye, RotateCcw, ChevronRight } from 'lucide-react';
+import { Package, Truck, CheckCircle, Clock, X, Eye, RotateCcw, MapPin, Phone, ChevronRight, Shield } from 'lucide-react';
 import { useAuthStore } from '@store/authStore';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
@@ -29,10 +29,13 @@ const mockOrders: Order[] = [
     tax: 41400,
     total: 271400,
     shippingAddress: { id: 'addr-1', userId: 'user-1', name: 'John Doe', phone: '+91 98765 43210', addressLine1: '123 Main St', city: 'Mumbai', state: 'Maharashtra', postalCode: '400001', country: 'India', isDefault: true, type: 'shipping' },
+    billingAddress: { id: 'addr-1', userId: 'user-1', name: 'John Doe', phone: '+91 98765 43210', addressLine1: '123 Main St', city: 'Mumbai', state: 'Maharashtra', postalCode: '400001', country: 'India', isDefault: true, type: 'billing' },
     placedAt: '2024-01-15T10:30:00Z',
     confirmedAt: '2024-01-15T11:00:00Z',
     shippedAt: '2024-01-16T09:00:00Z',
     deliveredAt: '2024-01-20T14:30:00Z',
+    trackingNumber: 'TRK123456789',
+    trackingUrl: 'https://tracking.example.com/TRK123456789',
     createdAt: '2024-01-15T10:30:00Z',
     updatedAt: '2024-01-20T14:30:00Z',
   },
@@ -82,6 +85,16 @@ const mockOrders: Order[] = [
 ];
 
 const statusConfig: Record<Order['status'], { label: string; icon: React.ReactNode; color: string; bgColor: string }> = {
+  pending: { label: 'Pending', icon: <Clock className="w-4 h-4" />, color: 'text-amber-700', bgColor: 'bg-amber-100' },
+  confirmed: { label: 'Confirmed', icon: <CheckCircle className="w-4 h-4" />, color: 'text-blue-700', bgColor: 'bg-blue-100' },
+  processing: { label: 'Processing', icon: <Package className="w-4 h-4" />, color: 'text-sage-700', bgColor: 'bg-sage-100' },
+  shipped: { label: 'Shipped', icon: <Truck className="w-4 h-4" />, color: 'text-purple-700', bgColor: 'bg-purple-100' },
+  delivered: { label: 'Delivered', icon: <CheckCircle className="w-4 h-4 fill-current" />, color: 'text-green-700', bgColor: 'bg-green-100' },
+  cancelled: { label: 'Cancelled', icon: <X className="w-4 h-4" />, color: 'text-red-700', bgColor: 'bg-red-100' },
+  refunded: { label: 'Refunded', icon: <RotateCcw className="w-4 h-4" />, color: 'text-olive-700', bgColor: 'bg-olive-100' },
+};
+
+const statusConfig2: Record<Order['status'], { label: string; icon: React.ReactNode; color: string; bgColor: string }> = {
   pending: { label: 'Pending', icon: <Clock className="w-4 h-4" />, color: 'text-amber-700', bgColor: 'bg-amber-100' },
   confirmed: { label: 'Confirmed', icon: <CheckCircle className="w-4 h-4" />, color: 'text-blue-700', bgColor: 'bg-blue-100' },
   processing: { label: 'Processing', icon: <Package className="w-4 h-4" />, color: 'text-sage-700', bgColor: 'bg-sage-100' },
@@ -163,20 +176,21 @@ export function OrdersPage() {
                       )}
                     </div>
 
-// Get status config for this order
-                const orderStatusConfig = statusConfig[order.status];
+                    <div>
+                      // Get status config for this order
+                      const orderStatusConfig = statusConfig[order.status];
 
-                <div className="flex items-center gap-3 flex-wrap">
-                  <Link
-                    to={`/orders/${order.id}`}
-                    className="font-display font-medium text-olive-950 text-heading-md hover:text-sage-700"
-                  >
-                    {order.orderNumber}
-                  </Link>
-                  <Badge className={cn(orderStatusConfig.bgColor, orderStatusConfig.color)}>
-                    <span className="inline-flex">{orderStatusConfig.icon}</span>
-                    {orderStatusConfig.label}
-                  </Badge>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <Link
+                          to={`/orders/${order.id}`}
+                          className="font-display font-medium text-olive-950 text-heading-md hover:text-sage-700"
+                        >
+                          {order.orderNumber}
+                        </Link>
+                        <Badge className={cn(orderStatusConfig.bgColor, orderStatusConfig.color)}>
+                          <span className="inline-flex">{orderStatusConfig.icon}</span>
+                          {orderStatusConfig.label}
+                        </Badge>
                       </div>
                       <p className="text-olive-500 text-body-sm mt-1">
                         Placed on {new Date(order.placedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -221,4 +235,5 @@ export function OrdersPage() {
         )}
       </div>
     </div>
-  }
+  );
+}
