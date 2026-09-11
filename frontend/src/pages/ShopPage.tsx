@@ -48,16 +48,16 @@ export function ShopPage() {
 
     switch (sortBy) {
       case 'price_asc':
-        result.sort((a, b) => a.basePrice - b.basePrice);
+        result.sort((a: Product, b: Product) => a.basePrice - b.basePrice);
         break;
       case 'price_desc':
-        result.sort((a, b) => b.basePrice - a.basePrice);
+        result.sort((a: Product, b: Product) => b.basePrice - a.basePrice);
         break;
       case 'rating':
-        result.sort((a, b) => b.rating - a.rating);
+        result.sort((a: Product, b: Product) => b.rating - a.rating);
         break;
       case 'popular':
-        result.sort((a, b) => b.reviewCount - a.reviewCount);
+        result.sort((a: Product, b: Product) => b.reviewCount - a.reviewCount);
         break;
       default:
         // newest - keep original order
