@@ -164,17 +164,20 @@ export function OrdersPage() {
                     </div>
 
                     <div>
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <Link
-                          to={`/orders/${order.id}`}
-                          className="font-display font-medium text-olive-950 text-heading-md hover:text-sage-700"
-                        >
-                          {order.orderNumber}
-                        </Link>
-                        <Badge className={cn(order.statusConfig?.bgColor || 'bg-olive-100 text-olive-700', order.statusConfig?.color || 'text-olive-700')}>
-                          {order.statusConfig?.icon}
-                          {order.statusConfig?.label}
-                        </Badge>
+// Get status config for this order
+                const orderStatusConfig = statusConfig2[order.status];
+
+                <div className="flex items-center gap-3 flex-wrap">
+                  <Link
+                    to={`/orders/${order.id}`}
+                    className="font-display font-medium text-olive-950 text-heading-md hover:text-sage-700"
+                  >
+                    {order.orderNumber}
+                  </Link>
+                  <Badge className={cn(orderStatusConfig.bgColor, orderStatusConfig.color)}>
+                    <span className="inline-flex">{orderStatusConfig.icon}</span>
+                    {orderStatusConfig.label}
+                  </Badge>
                       </div>
                       <p className="text-olive-500 text-body-sm mt-1">
                         Placed on {new Date(order.placedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
