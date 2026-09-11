@@ -12,6 +12,11 @@
     --color-text-muted: #75540d;
     --color-border-light: #e8e4d8;
     --color-border-medium: #d4cebf;
+    --duration-instant: 50ms;
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 350ms;
+    --duration-slower: 500ms;
   }
 
   * {
@@ -115,11 +120,14 @@
   }
 
   .link {
-    @apply text-sage-600 hover:text-sage-700 underline underline-offset-2 decoration-1 transition-colors duration-fast;
+    @apply text-sage-600 hover:text-sage-700 underline underline-offset-2 decoration-1 transition-colors;
+    transition-duration: var(--duration-fast);
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-fast focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-600 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all;
+    transition-duration: var(--duration-fast);
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-600 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-primary {
@@ -171,7 +179,9 @@
   }
 
   .input {
-    @apply w-full px-4 py-3 bg-white border border-olive-200 rounded-lg text-olive-900 placeholder-olive-400 transition-all duration-fast focus:outline-none focus:border-sage-600 focus:ring-2 focus:ring-sage-500/20 disabled:bg-olive-50 disabled:cursor-not-allowed;
+    @apply w-full px-4 py-3 bg-white border border-olive-200 rounded-lg text-olive-900 placeholder-olive-400 transition-all;
+    transition-duration: var(--duration-fast);
+    @apply focus:outline-none focus:border-sage-600 focus:ring-2 focus:ring-sage-500/20 disabled:bg-olive-50 disabled:cursor-not-allowed;
   }
 
   .input-error {
@@ -187,11 +197,14 @@
   }
 
   .card {
-    @apply bg-white rounded-xl border border-olive-100 shadow-sm overflow-hidden transition-all duration-normal hover:shadow-md;
+    @apply bg-white rounded-xl border border-olive-100 shadow-sm overflow-hidden transition-all;
+    transition-duration: var(--duration-normal);
+    @apply hover:shadow-md;
   }
 
   .card-elevated {
-    @apply bg-white rounded-xl shadow-lg border border-olive-100 overflow-hidden transition-all duration-normal;
+    @apply bg-white rounded-xl shadow-lg border border-olive-100 overflow-hidden transition-all;
+    transition-duration: var(--duration-normal);
   }
 
   .card-interactive {
@@ -257,23 +270,23 @@
   }
 
   .animate-in {
-    animation: fadeIn 0.3s ease-out forwards;
+    animation: fadeIn 200ms ease-out forwards;
   }
 
   .animate-out {
-    animation: fadeOut 0.2s ease-in forwards;
+    animation: fadeOut 150ms ease-in forwards;
   }
 
   .slide-up-in {
-    animation: slideUp 0.4s ease-out forwards;
+    animation: slideUp 300ms ease-out forwards;
   }
 
   .slide-down-in {
-    animation: slideDown 0.4s ease-out forwards;
+    animation: slideDown 300ms ease-out forwards;
   }
 
   .scale-in {
-    animation: scaleIn 0.2s ease-out forwards;
+    animation: scaleIn 200ms ease-out forwards;
   }
 
   .backdrop-blur-glass {
