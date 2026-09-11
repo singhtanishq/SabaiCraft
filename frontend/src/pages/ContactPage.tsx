@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MapPin, Phone, Clock, Send, MessageSquare, CheckCircle } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input, Textarea } from '../../components/ui/Input';
-import { Card } from '../../components/ui/Card';
-import { useToastHelpers } from '../../components/ui/Toast';
-import { cn } from '../../../utils/cn';
+import { Button } from '@components/ui/Button';
+import { Input, Textarea } from '@components/ui/Input';
+import { Card } from '@components/ui/Card';
+import { useToastHelpers } from '@components/ui/Toast';
+import { cn } from '@utils/cn';
 
 const contactInfo = [
   {

@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { X, Plus, Minus, Trash2, ArrowRight, Shield, Truck, RotateCcw } from 'lucide-react';
 import { useCartStore } from '../../store/cartStore';
-import { Button } from '../../components/ui/Button';
-import { Card } from '../../components/ui/Card';
-import { Badge } from '../../components/ui/Badge';
-import { cn, formatPrice } from '../../../utils/format';
-import { EmptyCart } from '../../components/ui/EmptyState';
+import { Button } from '@components/ui/Button';
+import { Card } from '@components/ui/Card';
+import { Badge } from '@components/ui/Badge';
+import { cn, formatPrice } from '@utils/format';
+import { EmptyCart } from '@components/ui/EmptyState';
 
 export function CartPage() {
   const { cart, removeItem, updateQuantity, getSubtotal, clearCart } = useCartStore();

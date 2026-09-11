@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, Truck, Shield, RotateCcw, Mail, MapPin, Phone, Clock } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Card } from '../../components/ui/Card';
-import { cn } from '../../../utils/cn';
+import { Button } from '@components/ui/Button';
+import { Card } from '@components/ui/Card';
+import { cn } from '@utils/cn';
 
 export function OrderSuccessPage({ params }: { params: Promise<{ orderId: string }> }) {
   const orderId = (params as any).orderId || 'ORD-UNKNOWN';

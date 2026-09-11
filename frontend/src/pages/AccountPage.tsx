@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Package, Heart, MapPin, Settings, LogOut, ChevronRight, Bell, Shield } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
-import { Button } from '../../components/ui/Button';
-import { Card } from '../../components/ui/Card';
-import { useToastHelpers } from '../../components/ui/Toast';
+import { Button } from '@components/ui/Button';
+import { Card } from '@components/ui/Card';
+import { useToastHelpers } from '@components/ui/Toast';
 
 const accountSections = [
   { id: 'overview', label: 'Overview', icon: User, href: '/account' },
