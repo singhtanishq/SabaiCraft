@@ -16,10 +16,11 @@ export function MainLayout({ children }: MainLayoutProps) {
         <Header />
         <MobileDrawer />
         <main className="flex-1 pt-16 lg:pt-20">
-          {children ?? <Outlet />}
+          <Outlet />
         </main>
         <Footer />
         <ToastContainer position="top-right" />
+        {children}
       </div>
     </ToastProvider>
   );
