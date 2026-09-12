@@ -80,7 +80,7 @@ export function RippleButton({
     <button
       onClick={handleClick}
       className={className}
-      style={{ position: 'relative' as const, overflow: 'hidden' as const, ...(style || {}) }}
+      style={{ position: 'relative', overflow: 'hidden', ...(style || {}) } as React.CSSProperties}
       {...props}
     >
       {children}
