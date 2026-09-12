@@ -54,11 +54,11 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
 // Remove from wishlist
 router.delete('/:itemId', authMiddleware, async (req: AuthRequest, res, next) => {
   try {
-    const item = await prisma.wishlistItem.findUnique({ where: { id: req.params.itemId } });
+    const item = await prisma.wishlistItem.findUnique({ where: { id: req.params.itemId as string } });
     if (!item) throw new AppError(404, 'Wishlist item not found');
     if (item.userId !== req.user!.id) throw new AppError(403, 'Not authorized');
 
-    await prisma.wishlistItem.delete({ where: { id: req.params.itemId } });
+    await prisma.wishlistItem.delete({ where: { id: req.params.itemId as string } });
     res.json({ success: true, message: 'Removed from wishlist' });
   } catch (error) {
     next(error);
