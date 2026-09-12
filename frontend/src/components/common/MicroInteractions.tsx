@@ -47,18 +47,22 @@ export function MagneticButton({
   );
 }
 
-interface RippleProps extends Omit<HTMLMotionProps<'button'>, 'onClick'> {
+interface RippleProps {
   children: ReactNode;
   className?: string;
   rippleColor?: string;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export function RippleButton({
   children,
   className,
   rippleColor = 'currentColor',
-  style,
-  ...props
+  onClick,
+  disabled,
+  type = 'button',
 }: RippleProps) {
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
 
@@ -74,14 +78,17 @@ export function RippleButton({
     setTimeout(() => {
       setRipples((prev) => prev.filter((r) => r.id !== id));
     }, 600);
+
+    if (onClick) onClick(e);
   };
 
   return (
     <button
       onClick={handleClick}
       className={className}
-      style={{ position: 'relative', overflow: 'hidden', ...(style || {}) } as React.CSSProperties}
-      {...props}
+      disabled={disabled}
+      type={type}
+      style={{ position: 'relative', overflow: 'hidden' } as React.CSSProperties}
     >
       {children}
       {ripples.map((ripple) => (
