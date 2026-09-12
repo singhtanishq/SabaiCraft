@@ -197,7 +197,13 @@ router.post('/coupons', async (req, res, next) => {
     if (existing) throw new AppError(409, 'Coupon code already exists');
 
     const coupon = await prisma.coupon.create({
-      data: { ...data, validFrom: new Date(data.validFrom), validUntil: new Date(data.validUntil) },
+      data: { 
+        ...data, 
+        validFrom: new Date(data.validFrom), 
+        validUntil: new Date(data.validUntil),
+        applicableCategories: data.applicableCategories?.join(',') || '',
+        applicableProducts: data.applicableProducts?.join(',') || '',
+      },
     });
     res.status(201).json({ success: true, data: coupon });
   } catch (error) {
