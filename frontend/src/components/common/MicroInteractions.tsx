@@ -1,4 +1,4 @@
-import { motion, HTMLMotionProps } from 'framer-motion';
+import { motion, useMotionValue, HTMLMotionProps } from 'framer-motion';
 import { ReactNode } from 'react';
 
 interface MagneticButtonProps extends Omit<HTMLMotionProps<'button'>, 'onMouseMove' | 'onMouseLeave' | 'onMouseEnter'> {
@@ -13,25 +13,27 @@ export function MagneticButton({
   className,
   ...props
 }: MagneticButtonProps) {
-  const ref = motion.useMotionValue({ x: 0, y: 0 });
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    ref.set({ x: x * strength, y: y * strength });
+    const xVal = e.clientX - rect.left - rect.width / 2;
+    const yVal = e.clientY - rect.top - rect.height / 2;
+    x.set(xVal * strength);
+    y.set(yVal * strength);
   };
 
   const handleMouseLeave = () => {
-    ref.set({ x: 0, y: 0 });
+    x.set(0);
+    y.set(0);
   };
 
   return (
     <motion.button
-      ref={ref as any}
       style={{
-        x: ref.x,
-        y: ref.y,
+        x,
+        y,
         transformOrigin: 'center center',
       }}
       onMouseMove={handleMouseMove}
