@@ -3,7 +3,7 @@ import { MotionConfig } from 'framer-motion';
 import { MainLayout } from './components/layout/MainLayout';
 import { HomePage } from './pages/HomePage';
 import { ShopPage } from './pages/ShopPage';
-import { CategoryPage } from './pages/CategoryPage';
+import { CategoriesPage } from './pages/CategoriesPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
