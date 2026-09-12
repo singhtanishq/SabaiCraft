@@ -111,7 +111,7 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
               )}
             </button>
             <button
-              onClick={() => setIsMobileMenuOpen(true)}
+              onClick={onMenuClick}
               className="p-2 text-cream-50 hover:text-sabai-400 transition-colors"
               aria-label="Open menu"
             >
@@ -120,9 +120,6 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
           </div>
         </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <MobileDrawer isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
 
       {/* Main Header - Desktop */}
       <div className="hidden lg:flex items-center justify-between px-6 py-4">
