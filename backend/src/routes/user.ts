@@ -112,7 +112,7 @@ router.post('/addresses', authMiddleware, async (req: AuthRequest, res, next) =>
 
 router.put('/addresses/:id', authMiddleware, async (req: AuthRequest, res, next) => {
   try {
-    const address = await prisma.address.findUnique({ where: { id: req.params.id } });
+    const address = await prisma.address.findUnique({ where: { id: req.params.id as string } });
     if (!address) throw new AppError(404, 'Address not found');
     if (address.userId !== req.user!.id) throw new AppError(403, 'Not authorized');
 
@@ -137,7 +137,7 @@ router.put('/addresses/:id', authMiddleware, async (req: AuthRequest, res, next)
       });
     }
 
-    const updated = await prisma.address.update({ where: { id: req.params.id }, data });
+    const updated = await prisma.address.update({ where: { id: req.params.id as string }, data });
     res.json({ success: true, data: updated });
   } catch (error) {
     next(error);
@@ -146,11 +146,11 @@ router.put('/addresses/:id', authMiddleware, async (req: AuthRequest, res, next)
 
 router.delete('/addresses/:id', authMiddleware, async (req: AuthRequest, res, next) => {
   try {
-    const address = await prisma.address.findUnique({ where: { id: req.params.id } });
+    const address = await prisma.address.findUnique({ where: { id: req.params.id as string } });
     if (!address) throw new AppError(404, 'Address not found');
     if (address.userId !== req.user!.id) throw new AppError(403, 'Not authorized');
 
-    await prisma.address.delete({ where: { id: req.params.id } });
+    await prisma.address.delete({ where: { id: req.params.id as string } });
     res.json({ success: true, message: 'Address deleted' });
   } catch (error) {
     next(error);
