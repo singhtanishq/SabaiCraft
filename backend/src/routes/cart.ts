@@ -85,7 +85,10 @@ router.post('/items', async (req: AuthRequest, res, next) => {
       }
       // Merge session cart if exists
       if (sessionId) {
-        const sessionCart = await prisma.cart.findFirst({ where: { sessionId } });
+        const sessionCart = await prisma.cart.findFirst({ 
+          where: { sessionId },
+          include: { items: true }
+        });
         if (sessionCart) {
           for (const item of sessionCart.items) {
             await prisma.cartItem.upsert({
