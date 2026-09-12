@@ -41,9 +41,8 @@ const accountLinks = [
   { name: 'Settings', href: '/account/settings' },
 ];
 
-export function Header() {
+export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const location = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
