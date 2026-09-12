@@ -203,7 +203,7 @@ export function ProductDetailPage() {
               {/* Price */}
               <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="font-display font-medium text-heading-xl text-olive-950">
-                  {formatPrice(selectedVariant.price || product.basePrice)}
+                  {formatPrice(variant.price || product.basePrice)}
                 </span>
                 {hasDiscount && (
                   <span className="text-heading-sm text-olive-400 line-through">
