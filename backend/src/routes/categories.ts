@@ -118,7 +118,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res, next) => {
 // Admin: Update category
 router.put('/:id', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
-    const category = await prisma.category.update({ where: { id: req.params.id }, data: req.body });
+    const category = await prisma.category.update({ where: { id: req.params.id as string }, data: req.body });
     res.json({ success: true, data: category });
   } catch (error) {
     next(error);
@@ -128,7 +128,7 @@ router.put('/:id', authMiddleware, adminMiddleware, async (req, res, next) => {
 // Admin: Delete category
 router.delete('/:id', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
-    await prisma.category.delete({ where: { id: req.params.id } });
+    await prisma.category.delete({ where: { id: req.params.id as string } });
     res.json({ success: true, message: 'Category deleted' });
   } catch (error) {
     next(error);
