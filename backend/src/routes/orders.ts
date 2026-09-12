@@ -45,7 +45,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res, next) => {
 router.get('/:id', authMiddleware, async (req: AuthRequest, res, next) => {
   try {
     const order = await prisma.order.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       include: {
         items: { include: { product: { include: { images: true } } } },
         shippingAddress: true,
