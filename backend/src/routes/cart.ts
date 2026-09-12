@@ -159,7 +159,7 @@ router.patch('/items/:itemId', async (req: AuthRequest, res, next) => {
     if (!cart) throw new AppError(404, 'Cart not found');
 
     const item = await prisma.cartItem.findFirst({
-      where: { id: req.params.itemId, cartId: cart.id },
+      where: { id: req.params.itemId as string, cartId: cart.id },
       include: { variant: true },
     });
     if (!item) throw new AppError(404, 'Item not found');
