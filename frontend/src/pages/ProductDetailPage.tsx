@@ -363,22 +363,22 @@ export function ProductDetailPage() {
                         <dd className="font-medium text-olive-900 text-body-sm text-right max-w-xs truncate">{value}</dd>
                       </div>
                     ))}
-                    {selectedVariant && (
+                    {variant && (
                       <>
                         <div className="flex justify-between py-2 border-b border-olive-100">
                           <dt className="text-olive-600 text-body-sm">Variant</dt>
                           <dd className="font-medium text-olive-900 text-body-sm text-right">
-                            {Object.values(selectedVariant.attributes).join(' / ')}
+                            {Object.values(variant.attributes).join(' / ')}
                           </dd>
                         </div>
                         <div className="flex justify-between py-2 border-b border-olive-100">
                           <dt className="text-olive-600 text-body-sm">SKU</dt>
-                          <dd className="font-medium text-olive-900 text-body-sm text-right">{selectedVariant.sku}</dd>
+                          <dd className="font-medium text-olive-900 text-body-sm text-right">{variant.sku}</dd>
                         </div>
                         <div className="flex justify-between py-2">
                           <dt className="text-olive-600 text-body-sm">Stock Available</dt>
                           <dd className={cn('font-medium text-body-sm text-right', inStock ? 'text-sage-600' : 'text-red-600')}>
-                            {inStock ? `${selectedVariant.inventory} units` : 'Out of Stock'}
+                            {inStock ? `${variant.inventory} units` : 'Out of Stock'}
                           </dd>
                         </div>
                       </>
