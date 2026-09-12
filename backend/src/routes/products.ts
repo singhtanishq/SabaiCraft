@@ -157,12 +157,13 @@ router.get('/search/suggestions', async (req, res, next) => {
       return res.json({ success: true, data: [] });
     }
 
+    const query = q as string;
     const products = await prisma.product.findMany({
       where: {
         isActive: true,
         OR: [
-          { name: { contains: q as string, mode: 'insensitive' } },
-          { tags: { has: q as string } },
+          { name: { contains: query, mode: 'insensitive' } },
+          { tags: { contains: query } },
         ],
       },
       select: { id: true, name: true, slug: true, images: { take: 1 }, basePrice: true },
