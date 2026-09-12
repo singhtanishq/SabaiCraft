@@ -162,7 +162,7 @@ router.get('/search/suggestions', async (req, res, next) => {
       where: {
         isActive: true,
         OR: [
-          { name: { contains: query, mode: 'insensitive' } },
+          { name: { contains: query, mode: 'insensitive' as const } },
           { tags: { contains: query } },
         ],
       },
