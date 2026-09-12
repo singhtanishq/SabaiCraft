@@ -78,7 +78,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
     // Get user's cart
     const cart = await prisma.cart.findFirst({
       where: { userId: req.user!.id },
-      include: { items: { include: { product: true, variant: true } } },
+      include: { items: { include: { product: { include: { images: { take: 1 } } }, variant: true } } },
     });
     if (!cart || cart.items.length === 0) {
       throw new AppError(400, 'Cart is empty');
