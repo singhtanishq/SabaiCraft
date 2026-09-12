@@ -217,7 +217,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res, next) => {
         compareAtPrice: data.compareAtPrice,
         tags: data.tags ? data.tags.join(',') : '',
         images: { create: data.images },
-        variants: { create: data.variants.map(v => ({ ...v, attributes: JSON.stringify(v.attributes) })) },
+        variants: { create: data.variants },
       },
       include: { images: true, variants: true },
     });
