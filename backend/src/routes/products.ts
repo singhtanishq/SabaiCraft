@@ -232,7 +232,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res, next) => {
 router.put('/:id', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
     const product = await prisma.product.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: req.body,
       include: { images: true, variants: true },
     });
@@ -245,7 +245,7 @@ router.put('/:id', authMiddleware, adminMiddleware, async (req, res, next) => {
 // Admin: Delete product
 router.delete('/:id', authMiddleware, adminMiddleware, async (req, res, next) => {
   try {
-    await prisma.product.delete({ where: { id: req.params.id } });
+    await prisma.product.delete({ where: { id: req.params.id as string } });
     res.json({ success: true, message: 'Product deleted' });
   } catch (error) {
     next(error);
