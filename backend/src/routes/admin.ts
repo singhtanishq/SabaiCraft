@@ -247,7 +247,7 @@ router.get('/reviews', async (req, res, next) => {
         orderBy: { createdAt: 'desc' },
         skip,
         take: limitNum,
-        include: { product: { select: { name: true } }, user: { select: { name: true, email: true } } },
+        include: { product: { select: { name: true } } },
       }),
       prisma.review.count({ where }),
     ]);
@@ -265,7 +265,7 @@ router.get('/reviews', async (req, res, next) => {
 router.patch('/reviews/:id/approve', async (req, res, next) => {
   try {
     const review = await prisma.review.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: { isApproved: true },
     });
     res.json({ success: true, data: review });
@@ -277,7 +277,7 @@ router.patch('/reviews/:id/approve', async (req, res, next) => {
 router.patch('/reviews/:id/reject', async (req, res, next) => {
   try {
     const review = await prisma.review.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: { isApproved: false },
     });
     res.json({ success: true, data: review });
