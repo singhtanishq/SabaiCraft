@@ -225,32 +225,32 @@ export function ProductDetailPage() {
                 <div className="space-y-3">
                   <label className="label">Select Variant</label>
                   <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Product variants">
-                    {product.variants.map((variant) => (
+                    {product.variants.map((v) => (
                       <button
-                        key={variant.id}
+                        key={v.id}
                         onClick={() => {
-                          setSelectedVariant(variant);
+                          setSelectedVariant(v);
                           setQuantity(1);
                         }}
                         className={cn(
                           'px-4 py-3 rounded-lg border-2 font-medium text-body-sm transition-all',
                           'focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-600 focus-visible:ring-offset-2',
-                          variant.inventory === 0
+                          v.inventory === 0
                             ? 'border-olive-200 bg-olive-50 text-olive-400 cursor-not-allowed'
-                            : selectedVariant.id === variant.id
+                            : variant.id === v.id
                               ? 'border-sage-600 bg-sage-50 text-sage-800'
                               : 'border-olive-200 hover:border-olive-300 hover:bg-olive-50 text-olive-700'
                         )}
-                        disabled={variant.inventory === 0}
-                        aria-pressed={selectedVariant.id === variant.id}
+                        disabled={v.inventory === 0}
+                        aria-pressed={variant.id === v.id}
                       >
-                        {Object.values(variant.attributes).join(' / ')}
-                        {variant.compareAtPrice && variant.compareAtPrice > variant.price && (
+                        {Object.values(v.attributes).join(' / ')}
+                        {v.compareAtPrice && v.compareAtPrice > v.price && (
                           <span className="ml-2 text-caption text-olive-400 line-through">
-                            {formatPrice(variant.compareAtPrice)}
+                            {formatPrice(v.compareAtPrice)}
                           </span>
                         )}
-                        {variant.inventory === 0 && <span className="ml-2 text-caption text-red-500">(Out of Stock)</span>}
+                        {v.inventory === 0 && <span className="ml-2 text-caption text-red-500">(Out of Stock)</span>}
                       </button>
                     ))}
                   </div>
