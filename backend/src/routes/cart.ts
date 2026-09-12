@@ -198,7 +198,7 @@ router.delete('/items/:itemId', async (req: AuthRequest, res, next) => {
     const cart = await prisma.cart.findFirst({ where });
     if (!cart) throw new AppError(404, 'Cart not found');
 
-    await prisma.cartItem.delete({ where: { id: req.params.itemId, cartId: cart.id } });
+    await prisma.cartItem.delete({ where: { id: req.params.itemId as string, cartId: cart.id } });
 
     // Return updated cart
     const updatedCart = await prisma.cart.findUnique({
