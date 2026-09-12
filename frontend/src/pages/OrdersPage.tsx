@@ -229,6 +229,3 @@ export function OrdersPage() {
     </div>
   );
 }
-__zcode_status=$?
-if [ "$__zcode_status" -eq 0 ]; then pwd -P > '/var/folders/sn/_l6njzd56vn2_z4t0ljcrznw0000gn/T/zcode-acddfa58-a0ad-4587-85f1-3bf672f087f5-cwd'; fi
-exit "$__zcode_status"
