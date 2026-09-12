@@ -65,9 +65,13 @@ const trustBadges = [
   { icon: Leaf, text: 'Fair Trade' },
 ];
 
-export function Footer() {
+interface FooterProps {
+  className?: string;
+}
+
+export function Footer({ className }: FooterProps) {
   return (
-    <footer className="bg-olive-950 text-cream-50" role="contentinfo">
+    <footer className={cn("bg-olive-950 text-cream-50", className)} role="contentinfo">
       {/* Trust Bar */}
       <div className="border-b border-olive-800">
         <div className="container-main py-4">
