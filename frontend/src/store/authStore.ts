@@ -82,6 +82,9 @@ export const useAuthStore = create<AuthState>()(
           console.error('Logout error:', error);
         } finally {
           api.setToken(null);
+          useCartStore.getState().disableBackendSync();
+          useWishlistStore.getState().disableBackendSync();
+          useWishlistStore.getState().clearLocal();
           set({ user: null, isAuthenticated: false, isLoading: false });
         }
       },
