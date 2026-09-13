@@ -28,7 +28,7 @@ export function CartPage() {
   const total = subtotal + shipping + tax;
 
   return (
-    <div className="min-h-screen bg-cream-50 py-8 lg:py-12">
+    <div className="bg-cream-50 py-8 lg:py-12">
       <div className="container-main">
         {/* Header */}
         <motion.div
