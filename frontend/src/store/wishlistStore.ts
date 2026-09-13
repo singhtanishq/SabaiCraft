@@ -13,6 +13,7 @@ interface WishlistState {
   toggleItem: (product: Product, variant?: ProductVariant) => Promise<void>;
   isInWishlist: (productId: string, variantId?: string) => boolean;
   clearWishlist: () => Promise<void>;
+  clearLocal: () => void;
   getItemCount: () => number;
   enableBackendSync: () => void;
   disableBackendSync: () => void;
@@ -24,8 +25,7 @@ const transformBackendWishlist = (backendItems: any[]): WishlistItem[] => {
     userId: item.userId,
     productId: item.productId,
     product: item.product,
-    variantId: item.variantId,
-    variant: item.variant,
+    variantId: item.variantId ?? undefined,
     createdAt: item.createdAt,
   }));
 };
@@ -46,6 +46,8 @@ export const useWishlistStore = create<WishlistState>()(
           const response = await api.getWishlist();
           if (response.success) {
             set({ items: transformBackendWishlist(response.data), isLoading: false });
+          } else {
+            set({ isLoading: false });
           }
         } catch (error) {
           console.error('Failed to fetch wishlist:', error);
@@ -61,7 +63,7 @@ export const useWishlistStore = create<WishlistState>()(
         if (exists) return;
 
         const newItem: WishlistItem = {
-          id: `wish_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          id: `wish_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           userId: 'guest',
           productId: product.id,
           product,
@@ -83,24 +85,25 @@ export const useWishlistStore = create<WishlistState>()(
 
       removeItem: async (productId, variantId) => {
         const { syncWithBackend, items } = get();
-        const currentItems = items.filter(
-          (item) => !(item.productId === productId && item.variantId === variantId)
+        // With a variantId, remove the exact variant entry; without one,
+        // remove every entry for the product.
+        const targets = items.filter(
+          (item) =>
+            item.productId === productId &&
+            (variantId === undefined || item.variantId === variantId)
         );
+        if (targets.length === 0) return;
+
+        const currentItems = items.filter((item) => !targets.includes(item));
         set({ items: currentItems });
 
         if (syncWithBackend) {
-          // Find the wishlist item ID to remove from backend
-          const item = items.find(
-            (i) => i.productId === productId && i.variantId === variantId
-          );
-          if (item) {
-            try {
-              await api.removeFromWishlist(item.id);
-              await get().fetchWishlist();
-            } catch (error) {
-              console.error('Failed to sync wishlist with backend:', error);
-              set({ items }); // Revert
-            }
+          try {
+            await Promise.all(targets.map((item) => api.removeFromWishlist(item.id)));
+            await get().fetchWishlist();
+          } catch (error) {
+            console.error('Failed to sync wishlist with backend:', error);
+            set({ items }); // Revert
           }
         }
       },
@@ -117,7 +120,9 @@ export const useWishlistStore = create<WishlistState>()(
       isInWishlist: (productId, variantId) => {
         const { items } = get();
         return items.some(
-          (item) => item.productId === productId && item.variantId === variantId
+          (item) =>
+            item.productId === productId &&
+            (variantId === undefined || item.variantId === variantId)
         );
       },
 
@@ -134,6 +139,8 @@ export const useWishlistStore = create<WishlistState>()(
         }
       },
 
+      clearLocal: () => set({ items: [] }),
+
       getItemCount: () => get().items.length,
 
       enableBackendSync: () => {
@@ -146,6 +153,8 @@ export const useWishlistStore = create<WishlistState>()(
     {
       name: 'sabaicraft-wishlist',
       storage: createJSONStorage(() => localStorage),
+      // Never persist the sync flag; items only (cleared on logout).
+      partialize: (state) => ({ items: state.items }),
     }
   )
 );
