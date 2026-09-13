@@ -1,5 +1,4 @@
-import { forwardRef, ButtonHTMLAttributes } from 'react';
-import { Slot } from '@radix-ui/react-slot';
+import { cloneElement, forwardRef, isValidElement, ButtonHTMLAttributes, ReactElement } from 'react';
 import { cn } from '../../utils/cn';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -9,6 +8,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   fullWidth?: boolean;
+  /** Render the single child element (e.g. a Link) with the button's styles. */
   asChild?: boolean;
 }
 
@@ -51,14 +51,32 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const widthClass = fullWidth ? 'w-full' : '';
+    const composedClassName = cn(baseClasses, variantClasses[variant], sizeClasses[size], widthClass, className);
 
-    const Comp = asChild ? Slot : 'button';
+    // asChild: merge the button's classes into the single child element
+    // (typically a react-router Link) instead of rendering a <button>.
+    if (asChild) {
+      if (!isValidElement(children)) {
+        console.warn('Button with asChild requires a single valid React element child.');
+      } else {
+        const child = children as ReactElement<{ className?: string; children?: React.ReactNode }>;
+        const mergedClassName = cn(composedClassName, child.props.className);
+        return cloneElement(
+          child,
+          {
+            ...props,
+            className: mergedClassName || undefined,
+          } as Partial<{ className?: string }>,
+          child.props.children
+        );
+      }
+    }
 
     return (
-      <Comp
+      <button
         ref={ref}
-        type={asChild ? undefined : type}
-        className={cn(baseClasses, variantClasses[variant], sizeClasses[size], widthClass, className)}
+        type={type}
+        className={composedClassName}
         disabled={disabled || isLoading}
         {...props}
       >
@@ -94,7 +112,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
           </>
         )}
-      </Comp>
+      </button>
     );
   }
 );
