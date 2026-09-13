@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, createContext, useContext } from 'react';
+import { forwardRef, InputHTMLAttributes, createContext, useContext, useId } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../utils/cn';
 
@@ -6,6 +6,7 @@ interface RadioGroupContextValue {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  name: string;
 }
 
 const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
@@ -19,8 +20,9 @@ export interface RadioGroupProps {
 }
 
 export function RadioGroup({ value, onChange, children, disabled, className }: RadioGroupProps) {
+  const name = useId();
   return (
-    <RadioGroupContext.Provider value={{ value, onChange, disabled }}>
+    <RadioGroupContext.Provider value={{ value, onChange, disabled, name }}>
       <div className={cn('space-y-3', className)} role="radiogroup">{children}</div>
     </RadioGroupContext.Provider>
   );
@@ -39,7 +41,7 @@ export const RadioGroupItem = forwardRef<HTMLInputElement, RadioGroupItemProps>(
     const context = useContext(RadioGroupContext);
     if (!context) throw new Error('RadioGroupItem must be used within RadioGroup');
 
-    const { value: currentValue, onChange, disabled: groupDisabled } = context;
+    const { value: currentValue, onChange, disabled: groupDisabled, name: groupName } = context;
     const isChecked = currentValue === value;
     const isDisabled = disabled || groupDisabled;
 
@@ -59,6 +61,7 @@ export const RadioGroupItem = forwardRef<HTMLInputElement, RadioGroupItemProps>(
           <input
             ref={ref}
             type="radio"
+            name={groupName}
             value={value}
             checked={isChecked}
             onChange={() => !isDisabled && onChange(value)}
