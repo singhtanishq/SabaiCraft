@@ -174,11 +174,7 @@ export function ProductDetailPage() {
   };
 
   const handleToggleWishlist = () => {
-    if (!isAuthenticated) {
-      toastError('Sign in required', 'Please sign in to save items to your wishlist.');
-      navigate('/login?redirect=' + encodeURIComponent(location.pathname));
-      return;
-    }
+    // Guests get a local wishlist; it syncs to the backend once signed in.
     toggleItem(product, variant ?? undefined);
   };
 
