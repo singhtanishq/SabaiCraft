@@ -80,7 +80,7 @@ export function StorySection() {
               transition={{ duration: 0.5, delay: 0.5 }}
               className="pt-4 border-t border-olive-200"
             >
-              <a
+              <Link
                 to="/about"
                 className="inline-flex items-center gap-2 text-sage-600 hover:text-sage-700 font-medium text-body"
               >
