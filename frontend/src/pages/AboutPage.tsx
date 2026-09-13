@@ -68,7 +68,7 @@ export function AboutPage() {
               <Leaf className="w-4 h-4 text-sabai-300" />
               <span className="text-body-sm font-medium">Our Story</span>
             </div>
-            <h1 className="heading-display text-display-xl lg:text-display-lg mb-6 text-balance">
+            <h1 className="heading-display text-cream-50 text-display-xl lg:text-display-lg mb-6 text-balance">
               {story.subtitle}
             </h1>
             <p className="body-lg text-olive-300 max-w-2xl mx-auto text-pretty">
