@@ -48,3 +48,24 @@ export const adminMiddleware = async (req: AuthRequest, res: Response, next: Nex
   }
   next();
 };
+
+/**
+ * Decodes the JWT when present but never rejects the request — used by
+ * routes that behave differently for guests vs. signed-in users (cart).
+ */
+export const optionalAuthMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const token = req.cookies?.token || req.headers.authorization?.replace('Bearer ', '');
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.id },
+        select: { id: true, email: true, name: true, role: true },
+      });
+      if (user) req.user = user;
+    }
+  } catch {
+    // Invalid/expired token — treat as guest.
+  }
+  next();
+};
