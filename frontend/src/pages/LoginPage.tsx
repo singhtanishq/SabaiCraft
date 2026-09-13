@@ -6,8 +6,6 @@ import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
 import { useAuthStore } from '@store/authStore';
-import { useCartStore } from '@store/cartStore';
-import { useWishlistStore } from '@store/wishlistStore';
 import { useToastHelpers } from '@components/ui/Toast';
 
 interface LoginFormData {
@@ -52,8 +50,6 @@ export function LoginPage() {
     setIsLoading(true);
     try {
       await login(formData.email.trim(), formData.password);
-      useCartStore.getState().enableBackendSync();
-      useWishlistStore.getState().enableBackendSync();
       success('Welcome back!', 'You have been signed in successfully.');
       navigate(redirectTo.startsWith('/') ? redirectTo : '/account', { replace: true });
     } catch (err) {

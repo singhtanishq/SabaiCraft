@@ -6,8 +6,6 @@ import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Card } from '@components/ui/Card';
 import { useAuthStore } from '@store/authStore';
-import { useCartStore } from '@store/cartStore';
-import { useWishlistStore } from '@store/wishlistStore';
 import { useToastHelpers } from '@components/ui';
 
 export function RegisterPage() {
@@ -66,6 +64,8 @@ export function RegisterPage() {
         email: formData.email.trim(),
         password: formData.password,
       });
+      useCartStore.getState().enableBackendSync();
+      useWishlistStore.getState().enableBackendSync();
       useCartStore.getState().enableBackendSync();
       useWishlistStore.getState().enableBackendSync();
       success('Account created!', `Welcome to SabaiCraft, ${formData.firstName}!`);
