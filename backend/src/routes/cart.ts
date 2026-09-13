@@ -159,6 +159,7 @@ router.patch('/items/:itemId', async (req: AuthRequest, res, next) => {
     const userId = req.user?.id;
     const sessionId = req.cookies?.cart_session;
 
+    if (!userId && !sessionId) throw new AppError(404, 'Cart not found');
     const where = userId ? { userId } : { sessionId };
     const cart = await prisma.cart.findFirst({ where });
     if (!cart) throw new AppError(404, 'Cart not found');
@@ -199,6 +200,7 @@ router.delete('/items/:itemId', async (req: AuthRequest, res, next) => {
     const userId = req.user?.id;
     const sessionId = req.cookies?.cart_session;
 
+    if (!userId && !sessionId) throw new AppError(404, 'Cart not found');
     const where = userId ? { userId } : { sessionId };
     const cart = await prisma.cart.findFirst({ where });
     if (!cart) throw new AppError(404, 'Cart not found');
@@ -233,6 +235,9 @@ router.delete('/', async (req: AuthRequest, res, next) => {
     const userId = req.user?.id;
     const sessionId = req.cookies?.cart_session;
 
+    if (!userId && !sessionId) {
+      return res.json({ success: true, data: { items: [], subtotal: 0, shipping: 0, tax: 0, total: 0 } });
+    }
     const where = userId ? { userId } : { sessionId };
     const cart = await prisma.cart.findFirst({ where });
     if (cart) {
