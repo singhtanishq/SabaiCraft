@@ -504,7 +504,7 @@ export function CheckoutPage() {
                           {addressForm.phone}
                         </address>
                       )}
-                      <Button variant="link" size="sm" className="mt-2 px-0" onClick={() => setCurrentStep(0)}>
+                      <Button variant="ghost" size="sm" className="mt-2 px-0 text-sage-600 hover:text-sage-700" onClick={() => setCurrentStep(0)}>
                         Edit
                       </Button>
                     </div>
@@ -512,7 +512,7 @@ export function CheckoutPage() {
                     <div>
                       <h3 className="font-medium text-olive-900 text-body-sm mb-2">Payment Method</h3>
                       <p className="text-olive-600 text-body-sm">{paymentMethodLabel(paymentMethod)}</p>
-                      <Button variant="link" size="sm" className="mt-2 px-0" onClick={() => setCurrentStep(1)}>
+                      <Button variant="ghost" size="sm" className="mt-2 px-0 text-sage-600 hover:text-sage-700" onClick={() => setCurrentStep(1)}>
                         Edit
                       </Button>
                     </div>
