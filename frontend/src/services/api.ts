@@ -40,12 +40,25 @@ class ApiClient {
       credentials: 'include', // Important for cookies
     });
 
-    const data = await response.json();
+    // Session expired / invalid: clear local auth and notify listeners once.
+    if (response.status === 401 && !endpoint.startsWith('/auth/')) {
+      this.setToken(null);
+      window.dispatchEvent(new CustomEvent('sabaicraft:session-expired'));
+    }
+
+    let data: any = {};
+    try {
+      const text = await response.text();
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      // Non-JSON response (proxy error page, empty body) — fall through.
+      data = {};
+    }
 
     if (!response.ok) {
       throw new ApiError(
         response.status,
-        data.message || 'An error occurred',
+        data.message || `Request failed (${response.status} ${response.statusText})`,
         data.errors
       );
     }
