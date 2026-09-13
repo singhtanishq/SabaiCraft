@@ -38,6 +38,8 @@ export const useAuthStore = create<AuthState>()(
             });
             useCartStore.getState().enableBackendSync();
             useWishlistStore.getState().enableBackendSync();
+          } else {
+            throw new Error(response.message || 'Login failed');
           }
         } catch (error) {
           set({ isLoading: false });
@@ -61,6 +63,8 @@ export const useAuthStore = create<AuthState>()(
             });
             useCartStore.getState().enableBackendSync();
             useWishlistStore.getState().enableBackendSync();
+          } else {
+            throw new Error(response.message || 'Registration failed');
           }
         } catch (error) {
           set({ isLoading: false });
@@ -101,13 +105,23 @@ export const useAuthStore = create<AuthState>()(
           const response = await api.getMe();
           if (response.success && response.data) {
             set({ user: response.data.user, isAuthenticated: true, isLoading: false });
+            useCartStore.getState().enableBackendSync();
+            useWishlistStore.getState().enableBackendSync();
           } else {
             api.setToken(null);
             set({ user: null, isAuthenticated: false, isLoading: false });
           }
         } catch (error) {
-          api.setToken(null);
-          set({ user: null, isAuthenticated: false, isLoading: false });
+          // Only log the user out for an explicit auth rejection; transient
+          // network/server errors keep the session for a later retry.
+          if (error instanceof ApiError && error.status === 401) {
+            api.setToken(null);
+            useCartStore.getState().disableBackendSync();
+            useWishlistStore.getState().disableBackendSync();
+            set({ user: null, isAuthenticated: false, isLoading: false });
+          } else {
+            set({ isLoading: false });
+          }
         }
       },
     }),
