@@ -1,40 +1,58 @@
 import { motion } from 'framer-motion';
-import { Search, Filter, ChevronDown, Grid, List } from 'lucide-react';
-import { useState, useMemo } from 'react';
-import { products, categories, searchProducts, getProductsByCategory } from '@data/products';
+import { Search, Filter, ChevronDown, ChevronLeft, ChevronRight, Grid, List } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useCatalog, searchLocalProducts, sortProducts } from '@hooks/useCatalog';
 import { ProductCard } from '@components/product/ProductCard';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Badge } from '@components/ui/Badge';
 import { SkeletonProductGrid } from '@components/ui/Skeleton';
-import { EmptyState, EmptySearch } from '@components/ui/EmptyState';
+import { ErrorState } from '@components/ui/ErrorState';
+import { EmptySearch } from '@components/ui/EmptyState';
 import { formatPrice } from '@utils/format';
 import { cn } from '@utils/cn';
-import { useCartStore } from '@store/cartStore';
-import { useWishlistStore } from '@store/wishlistStore';
-import type { Product } from '@app-types';
+
+const PAGE_SIZE = 12;
+const MAX_PRICE = 300000;
+
+type SortKey = 'newest' | 'price_asc' | 'price_desc' | 'rating' | 'popular';
+
+const VALID_SORTS: SortKey[] = ['newest', 'price_asc', 'price_desc', 'rating', 'popular'];
 
 export function ShopPage() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { products, categories, isLoading } = useCatalog();
+
+  const query = searchParams.get('q') ?? '';
+  const sortParam = searchParams.get('sort') as SortKey | null;
+  const sortBy: SortKey = sortParam && VALID_SORTS.includes(sortParam) ? sortParam : 'newest';
+
+  const [searchInput, setSearchInput] = useState(query);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'newest' | 'price_asc' | 'price_desc' | 'rating' | 'popular'>('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 300000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, MAX_PRICE]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
-  const { addItem } = useCartStore();
-  const { toggleItem } = useWishlistStore();
+  // Keep the input in sync when the URL query changes (e.g. header search).
+  useEffect(() => {
+    setSearchInput(query);
+    setPage(1);
+  }, [query]);
 
   const filteredProducts = useMemo(() => {
     let result = products.filter((p) => p.isActive);
 
-    if (searchQuery) {
-      result = searchProducts(searchQuery);
+    if (query) {
+      result = searchLocalProducts(result, query);
     }
 
     if (selectedCategory) {
-      result = result.filter((p) => p.categoryId === selectedCategory);
+      const category = categories.find((c) => c.id === selectedCategory);
+      const categoryIds = [selectedCategory, ...(category?.children?.map((c) => c.id) ?? [])];
+      result = result.filter((p) => categoryIds.includes(p.categoryId));
     }
 
     if (inStockOnly) {
@@ -45,46 +63,46 @@ export function ShopPage() {
       (p) => p.basePrice >= priceRange[0] && p.basePrice <= priceRange[1]
     );
 
-    switch (sortBy) {
-      case 'price_asc':
-        result.sort((a: Product, b: Product) => a.basePrice - b.basePrice);
-        break;
-      case 'price_desc':
-        result.sort((a: Product, b: Product) => b.basePrice - a.basePrice);
-        break;
-      case 'rating':
-        result.sort((a: Product, b: Product) => b.rating - a.rating);
-        break;
-      case 'popular':
-        result.sort((a: Product, b: Product) => b.reviewCount - a.reviewCount);
-        break;
-      default:
-        // newest - keep original order
-        break;
-    }
+    return sortProducts(result, sortBy);
+  }, [products, categories, query, selectedCategory, sortBy, priceRange, inStockOnly]);
 
-    return result;
-  }, [searchQuery, selectedCategory, sortBy, priceRange, inStockOnly]);
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageProducts = filteredProducts.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
 
-  const handleAddToCart = (product: Product) => {
-    addItem(product, product.variants[0], 1);
-  };
-
-  const handleWishlist = (product: Product) => {
-    toggleItem(product, product.variants[0]);
+  const updateQuery = (nextQuery: string) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (nextQuery) next.set('q', nextQuery);
+        else next.delete('q');
+        return next;
+      },
+      { replace: true }
+    );
+    setPage(1);
   };
 
   const clearFilters = () => {
     setSelectedCategory(null);
-    setSortBy('newest');
-    setPriceRange([0, 300000]);
+    setPriceRange([0, MAX_PRICE]);
     setInStockOnly(false);
+    if (query) updateQuery('');
   };
 
-  const hasActiveFilters = selectedCategory || sortBy !== 'newest' || priceRange[0] > 0 || priceRange[1] < 300000 || inStockOnly;
+  const hasActiveFilters =
+    !!query || selectedCategory || priceRange[0] > 0 || priceRange[1] < MAX_PRICE || inStockOnly;
+
+  const handlePageChange = (nextPage: number) => {
+    setPage(nextPage);
+    document.getElementById('shop-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="bg-cream-50">
       {/* Page Header */}
       <section className="bg-white border-b border-olive-100">
         <div className="container-main py-10 lg:py-14">
@@ -94,7 +112,9 @@ export function ShopPage() {
             transition={{ duration: 0.5 }}
             className="max-w-3xl"
           >
-            <h1 className="heading-1 mb-2">Shop All Products</h1>
+            <h1 className="heading-1 mb-2">
+              {query ? `Search results for "${query}"` : 'Shop All Products'}
+            </h1>
             <p className="body-lg text-olive-600">
               Discover our complete collection of handcrafted Sabai grass treasures
             </p>
@@ -106,34 +126,35 @@ export function ShopPage() {
       <div className="container-main py-8 lg:py-12">
         <div className="flex lg:gap-8">
           {/* Sidebar Filters */}
-          <aside className="lg:w-64 flex-shrink-0">
+          <aside className="lg:w-64 flex-shrink-0" aria-label="Product filters">
             <div className="sticky top-24 space-y-6">
-              {/* Mobile Filter Toggle */}
               <button
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                onClick={() => setIsFilterOpen((v) => !v)}
                 className="lg:hidden btn btn-secondary w-full justify-between"
+                aria-expanded={isFilterOpen}
               >
                 <span>Filters</span>
-                <ChevronDown className={cn('w-5 h-5 transition-transform', isFilterOpen && 'rotate-180')} />
+                <ChevronDown className={cn('w-5 h-5 transition-transform', isFilterOpen && 'rotate-180')} aria-hidden="true" />
               </button>
 
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className={cn('space-y-6 lg:block', isFilterOpen ? 'block' : 'hidden lg:block')}
-              >
+              <div className={cn('space-y-6 lg:block', isFilterOpen ? 'block' : 'hidden lg:block')}>
                 {/* Search */}
-                <div>
-                  <label htmlFor="search" className="label">Search Products</label>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    updateQuery(searchInput.trim());
+                  }}
+                >
+                  <label htmlFor="shop-search" className="label">Search Products</label>
                   <Input
-                    id="search"
+                    id="shop-search"
                     type="search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Search..."
                     leftIcon={<Search className="w-5 h-5" />}
                   />
-                </div>
+                </form>
 
                 {/* Categories */}
                 <div>
@@ -144,7 +165,10 @@ export function ShopPage() {
                         type="radio"
                         name="category"
                         checked={!selectedCategory}
-                        onChange={() => setSelectedCategory(null)}
+                        onChange={() => {
+                          setSelectedCategory(null);
+                          setPage(1);
+                        }}
                         className="w-4 h-4 text-sage-600 border-olive-300 focus:ring-sage-500"
                       />
                       <span className="text-body-sm text-olive-700">All Categories</span>
@@ -155,7 +179,10 @@ export function ShopPage() {
                           type="radio"
                           name="category"
                           checked={selectedCategory === cat.id}
-                          onChange={() => setSelectedCategory(cat.id)}
+                          onChange={() => {
+                            setSelectedCategory(cat.id);
+                            setPage(1);
+                          }}
                           className="w-4 h-4 text-sage-600 border-olive-300 focus:ring-sage-500"
                         />
                         <span className="text-body-sm text-olive-700">{cat.name}</span>
@@ -169,33 +196,39 @@ export function ShopPage() {
                 <div>
                   <h3 className="label mb-2 flex justify-between">
                     Price Range
-                    <span className="text-body-sm text-olive-500">
-                      {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
+                    <span className="text-body-sm font-normal text-olive-500">
+                      {formatPrice(priceRange[0])} – {formatPrice(priceRange[1])}
                     </span>
                   </h3>
                   <div className="space-y-3">
                     <input
                       type="range"
                       min="0"
-                      max="300000"
+                      max={MAX_PRICE}
                       step="5000"
                       value={priceRange[0]}
-                      onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
+                      onChange={(e) => {
+                        const min = Math.min(parseInt(e.target.value, 10), priceRange[1]);
+                        setPriceRange([min, priceRange[1]]);
+                        setPage(1);
+                      }}
                       className="w-full h-2 bg-olive-200 rounded-lg appearance-none cursor-pointer accent-sage-600"
+                      aria-label="Minimum price"
                     />
                     <input
                       type="range"
                       min="0"
-                      max="300000"
+                      max={MAX_PRICE}
                       step="5000"
                       value={priceRange[1]}
-                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                      onChange={(e) => {
+                        const max = Math.max(parseInt(e.target.value, 10), priceRange[0]);
+                        setPriceRange([priceRange[0], max]);
+                        setPage(1);
+                      }}
                       className="w-full h-2 bg-olive-200 rounded-lg appearance-none cursor-pointer accent-sage-600"
+                      aria-label="Maximum price"
                     />
-                    <div className="flex justify-between text-caption text-olive-500">
-                      <span>Min: {formatPrice(priceRange[0])}</span>
-                      <span>Max: {formatPrice(priceRange[1])}</span>
-                    </div>
                   </div>
                 </div>
 
@@ -205,44 +238,58 @@ export function ShopPage() {
                     <input
                       type="checkbox"
                       checked={inStockOnly}
-                      onChange={(e) => setInStockOnly(e.target.checked)}
+                      onChange={(e) => {
+                        setInStockOnly(e.target.checked);
+                        setPage(1);
+                      }}
                       className="w-4 h-4 text-sage-600 border-olive-300 rounded focus:ring-sage-500"
                     />
                     <span className="text-body-sm text-olive-700">In Stock Only</span>
                   </label>
                 </div>
 
-                {/* Clear Filters */}
                 {hasActiveFilters && (
                   <Button variant="ghost" size="sm" onClick={clearFilters} className="w-full">
                     Clear All Filters
                   </Button>
                 )}
-              </motion.div>
+              </div>
             </div>
           </aside>
 
           {/* Product Grid */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0" id="shop-results">
             {/* Toolbar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 lg:mb-8">
               <div className="flex items-center gap-3">
-                <span className="text-body-sm text-olive-600">
-                  {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+                <span className="text-body-sm text-olive-600" aria-live="polite">
+                  {isLoading
+                    ? 'Loading products…'
+                    : `${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''} found`}
                 </span>
-                {hasActiveFilters && (
+                {hasActiveFilters && !isLoading && (
                   <Badge variant="primary" size="sm">
-                    <Filter className="w-3 h-3 mr-1" />
+                    <Filter className="w-3 h-3 mr-1" aria-hidden="true" />
                     Filters Applied
                   </Badge>
                 )}
               </div>
 
               <div className="flex items-center gap-2">
-                {/* Sort */}
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                  onChange={(e) => {
+                    const next = e.target.value as SortKey;
+                    setSearchParams(
+                      (prev) => {
+                        const nextParams = new URLSearchParams(prev);
+                        if (next === 'newest') nextParams.delete('sort');
+                        else nextParams.set('sort', next);
+                        return nextParams;
+                      },
+                      { replace: true }
+                    );
+                  }}
                   className="input py-2 px-3 text-sm appearance-none bg-white"
                   aria-label="Sort products"
                 >
@@ -253,9 +300,9 @@ export function ShopPage() {
                   <option value="popular">Most Popular</option>
                 </select>
 
-                {/* View Toggle */}
                 <div className="flex bg-olive-100 rounded-lg p-1">
                   <button
+                    type="button"
                     onClick={() => setViewMode('grid')}
                     className={cn(
                       'p-2 rounded-md transition-colors',
@@ -264,9 +311,10 @@ export function ShopPage() {
                     aria-label="Grid view"
                     aria-pressed={viewMode === 'grid'}
                   >
-                    <Grid className="w-5 h-5" />
+                    <Grid className="w-5 h-5" aria-hidden="true" />
                   </button>
                   <button
+                    type="button"
                     onClick={() => setViewMode('list')}
                     className={cn(
                       'p-2 rounded-md transition-colors',
@@ -275,15 +323,17 @@ export function ShopPage() {
                     aria-label="List view"
                     aria-pressed={viewMode === 'list'}
                   >
-                    <List className="w-5 h-5" />
+                    <List className="w-5 h-5" aria-hidden="true" />
                   </button>
                 </div>
               </div>
             </div>
 
             {/* Products */}
-            {filteredProducts.length === 0 ? (
-              <EmptySearch query={searchQuery || 'your filters'} />
+            {isLoading ? (
+              <SkeletonProductGrid count={8} />
+            ) : pageProducts.length === 0 ? (
+              <EmptySearch query={query || 'your filters'} />
             ) : (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -291,47 +341,58 @@ export function ShopPage() {
                 className={cn(
                   'gap-6',
                   viewMode === 'grid'
-                    ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-                    : 'flex flex-col'
+                    ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                    : 'flex flex-col gap-4'
                 )}
                 role="list"
               >
-                {filteredProducts.map((product: Product, index: number) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    index={index}
-                    variant={viewMode === 'list' ? 'list' : 'grid'}
-                    onAddToCart={handleAddToCart}
-                    onToggleWishlist={handleWishlist}
-                  />
+                {pageProducts.map((product, index) => (
+                  <ProductCard key={product.id} product={product} index={index} variant={viewMode} />
                 ))}
               </motion.div>
             )}
 
             {/* Pagination */}
-            {filteredProducts.length > 12 && (
-              <div className="flex items-center justify-center gap-2 mt-10">
-                <Button variant="outline" size="sm" disabled>
+            {!isLoading && totalPages > 1 && (
+              <nav className="flex items-center justify-center gap-2 mt-10" aria-label="Pagination">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === 1}
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  <ChevronLeft className="w-4 h-4" aria-hidden="true" />
                   Previous
                 </Button>
                 <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4].map((page) => (
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
                     <button
-                      key={page}
+                      key={pageNumber}
+                      type="button"
+                      onClick={() => handlePageChange(pageNumber)}
                       className={cn(
                         'w-10 h-10 rounded-lg font-medium text-body-sm transition-colors',
-                        page === 1
+                        pageNumber === currentPage
                           ? 'bg-olive-950 text-cream-50'
                           : 'text-olive-600 hover:bg-olive-100 hover:text-olive-900'
                       )}
+                      aria-label={`Page ${pageNumber}`}
+                      aria-current={pageNumber === currentPage ? 'page' : undefined}
                     >
-                      {page}
+                      {pageNumber}
                     </button>
                   ))}
                 </div>
-                <Button variant="outline" size="sm">Next</Button>
-              </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === totalPages}
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4" aria-hidden="true" />
+                </Button>
+              </nav>
             )}
           </div>
         </div>
