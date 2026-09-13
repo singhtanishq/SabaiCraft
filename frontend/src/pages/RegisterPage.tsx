@@ -64,10 +64,6 @@ export function RegisterPage() {
         email: formData.email.trim(),
         password: formData.password,
       });
-      useCartStore.getState().enableBackendSync();
-      useWishlistStore.getState().enableBackendSync();
-      useCartStore.getState().enableBackendSync();
-      useWishlistStore.getState().enableBackendSync();
       success('Account created!', `Welcome to SabaiCraft, ${formData.firstName}!`);
       navigate(redirectTo.startsWith('/') ? redirectTo : '/account', { replace: true });
     } catch (err) {
