@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, LabelHTMLAttributes, TextareaHTMLAttributes } from 'react';
+import { forwardRef, InputHTMLAttributes, LabelHTMLAttributes, TextareaHTMLAttributes, useId } from 'react';
 import { cn } from '../../utils/cn';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -11,7 +11,8 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, hint, leftIcon, rightIcon, id, ...props }, ref) => {
-    const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
+    const autoId = useId();
+    const inputId = id || autoId;
 
     return (
       <div className="w-full">
@@ -83,7 +84,8 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, label, error, hint, id, ...props }, ref) => {
-    const textareaId = id || label?.toLowerCase().replace(/\s+/g, '-');
+    const autoId = useId();
+    const textareaId = id || autoId;
 
     return (
       <div className="w-full">

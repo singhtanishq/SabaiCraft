@@ -143,3 +143,17 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// The API client dispatches this when any authenticated request returns 401
+// (expired session); log the user out so the UI reflects reality.
+if (typeof window !== 'undefined') {
+  window.addEventListener('sabaicraft:session-expired', () => {
+    const state = useAuthStore.getState();
+    if (state.isAuthenticated) {
+      useCartStore.getState().disableBackendSync();
+      useWishlistStore.getState().disableBackendSync();
+      useWishlistStore.getState().clearLocal();
+      state.setUser(null);
+    }
+  });
+}
