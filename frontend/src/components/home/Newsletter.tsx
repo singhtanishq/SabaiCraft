@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Mail, ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
@@ -114,7 +115,7 @@ export function Newsletter() {
             </div>
 
             <p className="text-caption text-olive-300 mt-3 text-center">
-              No spam, unsubscribe anytime. <a href="/privacy" className="underline hover:text-cream-50">Privacy Policy</a>
+              No spam, unsubscribe anytime. <Link to="/privacy" className="underline hover:text-cream-50">Privacy Policy</Link>
             </p>
           </form>
         </motion.div>

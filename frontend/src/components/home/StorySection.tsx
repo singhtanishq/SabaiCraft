@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Leaf, Heart, Sparkles, Award } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
@@ -80,7 +81,7 @@ export function StorySection() {
               className="pt-4 border-t border-olive-200"
             >
               <a
-                href="/about"
+                to="/about"
                 className="inline-flex items-center gap-2 text-sage-600 hover:text-sage-700 font-medium text-body"
               >
                 Read Our Full Story
@@ -90,7 +91,7 @@ export function StorySection() {
                 >
                   →
                 </motion.span>
-              </a>
+              </Link>
             </motion.div>
           </motion.div>
 
