@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { api, ApiError } from '../services/api';
+import { useCartStore } from './cartStore';
+import { useWishlistStore } from './wishlistStore';
 import type { User } from '../types';
 
 interface AuthState {
@@ -34,6 +36,8 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true,
               isLoading: false,
             });
+            useCartStore.getState().enableBackendSync();
+            useWishlistStore.getState().enableBackendSync();
           }
         } catch (error) {
           set({ isLoading: false });
@@ -55,6 +59,8 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: true,
               isLoading: false,
             });
+            useCartStore.getState().enableBackendSync();
+            useWishlistStore.getState().enableBackendSync();
           }
         } catch (error) {
           set({ isLoading: false });
