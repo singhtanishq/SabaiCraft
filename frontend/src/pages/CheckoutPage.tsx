@@ -23,7 +23,7 @@ import { Skeleton } from '@components/ui/Skeleton';
 import { formatPrice } from '@utils/format';
 import { cn } from '@utils/cn';
 import { useToastHelpers } from '@components/ui';
-import type { Address } from '@types/index';
+import type { Address } from '@app-types';
 
 const steps = [
   { id: 'shipping', label: 'Shipping', icon: MapPin },

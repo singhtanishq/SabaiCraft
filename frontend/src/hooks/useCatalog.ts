@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '@services/api';
 import { products as localProducts, categories as localCategories } from '@data/products';
-import type { Category, Product, ProductVariant } from '@types/index';
+import type { Category, Product, ProductVariant } from '@app-types';
 
 /**
  * Fetches the catalog from the backend API with a graceful fallback to the
