@@ -22,8 +22,7 @@ export function Categories({
       <div className="container-main">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto mb-12 lg:mb-16"
         >
@@ -35,8 +34,7 @@ export function Categories({
 
         <motion.div
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-100px' }}
+          animate={{ opacity: 1 }}
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6"
           role="list"
         >
@@ -44,8 +42,7 @@ export function Categories({
             <motion.article
               key={category.id}
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.4, delay: index * 0.06 }}
               whileHover={{ y: -6 }}
               className="group"

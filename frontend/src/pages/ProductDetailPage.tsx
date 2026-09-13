@@ -577,8 +577,7 @@ export function ProductDetailPage() {
         {related.length > 0 && (
           <motion.section
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             className="mt-16 lg:mt-20"
             aria-label="Related products"
           >

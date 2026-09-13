@@ -44,8 +44,7 @@ export function StorySection() {
           {/* Text Content */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
@@ -63,8 +62,7 @@ export function StorySection() {
                 <motion.p
                   key={index}
                   initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
                   className="body-lg leading-relaxed"
                 >
@@ -75,8 +73,7 @@ export function StorySection() {
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
               className="pt-4 border-t border-olive-200"
             >
@@ -98,8 +95,7 @@ export function StorySection() {
           {/* Values Grid */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
@@ -107,8 +103,7 @@ export function StorySection() {
                 <motion.article
                   key={value.title}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.3 + index * 0.08 }}
                   className="card p-6 h-full"
                 >

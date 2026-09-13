@@ -57,8 +57,7 @@ export function Testimonials() {
       <div className="container-main">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto mb-12 lg:mb-16"
         >
@@ -80,8 +79,7 @@ export function Testimonials() {
               <motion.article
                 key={testimonial.id}
                 initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 className="flex-shrink-0 w-[320px] sm:w-[360px] scroll-snap-start"
               >
