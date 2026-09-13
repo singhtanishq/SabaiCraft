@@ -94,6 +94,41 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+// Search suggestions — must be registered BEFORE '/:slug' so that
+// "search" is not treated as a slug.
+router.get('/search/suggestions', async (req, res, next) => {
+  try {
+    const { q } = req.query;
+    if (!q || (q as string).length < 2) {
+      return res.json({ success: true, data: [] });
+    }
+
+    const query = q as string;
+    const products = await prisma.product.findMany({
+      where: {
+        isActive: true,
+        OR: [
+          { name: { contains: query } },
+          { tags: { contains: query } },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        basePrice: true,
+        categoryId: true,
+        images: { take: 1, orderBy: { position: 'asc' } },
+      },
+      take: 5,
+    });
+
+    res.json({ success: true, data: products });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Get featured products
 router.get('/featured', async (req, res, next) => {
   try {
