@@ -75,7 +75,7 @@ export function CartDrawer() {
                       {item.product.name}
                     </Link>
                     <p className="text-caption text-olive-500 mt-0.5">
-                      {Object.values(item.variant.attributes).join(' / ')}
+                      {Object.values(item.variant.attributes).join(' / ') || item.variant.name}
                     </p>
                     <p className="font-medium text-olive-900 text-body-sm mt-1">
                       {formatPrice(item.variant.price * item.quantity)}

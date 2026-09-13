@@ -85,7 +85,7 @@ export function CartPage() {
                       </button>
                     </div>
                     <p className="text-caption text-olive-500 mt-1">
-                      {Object.values(item.variant.attributes).join(' / ')}
+                      {Object.values(item.variant.attributes).join(' / ') || item.variant.name}
                     </p>
                   </div>
 
