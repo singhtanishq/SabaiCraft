@@ -104,7 +104,7 @@ export function Modal({
             initial={{ opacity: 0, scale: 0.96, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
             ref={panelRef}
             tabIndex={-1}
             className={cn(
