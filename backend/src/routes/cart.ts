@@ -118,9 +118,14 @@ router.post('/items', async (req: AuthRequest, res, next) => {
     });
 
     if (existingItem) {
+      // Cap the combined quantity at available inventory.
+      const newQuantity = existingItem.quantity + data.quantity;
+      if (newQuantity > variant.inventory) {
+        throw new AppError(400, `Only ${variant.inventory} unit(s) available`);
+      }
       await prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity: { increment: data.quantity } },
+        data: { quantity: newQuantity },
       });
     } else {
       await prisma.cartItem.create({
@@ -198,7 +203,12 @@ router.delete('/items/:itemId', async (req: AuthRequest, res, next) => {
     const cart = await prisma.cart.findFirst({ where });
     if (!cart) throw new AppError(404, 'Cart not found');
 
-    await prisma.cartItem.delete({ where: { id: req.params.itemId as string, cartId: cart.id } });
+    // delete() requires a unique selector; scope via findFirst first.
+    const item = await prisma.cartItem.findFirst({
+      where: { id: req.params.itemId as string, cartId: cart.id },
+    });
+    if (!item) throw new AppError(404, 'Item not found');
+    await prisma.cartItem.delete({ where: { id: item.id } });
 
     // Return updated cart
     const updatedCart = await prisma.cart.findUnique({
