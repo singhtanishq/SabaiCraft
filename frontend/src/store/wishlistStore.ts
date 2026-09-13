@@ -85,12 +85,13 @@ export const useWishlistStore = create<WishlistState>()(
 
       removeItem: async (productId, variantId) => {
         const { syncWithBackend, items } = get();
-        // With a variantId, remove the exact variant entry; without one,
-        // remove every entry for the product.
+        // Without a variantId, remove every entry for the product. With one,
+        // remove the exact variant entry plus any variant-less entry for the
+        // product (a generic save covers all variants).
         const targets = items.filter(
           (item) =>
             item.productId === productId &&
-            (variantId === undefined || item.variantId === variantId)
+            (variantId === undefined || item.variantId === variantId || item.variantId === undefined)
         );
         if (targets.length === 0) return;
 
@@ -122,7 +123,7 @@ export const useWishlistStore = create<WishlistState>()(
         return items.some(
           (item) =>
             item.productId === productId &&
-            (variantId === undefined || item.variantId === variantId)
+            (variantId === undefined || item.variantId === variantId || item.variantId === undefined)
         );
       },
 
