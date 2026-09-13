@@ -15,6 +15,7 @@ export interface DrawerProps {
   closeOnOverlayClick?: boolean;
   closeOnEscape?: boolean;
   className?: string;
+  bodyClassName?: string;
 }
 
 const positionClasses = {
@@ -51,6 +52,7 @@ export function Drawer({
   closeOnOverlayClick = true,
   closeOnEscape = true,
   className,
+  bodyClassName,
 }: DrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -168,7 +170,7 @@ export function Drawer({
                 )}
               </div>
             )}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+            <div className={cn('flex-1 overflow-y-auto p-4 sm:p-6', bodyClassName)}>
               {children}
             </div>
           </motion.div>
