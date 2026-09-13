@@ -6,7 +6,6 @@ import {
   CreditCard,
   Smartphone,
   Building2,
-  Mail,
   MapPin,
   Lock,
   Truck,
