@@ -22,6 +22,7 @@
       "@utils/*": ["src/utils/*"],
       "@store/*": ["src/store/*"],
       "@hooks/*": ["src/hooks/*"],
+      "@services/*": ["src/services/*"],
       "@app-types/*": ["src/types/*"],
       "@app-types": ["src/types/index.ts"],
       "@data/*": ["src/data/*"]
