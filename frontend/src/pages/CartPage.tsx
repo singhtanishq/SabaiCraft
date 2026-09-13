@@ -49,6 +49,7 @@ export function CartPage() {
             transition={{ duration: 0.5 }}
             className="lg:col-span-2 space-y-4"
           >
+          <AnimatePresence initial={false}>
             {cart.items.map((item, index) => (
               <motion.article
                 key={item.id}
@@ -127,6 +128,7 @@ export function CartPage() {
                 </div>
               </motion.article>
             ))}
+          </AnimatePresence>
           </motion.div>
 
           {/* Order Summary */}
